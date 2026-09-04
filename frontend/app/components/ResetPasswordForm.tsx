@@ -42,14 +42,19 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-sm">
-      <h1 className="text-2xl font-bold">Restablecer contraseña</h1>
+    <form
+      onSubmit={handleSubmit}
+      className="rune-panel rune-stagger flex flex-col gap-5 w-full max-w-sm p-8"
+    >
+      <h1 className="font-display text-2xl font-semibold tracking-tight">
+        Restablecer contraseña
+      </h1>
       {error && (
-        <p role="alert" className="text-red-500">
+        <p role="alert" className="text-ember text-sm">
           {error}
         </p>
       )}
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5 text-sm text-mist">
         Nueva contraseña
         <input
           type="password"
@@ -57,14 +62,10 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
           minLength={8}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="rune-field text-parchment text-base"
         />
       </label>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="bg-blue-600 text-white rounded px-3 py-2"
-      >
+      <button type="submit" disabled={submitting} className="rune-btn">
         {submitting ? "Guardando..." : "Guardar nueva contraseña"}
       </button>
     </form>

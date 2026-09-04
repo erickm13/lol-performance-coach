@@ -1,9 +1,13 @@
 import { DashboardContent } from "../components/DashboardContent";
+import { Navbar } from "../components/Navbar";
 
 export default function DashboardPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-24">
-      <DashboardContent />
-    </main>
+    <>
+      <Navbar />
+      <main className="flex flex-col items-center px-6 py-12">
+        <DashboardContent />
+      </main>
+    </>
   );
 }

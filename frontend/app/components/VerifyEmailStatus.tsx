@@ -33,13 +33,21 @@ export function VerifyEmailStatus({ token }: { token: string | null }) {
     };
   }, [token]);
 
-  if (status === "loading") return <p>Verificando tu email...</p>;
-  if (status === "success") {
-    return <p>¡Tu email quedó verificado! Ya podés iniciar sesión.</p>;
-  }
   return (
-    <p role="alert">
-      No pudimos verificar tu email. El link puede haber expirado.
-    </p>
+    <div className="rune-panel rune-stagger w-full max-w-sm p-8">
+      {status === "loading" && (
+        <p className="text-mist">Verificando tu email...</p>
+      )}
+      {status === "success" && (
+        <p className="text-parchment">
+          ¡Tu email quedó verificado! Ya podés iniciar sesión.
+        </p>
+      )}
+      {status === "error" && (
+        <p role="alert" className="text-ember">
+          No pudimos verificar tu email. El link puede haber expirado.
+        </p>
+      )}
+    </div>
   );
 }
