@@ -39,46 +39,49 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-sm">
-      <h1 className="text-2xl font-bold">Iniciar sesión</h1>
+    <form
+      onSubmit={handleSubmit}
+      className="rune-panel rune-stagger flex flex-col gap-5 w-full max-w-sm p-8"
+    >
+      <h1 className="font-display text-2xl font-semibold tracking-tight">
+        Iniciar sesión
+      </h1>
       {error && (
-        <p role="alert" className="text-red-500">
+        <p role="alert" className="text-ember text-sm">
           {error}
         </p>
       )}
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5 text-sm text-mist">
         Email
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="rune-field text-parchment text-base"
         />
       </label>
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5 text-sm text-mist">
         Contraseña
         <input
           type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="rune-field text-parchment text-base"
         />
       </label>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="bg-blue-600 text-white rounded px-3 py-2"
-      >
+      <button type="submit" disabled={submitting} className="rune-btn">
         {submitting ? "Ingresando..." : "Ingresar"}
       </button>
-      <a href="/forgot-password" className="text-sm underline">
-        ¿Olvidaste tu contraseña?
-      </a>
-      <a href="/register" className="text-sm underline">
-        ¿No tenés cuenta? Registrate
-      </a>
+      <div className="flex flex-col gap-2 text-sm pt-1">
+        <a href="/forgot-password" className="rune-link">
+          ¿Olvidaste tu contraseña?
+        </a>
+        <a href="/register" className="rune-link">
+          ¿No tenés cuenta? Registrate
+        </a>
+      </div>
     </form>
   );
 }

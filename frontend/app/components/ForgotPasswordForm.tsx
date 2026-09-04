@@ -24,23 +24,34 @@ export function ForgotPasswordForm() {
   }
 
   if (submitted) {
-    return <p>Si el email existe, te enviamos un link para recuperar tu contraseña.</p>;
+    return (
+      <div className="rune-panel rune-stagger w-full max-w-sm p-8">
+        <p className="text-parchment">
+          Si el email existe, te enviamos un link para recuperar tu contraseña.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-sm">
-      <h1 className="text-2xl font-bold">Recuperar contraseña</h1>
-      <label className="flex flex-col gap-1">
+    <form
+      onSubmit={handleSubmit}
+      className="rune-panel rune-stagger flex flex-col gap-5 w-full max-w-sm p-8"
+    >
+      <h1 className="font-display text-2xl font-semibold tracking-tight">
+        Recuperar contraseña
+      </h1>
+      <label className="flex flex-col gap-1.5 text-sm text-mist">
         Email
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="rune-field text-parchment text-base"
         />
       </label>
-      <button type="submit" className="bg-blue-600 text-white rounded px-3 py-2">
+      <button type="submit" className="rune-btn">
         Enviar link
       </button>
     </form>
