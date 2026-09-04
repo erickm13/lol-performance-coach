@@ -5,11 +5,13 @@ import { createAuthRoutes } from "../src/routes/auth.ts";
 function createTestApp() {
   const sentEmails: { to: string; token: string; kind: "verify" | "reset" }[] = [];
   const app = createAuthRoutes({
-    sendVerificationEmail: async (to, token) => {
+    sendVerificationEmail: (to, token) => {
       sentEmails.push({ to, token, kind: "verify" });
+      return Promise.resolve();
     },
-    sendPasswordResetEmail: async (to, token) => {
+    sendPasswordResetEmail: (to, token) => {
       sentEmails.push({ to, token, kind: "reset" });
+      return Promise.resolve();
     },
   });
   return { app, sentEmails };
