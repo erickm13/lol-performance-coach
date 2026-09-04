@@ -17,6 +17,11 @@ app.use(
 
 app.route("/auth", createAuthRoutes({ sendVerificationEmail, sendPasswordResetEmail }));
 
+app.onError((err, c) => {
+  console.error(err);
+  return c.json({ error: "Error interno del servidor" }, 500);
+});
+
 app.get("/health", async (c) => {
   try {
     await db.execute(sql`select 1`);

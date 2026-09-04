@@ -20,3 +20,15 @@ Deno.test("GET /health incluye cabeceras CORS para que el frontend pueda consumi
     "http://localhost:3000",
   );
 });
+
+Deno.test("un error inesperado (JSON malformado) responde con el shape JSON { error } del onError global", async () => {
+  const res = await app.request("/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: "not json",
+  });
+  const body = await res.json();
+
+  assertEquals(res.status, 500);
+  assertEquals(typeof body.error, "string");
+});
