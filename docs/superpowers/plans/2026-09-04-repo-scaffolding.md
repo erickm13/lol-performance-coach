@@ -1147,7 +1147,7 @@ git commit -m "ci: add GitHub Actions workflow for backend and frontend"
 **Interfaces:**
 - Ninguna — tarea de documentación y verificación final, no agrega código.
 
-- [ ] **Step 1: Crear `README.md` en la raíz**
+- [x] **Step 1: Crear `README.md` en la raíz**
 
 ```markdown
 # Plataforma de análisis y entrenamiento personalizado — League of Legends
@@ -1204,7 +1204,7 @@ cd frontend && npm test
 \`\`\`
 ```
 
-- [ ] **Step 2: Verificación final contra la "Definición de hecho" del spec**
+- [x] **Step 2: Verificación final contra la "Definición de hecho" del spec**
 
 ```bash
 cp .env.example .env
@@ -1220,7 +1220,7 @@ docker compose down
 
 Expected: los 4 servicios arriba, ambos `curl` devuelven lo esperado, ambas suites de test pasan. Esto cubre todos los puntos de la sección "Definición de hecho" de `docs/superpowers/specs/2026-09-04-repo-scaffolding-design.md`, salvo el estado del workflow de CI (que solo se confirma en GitHub tras el push).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add README.md
