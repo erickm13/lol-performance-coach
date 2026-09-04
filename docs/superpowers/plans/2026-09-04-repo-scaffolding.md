@@ -950,6 +950,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lol_analytics"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -964,7 +969,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   frontend:
     build:
@@ -979,6 +985,8 @@ services:
 volumes:
   postgres_data:
 ```
+
+**Nota:** se agrega un `healthcheck` a `postgres` y se cambia `depends_on` de `backend` a `condition: service_healthy` — sin esto, `postgres:16-alpine` reinicia internamente durante su primera inicialización (init db → shutdown → arranque real), y `depends_on` sin condición solo espera a que el contenedor *arranque*, no a que Postgres acepte conexiones. El backend no tiene reintento de conexión al iniciar, así que se caía en el primer `docker compose up` de un volumen limpio. Con el healthcheck, Compose espera a que Postgres esté realmente listo antes de arrancar el backend.
 
 - [ ] **Step 3: Crear `.env.example` en la raíz**
 
