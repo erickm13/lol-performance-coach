@@ -394,9 +394,11 @@ git commit -m "feat(backend): add Drizzle client, migrator, and initial migratio
 
 Esta tarea corre en una sesión nueva: la variable `DATABASE_URL` exportada durante la Task 2 no persiste aquí. Hay que volver a exportarla.
 
+**Nota:** en esta máquina el puerto host 5432 ya estaba ocupado por un contenedor de otro proyecto, así que la Task 2 publicó `lol-postgres` en el puerto host **5433** (`-p 5433:5432`) en vez de 5432. El puerto interno del contenedor sigue siendo 5432 — esto solo afecta las URLs que usan `localhost` (acceso desde fuera de Docker), no las que usan `lol-postgres` como host (contenedor a contenedor).
+
 ```bash
 docker ps --filter name=lol-postgres --format '{{.Names}}'
-export DATABASE_URL=postgres://lol_analytics:lol_analytics@localhost:5432/lol_analytics
+export DATABASE_URL=postgres://lol_analytics:lol_analytics@localhost:5433/lol_analytics
 ```
 
 Expected: el primer comando imprime `lol-postgres`. Si no aparece, repetir el `docker run` de la Task 2 antes de continuar.
