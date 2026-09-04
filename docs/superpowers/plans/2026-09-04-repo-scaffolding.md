@@ -1034,11 +1034,28 @@ git commit -m "feat: wire postgres, redis, backend, and frontend with Docker Com
 
 **Files:**
 - Create: `.github/workflows/ci.yml`
+- Modify: `backend/deno.json`
 
 **Interfaces:**
 - Consumes: `deno task lint`, `deno task db:generate`, `deno task db:migrate`, `deno task test` (backend, Tasks 1-3); `npm run lint`, `npm test`, `npm run build` (frontend, Task 5).
 
-- [ ] **Step 1: Crear `.github/workflows/ci.yml`**
+**Nota — bloqueante para esta tarea:** `deno lint` falla actualmente con 10 errores `no-import-prefix` (uno por cada import inline `npm:`/`jsr:` en `client.ts`, `migrate.ts`, `app.ts`, y los 4 archivos de test — exactamente los especificadores que las Tasks 1, 2 y 3 usaron verbatim, tal como pedían sus briefs). Como el workflow de CI corre `deno task lint` como primer paso del job de backend, esto haría fallar el CI de entrada. Los specificadores inline `npm:`/`jsr:` son sintaxis de Deno completamente válida y de primera clase — la regla `no-import-prefix` es una preferencia de estilo opcional, no un requisito de corrección, y reescribir los 6 archivos ya aprobados a especificadores planos (como se hizo puntualmente para `drizzle-kit`/`schema.ts` por una razón técnica distinta) sería un cambio mucho más invasivo de lo necesario. En vez de eso, esta tarea debe desactivar esa regla específica en `backend/deno.json` antes de escribir el workflow.
+
+- [ ] **Step 1 (previo): Actualizar `backend/deno.json`**
+
+Agregar la clave `"lint"` (puede ir en cualquier posición del objeto raíz, por ejemplo después de `"imports"`):
+
+```json
+"lint": {
+  "rules": {
+    "exclude": ["no-import-prefix"]
+  }
+}
+```
+
+Verificar: `cd backend && deno lint` — debe imprimir `Checked 10 files` sin errores y salir con código 0.
+
+- [ ] **Step 2: Crear `.github/workflows/ci.yml`**
 
 ```yaml
 name: CI
@@ -1096,15 +1113,27 @@ jobs:
       - run: npm run build
 ```
 
-- [ ] **Step 2: Verificar que el YAML es válido**
+- [ ] **Step 3: Verificar que el YAML es válido**
 
 Run: `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))"` (o cualquier validador de YAML disponible)
 Expected: no lanza error de parseo. (La verificación real del workflow ocurre al hacer push — no hay forma de correr GitHub Actions localmente sin herramientas adicionales.)
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Correr localmente los mismos comandos que el job de backend, en orden, para confirmar que el workflow pasaría**
 
 ```bash
-git add .github/workflows/ci.yml
+cd backend
+deno task lint
+deno task db:generate
+deno task db:migrate
+deno task test
+```
+
+Expected: los 4 comandos terminan con código 0 (el primero ya no falla gracias al Step 1).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add backend/deno.json .github/workflows/ci.yml
 git commit -m "ci: add GitHub Actions workflow for backend and frontend"
 ```
 
