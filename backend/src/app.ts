@@ -1,8 +1,11 @@
 import { Hono } from "jsr:@hono/hono@^4.6.0";
+import { cors } from "jsr:@hono/hono@^4.6.0/cors";
 import { db } from "./db/client.ts";
 import { sql } from "npm:drizzle-orm@^0.36.0";
 
 export const app = new Hono();
+
+app.use("*", cors());
 
 app.get("/health", async (c) => {
   try {
