@@ -8,7 +8,7 @@ import {
   boolean,
   real,
   jsonb,
-} from "npm:drizzle-orm@^0.36.0/pg-core";
+} from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),

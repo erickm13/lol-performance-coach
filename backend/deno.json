@@ -1,4 +1,7 @@
 {
+  "imports": {
+    "drizzle-orm/pg-core": "npm:drizzle-orm@^0.36.0/pg-core"
+  },
   "tasks": {
     "dev": "deno run -A --watch src/main.ts",
     "start": "deno run -A src/main.ts",
