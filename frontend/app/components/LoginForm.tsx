@@ -16,22 +16,26 @@ export function LoginForm() {
     setError(null);
     setSubmitting(true);
 
-    const res = await fetch(`${getBackendUrl()}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch(`${getBackendUrl()}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
 
-    setSubmitting(false);
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error ?? "No se pudo iniciar sesión");
+        return;
+      }
 
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error ?? "No se pudo iniciar sesión");
-      return;
+      router.push("/dashboard");
+    } catch {
+      setError("No se pudo conectar con el servidor");
+    } finally {
+      setSubmitting(false);
     }
-
-    router.push("/dashboard");
   }
 
   return (
