@@ -15,5 +15,8 @@ Deno.test("GET /health incluye cabeceras CORS para que el frontend pueda consumi
     headers: { Origin: "http://localhost:3000" },
   });
 
-  assertEquals(res.headers.get("access-control-allow-origin"), "*");
+  assertEquals(
+    res.headers.get("access-control-allow-origin"),
+    "http://localhost:3000",
+  );
 });
