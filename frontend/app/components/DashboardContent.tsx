@@ -28,11 +28,14 @@ export function DashboardContent() {
   }, [router]);
 
   async function handleLogout() {
-    await fetch(`${getBackendUrl()}/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-    router.push("/login");
+    try {
+      await fetch(`${getBackendUrl()}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } finally {
+      router.push("/login");
+    }
   }
 
   if (!me) return <p>Cargando...</p>;
