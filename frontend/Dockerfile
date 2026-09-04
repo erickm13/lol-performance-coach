@@ -1,5 +1,7 @@
 FROM node:20-alpine
 
+RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
 ARG NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
