@@ -7,6 +7,7 @@
 ```mermaid
 erDiagram
     users ||--o{ riot_accounts : "vincula"
+    users ||--o{ auth_tokens : "genera"
     riot_accounts ||--o{ ingestion_jobs : "dispara"
     riot_accounts ||--o{ training_plans : "recibe"
     riot_accounts ||--o{ weaknesses : "acumula"
@@ -20,6 +21,16 @@ erDiagram
         uuid id PK
         text email
         text password_hash
+        boolean email_verified
+        timestamptz created_at
+    }
+    auth_tokens {
+        uuid id PK
+        uuid user_id FK
+        text type "email_verification|password_reset"
+        text token UK
+        timestamptz expires_at
+        timestamptz used_at "nullable, null = sin usar"
         timestamptz created_at
     }
     riot_accounts {
@@ -125,7 +136,21 @@ Cuenta de la aplicación (no confundir con la cuenta de Riot).
 | id | uuid, PK | Identificador interno |
 | email | text, único | Login |
 | password_hash | text | Hash de contraseña (nunca texto plano) |
+| email_verified | boolean | Si confirmó su email vía el link de verificación |
 | created_at | timestamptz | Alta del usuario |
+
+### `auth_tokens`
+Tokens de un solo uso para verificación de email y recuperación de contraseña. Al generar uno nuevo de un `type` para un usuario, se invalidan (`used_at = now()`) los anteriores del mismo `type` que sigan sin usar.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | uuid, PK | Identificador interno |
+| user_id | uuid, FK → users.id | Dueño del token |
+| type | text | `email_verification` \| `password_reset` |
+| token | text, único | Valor random enviado por email |
+| expires_at | timestamptz | A partir de cuándo deja de ser válido |
+| used_at | timestamptz, nullable | Cuándo se consumió (null = todavía válido) |
+| created_at | timestamptz | Cuándo se generó |
 
 ### `riot_accounts`
 Cuenta de League of Legends vinculada a un usuario. Un usuario podría vincular más de una (multi-cuenta), por eso es una tabla aparte y no columnas en `users`.
