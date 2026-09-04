@@ -60,7 +60,11 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
       .returning();
 
     const token = await createAuthToken(user.id, "email_verification");
-    await deps.sendVerificationEmail(email, token);
+    try {
+      await deps.sendVerificationEmail(email, token);
+    } catch (err) {
+      console.error("Error enviando email de verificación:", err);
+    }
 
     return c.json({ id: user.id, email: user.email }, 201);
   });
@@ -156,7 +160,11 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
         .limit(1);
       if (user) {
         const token = await createAuthToken(user.id, "password_reset");
-        await deps.sendPasswordResetEmail(email, token);
+        try {
+          await deps.sendPasswordResetEmail(email, token);
+        } catch (err) {
+          console.error("Error enviando email de recuperación de contraseña:", err);
+        }
       }
     }
     return c.json({ ok: true });

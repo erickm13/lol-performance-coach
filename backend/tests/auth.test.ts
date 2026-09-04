@@ -206,6 +206,50 @@ Deno.test("POST /forgot-password responde 200 aunque el email no exista", async 
   assertEquals(res.status, 200);
 });
 
+Deno.test("POST /register responde 201 y crea el usuario aunque el envío del email de verificación falle", async () => {
+  const email = uniqueEmail();
+  const app = createAuthRoutes({
+    sendVerificationEmail: () => {
+      throw new Error("network down");
+    },
+    sendPasswordResetEmail: () => Promise.resolve(),
+  });
+
+  const res = await app.request("/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password: "password123" }),
+  });
+
+  assertEquals(res.status, 201);
+  const body = await res.json();
+  assertExists(body.id);
+});
+
+Deno.test("POST /forgot-password responde 200 para un email existente aunque el envío del email falle", async () => {
+  const email = uniqueEmail();
+  const app = createAuthRoutes({
+    sendVerificationEmail: () => Promise.resolve(),
+    sendPasswordResetEmail: () => {
+      throw new Error("network down");
+    },
+  });
+
+  await app.request("/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password: "password123" }),
+  });
+
+  const res = await app.request("/forgot-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  assertEquals(res.status, 200);
+});
+
 Deno.test("POST /reset-password con token inválido responde 400", async () => {
   const { app } = createTestApp();
   const res = await app.request("/reset-password", {
