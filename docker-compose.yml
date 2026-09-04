@@ -25,6 +25,9 @@ services:
     environment:
       DATABASE_URL: postgres://lol_analytics:lol_analytics@postgres:5432/lol_analytics
       PORT: "8000"
+      JWT_SECRET: ${JWT_SECRET}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      FRONTEND_URL: http://localhost:3000
     ports:
       - "8000:8000"
     depends_on:
