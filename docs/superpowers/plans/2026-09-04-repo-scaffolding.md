@@ -870,6 +870,8 @@ tests/
 ```dockerfile
 FROM node:20-alpine
 
+RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
 ARG NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
@@ -884,6 +886,8 @@ RUN npm run build
 EXPOSE 3000
 CMD ["npm", "start"]
 ```
+
+**Nota:** se agrega `RUN apk add --no-cache libc6-compat` — sin esto, un build limpio (`--no-cache`) de Next.js 14 sobre Alpine falla con SIGSEGV durante "Collecting build traces" (Alpine usa musl libc; algunos binarios nativos que usa Next.js/SWC para el trace collection esperan shims de glibc). Es el fix estándar documentado en el ejemplo oficial de Docker de Next.js — mantiene la imagen Alpine (liviana) en vez de cambiar a `node:20` (Debian, mucho más pesada).
 
 - [ ] **Step 3: Construir la imagen**
 
