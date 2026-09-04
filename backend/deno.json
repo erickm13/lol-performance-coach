@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "dev": "deno run -A --watch src/main.ts",
+    "start": "deno run -A src/main.ts",
+    "test": "deno test -A",
+    "lint": "deno lint",
+    "db:generate": "deno run -A npm:drizzle-kit@^0.28.0 generate",
+    "db:migrate": "deno run -A scripts/migrate.ts"
+  },
+  "lock": true
+}
