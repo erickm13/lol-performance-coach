@@ -14,13 +14,23 @@ export function VerifyEmailStatus({ token }: { token: string | null }) {
       return;
     }
 
+    let cancelled = false;
+
     fetch(`${getBackendUrl()}/auth/verify-email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
     })
-      .then((res) => setStatus(res.ok ? "success" : "error"))
-      .catch(() => setStatus("error"));
+      .then((res) => {
+        if (!cancelled) setStatus(res.ok ? "success" : "error");
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("error");
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [token]);
 
   if (status === "loading") return <p>Verificando tu email...</p>;
