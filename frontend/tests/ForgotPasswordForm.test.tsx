@@ -21,4 +21,21 @@ describe("ForgotPasswordForm", () => {
       expect(screen.getByText(/si el email existe/i)).toBeInTheDocument(),
     );
   });
+
+  it("muestra la confirmación genérica incluso si falla la conexión de red", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("network error"))) as unknown as typeof fetch,
+    );
+
+    render(<ForgotPasswordForm />);
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "a@b.com" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /enviar link/i }));
+
+    await waitFor(() =>
+      expect(screen.getByText(/si el email existe/i)).toBeInTheDocument(),
+    );
+  });
 });
