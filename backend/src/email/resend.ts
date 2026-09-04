@@ -18,12 +18,15 @@ export async function sendVerificationEmail(
 ): Promise<void> {
   const resend = getClient();
   const link = `${getFrontendUrl()}/verify-email?token=${token}`;
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to,
     subject: "Verificá tu cuenta",
     html: `<p>Hacé click para verificar tu cuenta: <a href="${link}">${link}</a></p>`,
   });
+  if (error) {
+    console.error("Resend rechazó el email de verificación:", error);
+  }
 }
 
 export async function sendPasswordResetEmail(
@@ -32,10 +35,13 @@ export async function sendPasswordResetEmail(
 ): Promise<void> {
   const resend = getClient();
   const link = `${getFrontendUrl()}/reset-password?token=${token}`;
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to,
     subject: "Recuperá tu contraseña",
     html: `<p>Hacé click para restablecer tu contraseña: <a href="${link}">${link}</a></p>`,
   });
+  if (error) {
+    console.error("Resend rechazó el email de recuperación de contraseña:", error);
+  }
 }
