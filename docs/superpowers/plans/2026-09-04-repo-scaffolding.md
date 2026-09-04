@@ -507,7 +507,7 @@ tests/
 - [ ] **Step 2: Crear `backend/Dockerfile`**
 
 ```dockerfile
-FROM denoland/deno:2.0.0
+FROM denoland/deno:2.9.6
 
 WORKDIR /app
 
@@ -522,6 +522,8 @@ EXPOSE 8000
 
 CMD ["deno", "run", "-A", "src/main.ts"]
 ```
+
+**Nota:** la imagen base se fija en `2.9.6` (la misma versión de Deno usada en todas las tareas anteriores) en vez de `2.0.0` — `backend/deno.lock` usa el formato de lockfile versión 5, que `denoland/deno:2.0.0` no soporta (`Unsupported lockfile version '5'`), y esto rompía un build limpio (`--no-cache`) desde un checkout nuevo. `2.9.6` sigue cumpliendo la restricción global "Deno >= 2.0" y mantiene el lockfile como fuente de verdad para las versiones ya fijadas.
 
 - [ ] **Step 3: Construir la imagen**
 
