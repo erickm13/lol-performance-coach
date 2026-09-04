@@ -390,13 +390,16 @@ git commit -m "feat(backend): add Drizzle client, migrator, and initial migratio
 - Consumes: `db` desde `backend/src/db/client.ts` (Task 2); `runMigrations` desde `backend/src/db/migrate.ts` (Task 2).
 - Produces: `app` (instancia de `Hono`) exportada desde `backend/src/app.ts`, usada por `main.ts` y por los tests.
 
-- [ ] **Step 1: Confirmar que Postgres sigue corriendo (o repetir el Step 1 de la Task 2 si no)**
+- [ ] **Step 1: Confirmar que Postgres sigue corriendo y exportar `DATABASE_URL` en esta shell**
+
+Esta tarea corre en una sesión nueva: la variable `DATABASE_URL` exportada durante la Task 2 no persiste aquí. Hay que volver a exportarla.
 
 ```bash
 docker ps --filter name=lol-postgres --format '{{.Names}}'
+export DATABASE_URL=postgres://lol_analytics:lol_analytics@localhost:5432/lol_analytics
 ```
 
-Expected: imprime `lol-postgres`. Si no aparece, repetir el `docker run` de la Task 2.
+Expected: el primer comando imprime `lol-postgres`. Si no aparece, repetir el `docker run` de la Task 2 antes de continuar.
 
 - [ ] **Step 2: Escribir el test que falla — `backend/tests/health.test.ts`**
 
@@ -1164,6 +1167,7 @@ docker compose up -d --build
 docker compose ps
 curl http://localhost:8000/health
 curl -s http://localhost:3000 | grep -i "cargando estado"
+export DATABASE_URL=postgres://lol_analytics:lol_analytics@localhost:5432/lol_analytics
 cd backend && deno task test && cd ..
 cd frontend && npm test && cd ..
 docker compose down
