@@ -46,6 +46,9 @@ Un workflow que en cada push/PR corre lint + test de frontend y backend. Sin des
 /
 ├── frontend/
 │   ├── app/                  # Next.js App Router
+│   │   ├── layout.tsx
+│   │   ├── page.tsx          # home — fetch a /health, único contenido del scaffolding
+│   │   └── globals.css
 │   ├── package.json
 │   ├── tailwind.config.ts
 │   ├── Dockerfile
@@ -70,6 +73,24 @@ Un workflow que en cada push/PR corre lint + test de frontend y backend. Sin des
 ├── .gitignore
 └── README.md
 ```
+
+### Ejemplo de cómo crecería `frontend/app/` (referencia futura, no parte de este scaffolding)
+
+Cuando se implementen las pantallas reales del alcance (fuera de este documento), `app/` seguiría el file-based routing de Next.js con una ruta por pantalla, por ejemplo:
+
+```
+frontend/app/
+├── (auth)/
+│   ├── login/page.tsx
+│   └── register/page.tsx
+├── dashboard/
+│   ├── page.tsx                    # historial + tendencias
+│   ├── plan/page.tsx                # plan semanal actual
+│   └── matches/[matchId]/page.tsx   # detalle de una partida
+└── ...
+```
+
+Se incluye aquí solo como referencia de hacia dónde crece la estructura — no se scaffoldea todavía, ver "Fuera de alcance" abajo.
 
 ## Definición de "hecho" para este scaffolding
 
