@@ -1,5 +1,5 @@
 import { encodeBase64Url } from "jsr:@std/encoding@^1.0.0/base64url";
-import { and, eq, isNull } from "npm:drizzle-orm@^0.36.0";
+import { and, eq, isNull, gt } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
 import { authTokens } from "../db/schema.ts";
 
@@ -44,25 +44,21 @@ export async function consumeAuthToken(
   type: AuthTokenType,
 ): Promise<string | null> {
   const [row] = await db
-    .select()
-    .from(authTokens)
+    .update(authTokens)
+    .set({ usedAt: new Date() })
     .where(
       and(
         eq(authTokens.token, token),
         eq(authTokens.type, type),
         isNull(authTokens.usedAt),
+        gt(authTokens.expiresAt, new Date()),
       ),
     )
-    .limit(1);
+    .returning();
 
-  if (!row || row.expiresAt.getTime() < Date.now()) {
+  if (!row) {
     return null;
   }
-
-  await db
-    .update(authTokens)
-    .set({ usedAt: new Date() })
-    .where(eq(authTokens.id, row.id));
 
   return row.userId;
 }
