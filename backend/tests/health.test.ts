@@ -1,3 +1,4 @@
+import "./test_setup.ts";
 import { assertEquals } from "jsr:@std/assert@^1.0.0";
 import { app } from "../src/app.ts";
 

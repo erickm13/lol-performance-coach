@@ -1,3 +1,4 @@
+import "./test_setup.ts";
 import { assertEquals, assertExists } from "jsr:@std/assert@^1.0.0";
 import { sign } from "jsr:@hono/hono@^4.6.0/jwt";
 import { createAuthRoutes } from "../src/routes/auth.ts";
