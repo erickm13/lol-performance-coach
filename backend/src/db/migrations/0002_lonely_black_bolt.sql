@@ -1,0 +1,1 @@
+ALTER TABLE "match_metrics" ALTER COLUMN "deaths_before_10" DROP NOT NULL;
