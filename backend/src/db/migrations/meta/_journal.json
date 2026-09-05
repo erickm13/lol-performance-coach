@@ -8,6 +8,13 @@
       "when": 1788548633337,
       "tag": "0000_keen_victor_mancha",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788559288635,
+      "tag": "0001_small_zaladane",
+      "breakpoints": true
     }
   ]
 }

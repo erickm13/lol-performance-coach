@@ -2,10 +2,25 @@ import { Hono } from "jsr:@hono/hono@^4.6.0";
 import { cors } from "jsr:@hono/hono@^4.6.0/cors";
 import { db } from "./db/client.ts";
 import { sql } from "npm:drizzle-orm@^0.36.0";
+import { createAuthRoutes } from "./routes/auth.ts";
+import { sendVerificationEmail, sendPasswordResetEmail } from "./email/resend.ts";
 
 export const app = new Hono();
 
-app.use("*", cors());
+app.use(
+  "*",
+  cors({
+    origin: Deno.env.get("FRONTEND_URL") ?? "http://localhost:3000",
+    credentials: true,
+  }),
+);
+
+app.route("/auth", createAuthRoutes({ sendVerificationEmail, sendPasswordResetEmail }));
+
+app.onError((err, c) => {
+  console.error(err);
+  return c.json({ error: "Error interno del servidor" }, 500);
+});
 
 app.get("/health", async (c) => {
   try {

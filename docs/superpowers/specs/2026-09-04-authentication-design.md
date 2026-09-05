@@ -19,6 +19,8 @@ Se evaluó frente a sesiones con estado en Redis. Se eligió JWT porque no requi
 
 **Trade-off aceptado:** al no haber estado en el servidor, un JWT emitido antes de un cambio de contraseña sigue siendo válido hasta que expire (máximo 2 horas). Se documenta como limitación conocida, no se resuelve ahora — resolverlo requeriría una lista de invalidación (Redis) o volver a sesiones con estado, que es más alcance del que esta entrega necesita.
 
+**Limitación conocida — despliegue cross-site:** `sameSite=lax` funciona en desarrollo porque `localhost:3000` y `localhost:8000` son el mismo *site* (el puerto no forma parte del site). Si frontend y backend se despliegan en dominios registrables distintos (el caso típico de, por ejemplo, Vercel + Fly/Render), el navegador acepta la cookie que devuelve `/login` pero no la adjunta en el fetch a `/auth/me` — el login "funciona" pero el dashboard rebota a `/login`. Para ese escenario hace falta `sameSite=None; secure` (y por lo tanto HTTPS en ambos extremos), o desplegar todo detrás de un mismo dominio/proxy. Fuera de alcance resolverlo ahora — se deja anotado para cuando exista un despliegue real.
+
 ### Tokens de verificación/recuperación: tabla `auth_tokens`
 
 Se evaluó frente a tokens autocontenidos (JWT firmados, sin persistencia). Se prefirió una tabla porque de todos modos hace falta trackear "usado" para que un link no se pueda reusar, así que el ahorro de no tener tabla es ilusorio; con la tabla además se pueden invalidar tokens viejos cuando se pide uno nuevo del mismo tipo.
@@ -30,6 +32,8 @@ Se prefirió sobre `bcrypt` nativo porque este último requiere compilación de 
 ### Envío de email: Resend
 
 El usuario ya tiene una cuenta creada. Se usa el dominio de pruebas `onboarding@resend.dev` (sin necesidad de verificar un dominio propio) para los dos correos transaccionales: verificación de email y recuperación de contraseña.
+
+**Limitación conocida — restricción de sandbox:** `onboarding@resend.dev` es el remitente de pruebas de Resend, y en modo sandbox **solo entrega a la dirección con la que se creó la cuenta de Resend** — no a cualquier destinatario. Esto se descubrió recién al hacer la verificación manual de punta a punta (un registro real con otro email nunca recibió el correo; Resend lo rechazaba con 403). Para desarrollo/pruebas, registrarse con el email de la cuenta de Resend. Para un despliegue real con usuarios arbitrarios, hace falta verificar un dominio propio en resend.com/domains y cambiar el `from` a una dirección de ese dominio.
 
 ### CORS: de `*` a origen explícito con credentials
 
@@ -75,6 +79,8 @@ POST /auth/reset-password  { token, newPassword }              → 200 | 400
 
 **Flujo de recuperación:** `forgot-password` genera un token `password_reset` y envía el email — responde 200 exista o no el email, para no permitir enumerar usuarios registrados por este medio. `reset-password` valida el token igual que la verificación, actualiza `password_hash`, marca el token usado.
 
+**Nota de alcance:** la no-enumeración de `forgot-password` es parcial — `POST /auth/register` sí distingue (`409` si el email ya existe, `201` si no), así que un atacante puede enumerar usuarios registrados por ese endpoint igual. Se acepta como decisión de producto para esta entrega (el mensaje de error de registro es útil para el usuario legítimo); `forgot-password` sigue sin revelar nada porque no tiene ninguna razón de negocio para hacerlo.
+
 **Validación de entrada:** email con formato válido, password mínimo 8 caracteres. Se valida en el backend (la única fuente de verdad); el frontend replica la validación solo para dar feedback inmediato, no como control real.
 
 ## Frontend (Next.js)
@@ -100,9 +106,10 @@ La página `/` (home) no cambia — sigue mostrando el `HealthStatus` de la demo
 JWT_SECRET=
 RESEND_API_KEY=
 FRONTEND_URL=http://localhost:3000
+DENO_ENV=
 ```
 
-`JWT_SECRET` y `RESEND_API_KEY` son secretos reales — se generan/obtienen fuera del repo y solo viven en `.env` local (gitignorado) y en la configuración de CI/producción cuando corresponda.
+`JWT_SECRET` y `RESEND_API_KEY` son secretos reales — se generan/obtienen fuera del repo y solo viven en `.env` local (gitignorado) y en la configuración de CI/producción cuando corresponda. `DENO_ENV` no es secreto — vacío/`development` en local, `production` en un despliegue real; controla si la cookie de sesión lleva el flag `secure` (ver la sección de sesión más arriba).
 
 ## Testing
 
