@@ -26,6 +26,13 @@ export const riotAccounts = pgTable("riot_accounts", {
   tagLine: text("tag_line").notNull(),
   region: text("region").notNull(),
   primaryRole: text("primary_role"),
+  profileIconId: integer("profile_icon_id"),
+  summonerLevel: integer("summoner_level"),
+  soloTier: text("solo_tier"),
+  soloRank: text("solo_rank"),
+  soloLp: integer("solo_lp"),
+  soloWins: integer("solo_wins"),
+  soloLosses: integer("solo_losses"),
   linkedAt: timestamp("linked_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -77,7 +84,7 @@ export const matchMetrics = pgTable("match_metrics", {
   csPerMin: real("cs_per_min").notNull(),
   kda: real("kda").notNull(),
   visionScorePerMin: real("vision_score_per_min").notNull(),
-  deathsBefore10: integer("deaths_before_10").notNull(),
+  deathsBefore10: integer("deaths_before_10"),
   goldPerMin: real("gold_per_min").notNull(),
   damagePerMin: real("damage_per_min").notNull(),
   killParticipation: real("kill_participation").notNull(),

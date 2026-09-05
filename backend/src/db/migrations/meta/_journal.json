@@ -15,6 +15,27 @@
       "when": 1788559288635,
       "tag": "0001_small_zaladane",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788568467636,
+      "tag": "0002_lonely_black_bolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788568726710,
+      "tag": "0003_naive_bill_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788578761831,
+      "tag": "0004_regular_the_liberteens",
+      "breakpoints": true
     }
   ]
 }

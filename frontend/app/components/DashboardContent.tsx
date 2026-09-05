@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBackendUrl } from "../lib/api";
+import { RiotAccountCard } from "./RiotAccountCard";
 
 type Me = { id: string; email: string; emailVerified: boolean };
 
@@ -62,6 +63,8 @@ export function DashboardContent() {
           Todavía no verificaste tu email.
         </p>
       )}
+
+      <RiotAccountCard />
 
       <section className="rune-panel p-6">
         <h2 className="font-display text-lg font-semibold mb-4">
