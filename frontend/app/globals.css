@@ -1,3 +1,121 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0a0e12;
+  color: #e7eef0;
+  background-image:
+    repeating-linear-gradient(60deg, rgba(62, 214, 196, 0.05) 0px, rgba(62, 214, 196, 0.05) 1px, transparent 1px, transparent 64px),
+    repeating-linear-gradient(-60deg, rgba(62, 214, 196, 0.05) 0px, rgba(62, 214, 196, 0.05) 1px, transparent 1px, transparent 64px),
+    repeating-linear-gradient(0deg, rgba(212, 164, 92, 0.035) 0px, rgba(212, 164, 92, 0.035) 1px, transparent 1px, transparent 64px);
+  background-attachment: fixed;
+}
+
+@layer components {
+  .rune-panel {
+    position: relative;
+    background-color: #131a21;
+    border: 1px solid #223038;
+    clip-path: polygon(
+      18px 0,
+      100% 0,
+      100% calc(100% - 18px),
+      calc(100% - 18px) 100%,
+      0 100%,
+      0 18px
+    );
+  }
+
+  .rune-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3ed6c4, #d4a45c 85%);
+  }
+
+  .rune-field {
+    background-color: #0a0e12;
+    border: 1px solid #223038;
+    color: #e7eef0;
+    padding: 0.6rem 0.85rem;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .rune-field:focus {
+    outline: none;
+    border-color: #3ed6c4;
+    box-shadow: 0 0 0 3px rgba(62, 214, 196, 0.18);
+  }
+
+  .rune-btn {
+    position: relative;
+    background-color: #3ed6c4;
+    color: #06110f;
+    font-weight: 600;
+    padding: 0.65rem 1.1rem;
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    transition: background-color 150ms ease, transform 100ms ease;
+  }
+
+  .rune-btn:hover:not(:disabled) {
+    background-color: #58e6d5;
+  }
+
+  .rune-btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .rune-btn:disabled {
+    background-color: #2a9c8f;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .rune-link {
+    color: #3ed6c4;
+    text-underline-offset: 3px;
+  }
+
+  .rune-link:hover {
+    color: #58e6d5;
+  }
+}
+
+@keyframes rune-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rune-stagger > * {
+  opacity: 0;
+  animation: rune-rise 480ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.rune-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.rune-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.rune-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.rune-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.rune-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.rune-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.rune-stagger > *:nth-child(7) { animation-delay: 360ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rune-stagger > * {
+    animation: none;
+    opacity: 1;
+  }
+}

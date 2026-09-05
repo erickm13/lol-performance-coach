@@ -24,6 +24,7 @@ jobs:
           --health-retries 5
     env:
       DATABASE_URL: postgres://lol_analytics:lol_analytics@localhost:5432/lol_analytics
+      JWT_SECRET: test-secret-not-for-production
     defaults:
       run:
         working-directory: backend
