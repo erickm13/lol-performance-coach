@@ -1,3 +1,4 @@
+import "./test_setup.ts";
 import { assertEquals } from "jsr:@std/assert@^1.0.0";
 import postgres from "npm:postgres@^3.4.4";
 import { runMigrations } from "../src/db/migrate.ts";

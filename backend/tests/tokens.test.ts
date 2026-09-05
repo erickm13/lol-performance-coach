@@ -1,3 +1,4 @@
+import "./test_setup.ts";
 import { assertEquals } from "jsr:@std/assert@^1.0.0";
 import { db } from "../src/db/client.ts";
 import { users, authTokens } from "../src/db/schema.ts";
