@@ -1,4 +1,4 @@
-import { and, eq } from "npm:drizzle-orm@^0.36.0";
+import { and, eq, inArray } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
 import {
   planProgress,
@@ -187,7 +187,21 @@ export async function getCurrentTrainingPlan(riotAccountId: string) {
     .select()
     .from(trainingPlanItems)
     .where(eq(trainingPlanItems.trainingPlanId, plan.id));
-  return { plan, items };
+
+  const itemIds = items.map((item) => item.id);
+  const progressRows = itemIds.length > 0
+    ? await db
+      .select({ trainingPlanItemId: planProgress.trainingPlanItemId })
+      .from(planProgress)
+      .where(inArray(planProgress.trainingPlanItemId, itemIds))
+    : [];
+  const completedItemIds = new Set(progressRows.map((row) => row.trainingPlanItemId));
+  const itemsWithProgress = items.map((item) => ({
+    ...item,
+    completed: completedItemIds.has(item.id),
+  }));
+
+  return { plan, items: itemsWithProgress };
 }
 
 export async function markItemProgress(
