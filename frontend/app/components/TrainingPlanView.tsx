@@ -27,6 +27,7 @@ export function TrainingPlanView() {
   const [generating, setGenerating] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [completedIds, setCompletedIds] = useState<string[]>([]);
+  const [itemErrors, setItemErrors] = useState<Record<string, string>>({});
 
   async function load() {
     try {
@@ -58,6 +59,8 @@ export function TrainingPlanView() {
       const data = await res.json();
       if (data.message) {
         setMessage(data.message);
+      } else if (data.error) {
+        setMessage(data.error);
       }
       setPlan(data.plan ?? null);
       setItems(data.items ?? []);
@@ -70,13 +73,29 @@ export function TrainingPlanView() {
 
   async function handleComplete(itemId: string) {
     try {
-      await fetch(
+      const res = await fetch(
         `${getBackendUrl()}/riot/training-plan/items/${itemId}/progress`,
         { method: "POST", credentials: "include" },
       );
-      setCompletedIds((prev) => [...prev, itemId]);
+      if (res.ok) {
+        setCompletedIds((prev) => [...prev, itemId]);
+        setItemErrors((prev) => {
+          const updated = { ...prev };
+          delete updated[itemId];
+          return updated;
+        });
+      } else {
+        const data = await res.json();
+        setItemErrors((prev) => ({
+          ...prev,
+          [itemId]: data.error || "No se pudo marcar el ítem como completado.",
+        }));
+      }
     } catch {
-      // Sin conexión: el usuario puede reintentar con el mismo botón.
+      setItemErrors((prev) => ({
+        ...prev,
+        [itemId]: "Error de conexión. Intentá de nuevo.",
+      }));
     }
   }
 
@@ -101,6 +120,7 @@ export function TrainingPlanView() {
 
       {items.map((item) => {
         const done = completedIds.includes(item.id);
+        const error = itemErrors[item.id];
         return (
           <section key={item.id} className="rune-panel p-6 flex flex-col gap-2">
             <span className="text-mist text-xs uppercase tracking-wide">
@@ -110,6 +130,9 @@ export function TrainingPlanView() {
             <p className="text-mist text-sm leading-relaxed">
               {item.llmExplanation ?? item.description}
             </p>
+            {error && (
+              <p className="text-ember text-sm mt-2">{error}</p>
+            )}
             <button
               onClick={() => handleComplete(item.id)}
               disabled={done}
