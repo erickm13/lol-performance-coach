@@ -18,6 +18,7 @@ import {
   getSummonerByPuuid,
   RiotRateLimitError,
 } from "./client.ts";
+import { saveWeaknesses } from "../analysis/weaknesses.ts";
 
 async function getSoloRank(puuid: string) {
   const entries = await getLeagueEntriesByPuuid(puuid);
@@ -239,6 +240,7 @@ export async function linkRiotAccount(
     .returning();
 
   const result = await ingestMatches(riotAccount.id, account.puuid);
+  await saveWeaknesses(riotAccount.id);
 
   return {
     account: riotAccount,
@@ -270,6 +272,7 @@ export async function syncRiotAccount(userId: string) {
     .returning();
 
   const result = await ingestMatches(riotAccount.id, riotAccount.puuid);
+  await saveWeaknesses(riotAccount.id);
 
   return {
     account: updatedAccount,
