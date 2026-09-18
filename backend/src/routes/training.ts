@@ -26,7 +26,14 @@ async function getRiotAccountId(userId: string): Promise<string | null> {
   return account?.id ?? null;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 async function verifyItemOwnership(itemId: string, riotAccountId: string): Promise<boolean> {
+  // Un itemId que no es UUID llegaría a Postgres como cast a uuid, tiraría un
+  // error de sintaxis y saldría como 500. Para el cliente es indistinguible de
+  // un ítem inexistente, así que lo tratamos igual: no encontrado.
+  if (!UUID_RE.test(itemId)) return false;
+
   const [item] = await db
     .select({ trainingPlanId: trainingPlanItems.trainingPlanId })
     .from(trainingPlanItems)

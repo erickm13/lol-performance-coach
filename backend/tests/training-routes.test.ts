@@ -5,6 +5,22 @@ import { riotAccounts, users, weaknesses } from "../src/db/schema.ts";
 import { signSessionToken } from "../src/auth/jwt.ts";
 import { app } from "../src/app.ts";
 
+/**
+ * Corre `fn` garantizando que GEMINI_API_KEY NO esté seteada, para que la
+ * generación de plan caiga al modo solo-reglas sin tocar la red. `Deno.env` es
+ * global al proceso de test y compartido con los demás archivos, así que no
+ * alcanza con asumir que no está: hay que sacarla y restaurarla.
+ */
+async function withoutGeminiKey<T>(fn: () => T | Promise<T>): Promise<T> {
+  const original = Deno.env.get("GEMINI_API_KEY");
+  Deno.env.delete("GEMINI_API_KEY");
+  try {
+    return await fn();
+  } finally {
+    if (original !== undefined) Deno.env.set("GEMINI_API_KEY", original);
+  }
+}
+
 async function createUserWithRiotAccount(): Promise<{ cookie: string; riotAccountId: string }> {
   const [user] = await db
     .insert(users)
@@ -139,13 +155,16 @@ Deno.test("POST /riot/training-plan genera un plan a partir de las debilidades g
     evidence: [],
   });
 
-  const res = await app.request("/riot/training-plan", {
-    method: "POST",
-    headers: { Cookie: cookie },
-  });
+  // `withoutGeminiKey` saca GEMINI_API_KEY del entorno, así que la generación
+  // cae al fallback solo-reglas sin hacer ninguna llamada de red a Google.
+  const res = await withoutGeminiKey(() =>
+    app.request("/riot/training-plan", {
+      method: "POST",
+      headers: { Cookie: cookie },
+    })
+  );
   assertEquals(res.status, 201);
   const body = await res.json();
-  // Sin GEMINI_API_KEY configurada en este entorno de test, cae a modo solo-reglas.
   assertEquals(body.plan.generatedBy, "rules");
   assertEquals(body.items.length > 0, true);
 });
@@ -159,10 +178,12 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress guarda el progreso", 
     severity: "low",
     evidence: [],
   });
-  const planRes = await app.request("/riot/training-plan", {
-    method: "POST",
-    headers: { Cookie: cookie },
-  });
+  const planRes = await withoutGeminiKey(() =>
+    app.request("/riot/training-plan", {
+      method: "POST",
+      headers: { Cookie: cookie },
+    })
+  );
   const { items } = await planRes.json();
 
   const res = await app.request(
@@ -176,6 +197,40 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress guarda el progreso", 
   assertEquals(res.status, 201);
   const body = await res.json();
   assertEquals(body.selfRating, 5);
+});
+
+Deno.test("POST /riot/training-plan/items/:itemId/progress devuelve 404 con un itemId mal formado", async () => {
+  const { cookie } = await createUserWithRiotAccount();
+
+  // "no-es-un-uuid" no es un UUID: antes llegaba a Postgres como cast a uuid,
+  // explotaba y salía un 500 en vez del 404 del chequeo de pertenencia.
+  const res = await app.request(
+    "/riot/training-plan/items/no-es-un-uuid/progress",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ selfRating: 5 }),
+    },
+  );
+
+  assertEquals(res.status, 404);
+  const body = await res.json();
+  assertEquals(body.error, "Ítem no encontrado");
+});
+
+Deno.test("POST /riot/training-plan/items/:itemId/progress devuelve 404 con un UUID inexistente", async () => {
+  const { cookie } = await createUserWithRiotAccount();
+
+  const res = await app.request(
+    `/riot/training-plan/items/${crypto.randomUUID()}/progress`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({ selfRating: 5 }),
+    },
+  );
+
+  assertEquals(res.status, 404);
 });
 
 Deno.test("GET /riot/training-plan rechaza a un usuario no autenticado", async () => {
@@ -209,10 +264,12 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress rechaza acceso cruzad
     severity: "high",
     evidence: [],
   });
-  const planResA = await app.request("/riot/training-plan", {
-    method: "POST",
-    headers: { Cookie: cookieA },
-  });
+  const planResA = await withoutGeminiKey(() =>
+    app.request("/riot/training-plan", {
+      method: "POST",
+      headers: { Cookie: cookieA },
+    })
+  );
   const { items: itemsA } = await planResA.json();
   const itemIdA = itemsA[0].id;
 

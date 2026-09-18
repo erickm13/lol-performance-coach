@@ -20,6 +20,24 @@ import {
 } from "./client.ts";
 import { saveWeaknesses } from "../analysis/weaknesses.ts";
 
+/**
+ * La detección de debilidades es un enriquecimiento best-effort encima de un
+ * sync que ya salió bien — no parte del contrato de link/sync. Si falla, se
+ * loguea y se sigue: dejarla propagar hacía que `mapRiotError` cayera en su
+ * rama genérica y le dijera al usuario "No pudimos conectar con Riot" cuando
+ * Riot había funcionado perfecto y las partidas ya estaban guardadas.
+ */
+async function saveWeaknessesBestEffort(riotAccountId: string): Promise<void> {
+  try {
+    await saveWeaknesses(riotAccountId);
+  } catch (err) {
+    console.error(
+      `Falló la detección de debilidades para la cuenta ${riotAccountId}:`,
+      err,
+    );
+  }
+}
+
 async function getSoloRank(puuid: string) {
   const entries = await getLeagueEntriesByPuuid(puuid);
   const solo = entries.find((e) => e.queueType === "RANKED_SOLO_5x5");
@@ -240,7 +258,7 @@ export async function linkRiotAccount(
     .returning();
 
   const result = await ingestMatches(riotAccount.id, account.puuid);
-  await saveWeaknesses(riotAccount.id);
+  await saveWeaknessesBestEffort(riotAccount.id);
 
   return {
     account: riotAccount,
@@ -272,7 +290,7 @@ export async function syncRiotAccount(userId: string) {
     .returning();
 
   const result = await ingestMatches(riotAccount.id, riotAccount.puuid);
-  await saveWeaknesses(riotAccount.id);
+  await saveWeaknessesBestEffort(riotAccount.id);
 
   return {
     account: updatedAccount,
