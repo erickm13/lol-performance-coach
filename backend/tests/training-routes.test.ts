@@ -67,6 +67,43 @@ Deno.test("GET /riot/weaknesses devuelve las debilidades guardadas", async () =>
   assertEquals(body.weaknesses[0].category, "farming");
 });
 
+Deno.test("GET /riot/weaknesses ordena por severidad, la más urgente primero", async () => {
+  const { cookie, riotAccountId } = await createUserWithRiotAccount();
+  await db.insert(weaknesses).values([
+    {
+      riotAccountId,
+      category: "farming",
+      description: "Baja severidad",
+      severity: "low",
+      evidence: [],
+    },
+    {
+      riotAccountId,
+      category: "consistency",
+      description: "Alta severidad",
+      severity: "high",
+      evidence: [],
+    },
+    {
+      riotAccountId,
+      category: "vision",
+      description: "Severidad media",
+      severity: "medium",
+      evidence: [],
+    },
+  ]);
+
+  const res = await app.request("/riot/weaknesses", { headers: { Cookie: cookie } });
+  assertEquals(res.status, 200);
+  const body = await res.json();
+  assertEquals(body.weaknesses.length, 3);
+  assertEquals(
+    body.weaknesses.map((w: { severity: string }) => w.severity),
+    ["high", "medium", "low"],
+  );
+  assertEquals(body.weaknesses[0].category, "consistency");
+});
+
 Deno.test("GET /riot/training-plan devuelve plan null sin plan activo", async () => {
   const { cookie } = await createUserWithRiotAccount();
   const res = await app.request("/riot/training-plan", { headers: { Cookie: cookie } });

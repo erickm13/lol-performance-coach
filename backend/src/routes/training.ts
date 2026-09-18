@@ -1,6 +1,6 @@
 import { Context, Hono } from "jsr:@hono/hono@^4.6.0";
 import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
-import { eq } from "npm:drizzle-orm@^0.36.0";
+import { eq, sql } from "npm:drizzle-orm@^0.36.0";
 import { verifySessionToken } from "../auth/jwt.ts";
 import { db } from "../db/client.ts";
 import { riotAccounts, weaknesses, trainingPlans, trainingPlanItems } from "../db/schema.ts";
@@ -56,7 +56,13 @@ trainingRoutes.get("/weaknesses", async (c) => {
   const rows = await db
     .select()
     .from(weaknesses)
-    .where(eq(weaknesses.riotAccountId, riotAccountId));
+    .where(eq(weaknesses.riotAccountId, riotAccountId))
+    .orderBy(sql`case ${weaknesses.severity}
+      when 'high' then 0
+      when 'medium' then 1
+      when 'low' then 2
+      else 3
+    end`);
   return c.json({ weaknesses: rows });
 });
 
