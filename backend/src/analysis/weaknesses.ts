@@ -1,6 +1,6 @@
-import { eq } from "npm:drizzle-orm@^0.36.0";
+import { desc, eq } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
-import { matchMetrics, matchParticipants, weaknesses } from "../db/schema.ts";
+import { matches, matchMetrics, matchParticipants, weaknesses } from "../db/schema.ts";
 
 export type WeaknessCategory =
   | "farming"
@@ -28,6 +28,14 @@ export type DetectedWeakness = {
 };
 
 const MIN_MATCHES_FOR_DETECTION = 10;
+
+/**
+ * Ventana de análisis: la detección siempre corre sobre las últimas 10 partidas
+ * (§2 y §3 del diseño), no sobre todo el historial acumulado — que crece sin
+ * límite y convertiría la detección en un promedio de por vida. Coincide con
+ * las 10 partidas que el dashboard muestra.
+ */
+const DETECTION_WINDOW = 10;
 
 function average(nums: number[]): number {
   return nums.reduce((a, b) => a + b, 0) / nums.length;
@@ -126,9 +134,12 @@ export function detectWeaknesses(rows: MatchStatRow[]): DetectedWeakness[] {
 
 export async function saveWeaknesses(riotAccountId: string): Promise<DetectedWeakness[]> {
   const participants = await db
-    .select()
+    .select({ id: matchParticipants.id })
     .from(matchParticipants)
-    .where(eq(matchParticipants.riotAccountId, riotAccountId));
+    .innerJoin(matches, eq(matchParticipants.matchId, matches.id))
+    .where(eq(matchParticipants.riotAccountId, riotAccountId))
+    .orderBy(desc(matches.gameCreation))
+    .limit(DETECTION_WINDOW);
 
   const rows: MatchStatRow[] = [];
   for (const p of participants) {

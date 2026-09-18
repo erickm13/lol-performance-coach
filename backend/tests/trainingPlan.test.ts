@@ -266,9 +266,104 @@ Deno.test("getCurrentTrainingPlan marca completed=true solo en los ítems con pr
   const result = await getCurrentTrainingPlan(riotAccountId);
   const items = result.items as { id: string; completed: boolean }[];
   assertEquals(items.find((item) => item.id === itemIds[0])?.completed, true);
-  for (const item of items.slice(1)) {
+  for (const item of items.filter((i) => i.id !== itemIds[0])) {
     assertEquals(item.completed, false);
   }
+});
+
+Deno.test("generateTrainingPlan asigna position secuencial en el orden de presentación", async () => {
+  const riotAccountId = await createTestRiotAccount();
+  await insertWeakness(riotAccountId, "farming", "high");
+  await insertWeakness(riotAccountId, "vision", "medium");
+  await createChampionMatch(riotAccountId, "ChampA", false);
+  await createChampionMatch(riotAccountId, "ChampA", false);
+  await createChampionMatch(riotAccountId, "ChampA", false);
+
+  const explain = (_prompt: string) => Promise.resolve("Explicación.");
+  const result = await generateTrainingPlan(riotAccountId, explain);
+
+  const items = result.items as { position: number; type: string }[];
+  // 2 debilidades x (focus_area + drill) + 1 champion_avoid.
+  assertEquals(items.length, 5);
+  assertEquals(items.map((i) => i.position), [0, 1, 2, 3, 4]);
+  assertEquals(items.map((i) => i.type), [
+    "focus_area",
+    "drill",
+    "focus_area",
+    "drill",
+    "champion_avoid",
+  ]);
+});
+
+Deno.test("getCurrentTrainingPlan ordena los ítems por position, no por orden físico de filas", async () => {
+  const riotAccountId = await createTestRiotAccount();
+  await insertWeakness(riotAccountId, "vision", "low");
+  const explain = (_prompt: string) => Promise.resolve("Explicación.");
+  const generated = await generateTrainingPlan(riotAccountId, explain);
+  const planId = (generated.plan as { id: string }).id;
+
+  // Reemplazamos los ítems por otros insertados en orden inverso a su position:
+  // si la query leyera en orden físico de filas, devolvería "tercero" primero.
+  await db.delete(trainingPlanItems).where(eq(trainingPlanItems.trainingPlanId, planId));
+  await db.insert(trainingPlanItems).values([
+    {
+      trainingPlanId: planId,
+      position: 2,
+      type: "drill",
+      title: "tercero",
+      description: "d",
+      llmExplanation: "e",
+      evidenceMetricRefs: [],
+    },
+  ]);
+  await db.insert(trainingPlanItems).values([
+    {
+      trainingPlanId: planId,
+      position: 0,
+      type: "focus_area",
+      title: "primero",
+      description: "d",
+      llmExplanation: "e",
+      evidenceMetricRefs: [],
+    },
+  ]);
+  await db.insert(trainingPlanItems).values([
+    {
+      trainingPlanId: planId,
+      position: 1,
+      type: "drill",
+      title: "segundo",
+      description: "d",
+      llmExplanation: "e",
+      evidenceMetricRefs: [],
+    },
+  ]);
+
+  const result = await getCurrentTrainingPlan(riotAccountId);
+  const items = result.items as { title: string; position: number }[];
+  assertEquals(items.map((i) => i.title), ["primero", "segundo", "tercero"]);
+  assertEquals(items.map((i) => i.position), [0, 1, 2]);
+});
+
+Deno.test("generateTrainingPlan devuelve el plan existente con el mismo shape que getCurrentTrainingPlan", async () => {
+  const riotAccountId = await createTestRiotAccount();
+  await insertWeakness(riotAccountId, "vision", "low");
+  const explain = (_prompt: string) => Promise.resolve("Explicación.");
+  const first = await generateTrainingPlan(riotAccountId, explain);
+  const firstItemId = (first.items as { id: string }[])[0].id;
+  await markItemProgress(firstItemId, {});
+
+  // Segunda llamada: devuelve el plan ya activo. Tiene que traer `completed`
+  // igual que el GET, no una versión recortada de los ítems.
+  const second = await generateTrainingPlan(riotAccountId, explain);
+  const items = second.items as { id: string; completed?: boolean; position: number }[];
+
+  assertEquals((second.plan as { id: string }).id, (first.plan as { id: string }).id);
+  assertEquals(items.find((i) => i.id === firstItemId)?.completed, true);
+  for (const item of items.filter((i) => i.id !== firstItemId)) {
+    assertEquals(item.completed, false);
+  }
+  assertEquals(items.map((i) => i.position), [0, 1]);
 });
 
 Deno.test("markItemProgress inserta un registro de progreso", async () => {

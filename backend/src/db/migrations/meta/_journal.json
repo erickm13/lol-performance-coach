@@ -43,6 +43,13 @@
       "when": 1788599289890,
       "tag": "0005_small_supernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789773898349,
+      "tag": "0006_flimsy_overlord",
+      "breakpoints": true
     }
   ]
 }
