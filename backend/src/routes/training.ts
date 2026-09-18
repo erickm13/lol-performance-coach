@@ -3,7 +3,7 @@ import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
 import { eq } from "npm:drizzle-orm@^0.36.0";
 import { verifySessionToken } from "../auth/jwt.ts";
 import { db } from "../db/client.ts";
-import { riotAccounts, weaknesses } from "../db/schema.ts";
+import { riotAccounts, weaknesses, trainingPlans, trainingPlanItems } from "../db/schema.ts";
 import {
   generateTrainingPlan,
   getCurrentTrainingPlan,
@@ -24,6 +24,24 @@ async function getRiotAccountId(userId: string): Promise<string | null> {
     .where(eq(riotAccounts.userId, userId))
     .limit(1);
   return account?.id ?? null;
+}
+
+async function verifyItemOwnership(itemId: string, riotAccountId: string): Promise<boolean> {
+  const [item] = await db
+    .select({ trainingPlanId: trainingPlanItems.trainingPlanId })
+    .from(trainingPlanItems)
+    .where(eq(trainingPlanItems.id, itemId))
+    .limit(1);
+
+  if (!item) return false;
+
+  const [plan] = await db
+    .select({ riotAccountId: trainingPlans.riotAccountId })
+    .from(trainingPlans)
+    .where(eq(trainingPlans.id, item.trainingPlanId))
+    .limit(1);
+
+  return plan ? plan.riotAccountId === riotAccountId : false;
 }
 
 export const trainingRoutes = new Hono();
@@ -70,7 +88,17 @@ trainingRoutes.post("/training-plan/items/:itemId/progress", async (c) => {
   const userId = await requireUserId(c);
   if (!userId) return c.json({ error: "No autenticado" }, 401);
 
+  const riotAccountId = await getRiotAccountId(userId);
+  if (!riotAccountId) {
+    return c.json({ error: "No tenés una cuenta de Riot vinculada" }, 404);
+  }
+
   const itemId = c.req.param("itemId");
+  const isOwner = await verifyItemOwnership(itemId, riotAccountId);
+  if (!isOwner) {
+    return c.json({ error: "Ítem no encontrado" }, 404);
+  }
+
   const body = await c.req.json().catch(() => ({}));
   const progress = await markItemProgress(itemId, {
     selfRating: typeof body.selfRating === "number" ? body.selfRating : undefined,

@@ -140,3 +140,58 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress guarda el progreso", 
   const body = await res.json();
   assertEquals(body.selfRating, 5);
 });
+
+Deno.test("GET /riot/training-plan rechaza a un usuario no autenticado", async () => {
+  const res = await app.request("/riot/training-plan");
+  assertEquals(res.status, 401);
+});
+
+Deno.test("POST /riot/training-plan rechaza a un usuario no autenticado", async () => {
+  const res = await app.request("/riot/training-plan", {
+    method: "POST",
+  });
+  assertEquals(res.status, 401);
+});
+
+Deno.test("POST /riot/training-plan/items/:itemId/progress rechaza a un usuario no autenticado", async () => {
+  const res = await app.request("/riot/training-plan/items/fake-item-id/progress", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ selfRating: 5 }),
+  });
+  assertEquals(res.status, 401);
+});
+
+Deno.test("POST /riot/training-plan/items/:itemId/progress rechaza acceso cruzado entre cuentas", async () => {
+  // User A creates a training plan
+  const { cookie: cookieA, riotAccountId: accountIdA } = await createUserWithRiotAccount();
+  await db.insert(weaknesses).values({
+    riotAccountId: accountIdA,
+    category: "farming",
+    description: "Debilidad de prueba",
+    severity: "high",
+    evidence: [],
+  });
+  const planResA = await app.request("/riot/training-plan", {
+    method: "POST",
+    headers: { Cookie: cookieA },
+  });
+  const { items: itemsA } = await planResA.json();
+  const itemIdA = itemsA[0].id;
+
+  // User B tries to access User A's item
+  const { cookie: cookieB } = await createUserWithRiotAccount();
+  const res = await app.request(
+    `/riot/training-plan/items/${itemIdA}/progress`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookieB },
+      body: JSON.stringify({ selfRating: 5, note: "Hacked" }),
+    },
+  );
+
+  // Should be rejected with 404
+  assertEquals(res.status, 404);
+  const body = await res.json();
+  assertEquals(body.error, "Ítem no encontrado");
+});
