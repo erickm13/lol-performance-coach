@@ -72,6 +72,38 @@ Deno.test("detectWeaknesses ignora deathsBefore10 null al promediar", () => {
   assertEquals(result.some((w) => w.category === "early_game"), false);
 });
 
+Deno.test("detectWeaknesses selecciona exactamente los 3 peores matchParticipantId según el ordenamiento", () => {
+  const rows = [
+    { matchParticipantId: "mp-worst1", csPerMin: 2.0, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-worst2", csPerMin: 2.5, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-worst3", csPerMin: 3.0, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-good1", csPerMin: 5.5, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-good2", csPerMin: 5.6, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-good3", csPerMin: 5.7, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-good4", csPerMin: 5.8, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-good5", csPerMin: 5.9, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-good6", csPerMin: 6.0, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+    { matchParticipantId: "mp-good7", csPerMin: 6.5, visionScorePerMin: 1.2, kda: 4, killParticipation: 0.65, deathsBefore10: 0 },
+  ];
+  const result = detectWeaknesses(rows);
+  const farming = result.find((w) => w.category === "farming");
+  assertEquals(farming?.evidence, ["mp-worst1", "mp-worst2", "mp-worst3"]);
+});
+
+Deno.test("detectWeaknesses dispara farming con severidad baja cuando CS/min está entre 5.0 y 6.0", () => {
+  const rows = rowsAllGood(10).map((r) => ({ ...r, csPerMin: 5.5 }));
+  const result = detectWeaknesses(rows);
+  const farming = result.find((w) => w.category === "farming");
+  assertEquals(farming?.severity, "low");
+});
+
+Deno.test("detectWeaknesses no dispara farming cuando CS/min está exactamente en 6.0 (umbral exclusivo)", () => {
+  const rows = rowsAllGood(10).map((r) => ({ ...r, csPerMin: 6.0 }));
+  const result = detectWeaknesses(rows);
+  const farming = result.find((w) => w.category === "farming");
+  assertEquals(farming, undefined);
+});
+
 async function createTestRiotAccountWithRows(
   rows: Omit<MatchStatRow, "matchParticipantId">[],
 ): Promise<string> {
