@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "npm:drizzle-orm@^0.36.0";
+import { and, eq, inArray, sql } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
 import {
   planProgress,
@@ -41,10 +41,25 @@ type PlanItemDraft = {
   evidenceMetricRefs: string[];
 };
 
+export type TrainingPlanItemWithProgress = typeof trainingPlanItems.$inferSelect & {
+  completed: boolean;
+};
+
+/**
+ * Shape único que devuelven tanto `generateTrainingPlan` como
+ * `getCurrentTrainingPlan`, para que POST y GET /riot/training-plan respondan
+ * igual (ítems siempre con `completed`, siempre ordenados por `position`).
+ */
+export type TrainingPlanResult = {
+  plan: typeof trainingPlans.$inferSelect | null;
+  items: TrainingPlanItemWithProgress[];
+  message?: string;
+};
+
 export async function generateTrainingPlan(
   riotAccountId: string,
   explain: (prompt: string) => Promise<string> = generateExplanation,
-) {
+): Promise<TrainingPlanResult> {
   const { weekStart, weekEnd } = currentWeekRange();
 
   const [existing] = await db
@@ -60,17 +75,27 @@ export async function generateTrainingPlan(
     .limit(1);
 
   if (existing) {
-    const items = await db
-      .select()
-      .from(trainingPlanItems)
-      .where(eq(trainingPlanItems.trainingPlanId, existing.id));
-    return { plan: existing, items };
+    // Reusamos la lectura del GET para no duplicar lógica ni devolver ítems con
+    // un shape distinto (sin `completed`) al del endpoint de consulta.
+    return await getCurrentTrainingPlan(riotAccountId);
   }
 
   const currentWeaknesses = await db
     .select()
     .from(weaknessesTable)
-    .where(eq(weaknessesTable.riotAccountId, riotAccountId));
+    .where(eq(weaknessesTable.riotAccountId, riotAccountId))
+    // Sin un ORDER BY explícito, cuáles 3 debilidades entran al plan cuando hay
+    // empate de severidad quedaba a criterio de Postgres. Mismo CASE que usa
+    // GET /riot/weaknesses.
+    .orderBy(
+      sql`case ${weaknessesTable.severity}
+        when 'high' then 0
+        when 'medium' then 1
+        when 'low' then 2
+        else 3
+      end`,
+      weaknessesTable.detectedAt,
+    );
 
   const topWeaknesses = [...currentWeaknesses]
     .sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity])
@@ -151,11 +176,15 @@ export async function generateTrainingPlan(
     .values({ riotAccountId, weekStart, weekEnd, status: "active", generatedBy })
     .returning();
 
-  const items = await db
+  const inserted = await db
     .insert(trainingPlanItems)
     .values(
+      // `position` (0-indexado) congela el orden de presentación: los pares
+      // focus_area/drill ordenados por severidad, después champion_avoid y
+      // champion_priority. `drafts` ya está en ese orden.
       drafts.map((d, i) => ({
         trainingPlanId: plan.id,
+        position: i,
         type: d.type,
         title: d.title,
         description: d.description,
@@ -165,10 +194,18 @@ export async function generateTrainingPlan(
     )
     .returning();
 
+  // RETURNING no garantiza orden; lo imponemos igual que hace la lectura.
+  // `completed` siempre arranca en false: el plan se acaba de crear.
+  const items = [...inserted]
+    .sort((a, b) => a.position - b.position)
+    .map((item) => ({ ...item, completed: false }));
+
   return { plan, items };
 }
 
-export async function getCurrentTrainingPlan(riotAccountId: string) {
+export async function getCurrentTrainingPlan(
+  riotAccountId: string,
+): Promise<TrainingPlanResult> {
   const { weekStart } = currentWeekRange();
   const [plan] = await db
     .select()
@@ -186,7 +223,8 @@ export async function getCurrentTrainingPlan(riotAccountId: string) {
   const items = await db
     .select()
     .from(trainingPlanItems)
-    .where(eq(trainingPlanItems.trainingPlanId, plan.id));
+    .where(eq(trainingPlanItems.trainingPlanId, plan.id))
+    .orderBy(trainingPlanItems.position);
 
   const itemIds = items.map((item) => item.id);
   const progressRows = itemIds.length > 0

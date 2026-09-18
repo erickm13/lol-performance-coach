@@ -106,6 +106,12 @@ Deno.test("detectWeaknesses no dispara farming cuando CS/min está exactamente e
 
 async function createTestRiotAccountWithRows(
   rows: Omit<MatchStatRow, "matchParticipantId">[],
+  /**
+   * `gameCreation` de cada partida, en el mismo orden que `rows`. Por defecto
+   * todas se crean "ahora"; los tests que dependen de la ventana de las últimas
+   * 10 partidas pasan fechas explícitas.
+   */
+  gameCreations?: Date[],
 ): Promise<string> {
   const [user] = await db
     .insert(users)
@@ -125,12 +131,12 @@ async function createTestRiotAccountWithRows(
     })
     .returning();
 
-  for (const row of rows) {
+  for (const [index, row] of rows.entries()) {
     const [match] = await db
       .insert(matches)
       .values({
         riotMatchId: `LA1_${crypto.randomUUID()}`,
-        gameCreation: new Date(),
+        gameCreation: gameCreations?.[index] ?? new Date(),
         gameDurationSeconds: 1500,
       })
       .returning();
@@ -203,4 +209,55 @@ Deno.test("saveWeaknesses guarda las debilidades detectadas y reemplaza las ante
     .from(weaknesses)
     .where(eq(weaknesses.riotAccountId, riotAccountId));
   assertEquals(storedAfterSecond.length, second.length);
+});
+
+Deno.test("saveWeaknesses solo mira las 10 partidas más recientes, no todo el historial", async () => {
+  const base = rowsAllGood(1)[0];
+
+  // 10 partidas viejas: farming pésimo, visión excelente.
+  const oldRows = Array.from({ length: 10 }, () => ({
+    csPerMin: 1.0,
+    visionScorePerMin: 1.5,
+    kda: base.kda,
+    killParticipation: base.killParticipation,
+    deathsBefore10: 0,
+  }));
+  // 10 partidas recientes: farming excelente, visión pésima.
+  const recentRows = Array.from({ length: 10 }, () => ({
+    csPerMin: 8.0,
+    visionScorePerMin: 0.3,
+    kda: base.kda,
+    killParticipation: base.killParticipation,
+    deathsBefore10: 0,
+  }));
+
+  const dayMs = 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  // Las viejas se insertan primero: si la query no ordenara por fecha, el orden
+  // físico de las filas devolvería justamente estas y el test fallaría.
+  const oldDates = oldRows.map((_, i) => new Date(now - (30 - i) * dayMs));
+  const recentDates = recentRows.map((_, i) => new Date(now - (10 - i) * dayMs));
+
+  const riotAccountId = await createTestRiotAccountWithRows(
+    [...oldRows, ...recentRows],
+    [...oldDates, ...recentDates],
+  );
+
+  const detected = await saveWeaknesses(riotAccountId);
+  const categories = detected.map((w) => w.category).sort();
+
+  // Solo con las 10 recientes: promedio CS 8.0 (sin debilidad de farming) y
+  // visión 0.30 (debilidad alta).
+  // Con las 20: CS 4.5 dispararía farming y visión 0.90 NO dispararía nada.
+  // Con las 10 más viejas: CS 1.0 dispararía farming alto.
+  assertEquals(categories, ["vision"]);
+  assertEquals(detected[0].severity, "high");
+  assertEquals(detected[0].evidence.length, 3);
+
+  const stored = await db
+    .select()
+    .from(weaknesses)
+    .where(eq(weaknesses.riotAccountId, riotAccountId));
+  assertEquals(stored.length, 1);
+  assertEquals(stored[0].category, "vision");
 });
