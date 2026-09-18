@@ -36,6 +36,13 @@
       "when": 1788578761831,
       "tag": "0004_regular_the_liberteens",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788599289890,
+      "tag": "0005_small_supernaut",
+      "breakpoints": true
     }
   ]
 }
