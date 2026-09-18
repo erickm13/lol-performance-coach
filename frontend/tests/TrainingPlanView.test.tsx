@@ -87,4 +87,50 @@ describe("TrainingPlanView", () => {
       expect(screen.getByRole("button", { name: /completado/i })).toBeDisabled()
     );
   });
+
+  it("genera un plan cuando se hace click en el botón generar", async () => {
+    const fetchMock = vi.fn((url: string, options?: Record<string, unknown>) => {
+      const isPost = options?.method === "POST";
+
+      if (!isPost) {
+        // GET /riot/training-plan on initial load
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ plan: null, items: [] }),
+        });
+      }
+
+      // POST /riot/training-plan to generate
+      return Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            plan: { id: "p2", generatedBy: "rules" },
+            items: [
+              {
+                id: "i2",
+                type: "drill",
+                title: "Ejercicio: CS",
+                description: "desc",
+                llmExplanation: "Explicación del ejercicio.",
+              },
+            ],
+          }),
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
+
+    render(<TrainingPlanView />);
+
+    // Wait for the generate button to appear
+    const generateButton = await screen.findByRole("button", { name: /generar plan de esta semana/i });
+
+    // Click the generate button
+    fireEvent.click(generateButton);
+
+    // Verify the generated items appear
+    await waitFor(() =>
+      expect(screen.getByText(/explicación del ejercicio/i)).toBeInTheDocument()
+    );
+  });
 });
