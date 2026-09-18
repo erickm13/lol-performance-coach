@@ -75,6 +75,16 @@ export const matchParticipants = pgTable("match_participants", {
   rawStats: jsonb("raw_stats"),
 });
 
+export const matchTeammates = pgTable("match_teammates", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  matchParticipantId: uuid("match_participant_id")
+    .notNull()
+    .references(() => matchParticipants.id),
+  puuid: text("puuid").notNull(),
+  summonerName: text("summoner_name").notNull(),
+  win: boolean("win").notNull(),
+});
+
 export const matchMetrics = pgTable("match_metrics", {
   id: uuid("id").primaryKey().defaultRandom(),
   matchParticipantId: uuid("match_participant_id")

@@ -106,6 +106,7 @@ export async function getLeagueEntriesByPuuid(
 
 export type RiotMatchParticipant = {
   puuid: string;
+  riotIdGameName: string;
   championName: string;
   teamPosition: string;
   teamId: number;

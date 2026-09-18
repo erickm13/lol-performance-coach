@@ -1,6 +1,8 @@
-export function Navbar() {
+import type { ReactNode } from "react";
+
+export function Navbar({ actions }: { actions?: ReactNode }) {
   return (
-    <nav className="border-b border-panel-line bg-panel/70 backdrop-blur sticky top-0 z-10">
+    <nav className="border-b border-panel-line">
       <div className="max-w-3xl mx-auto flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-3">
           <span
@@ -11,9 +13,12 @@ export function Navbar() {
             LoL Performance Coach
           </span>
         </div>
-        <span className="font-display text-sm tracking-wide text-teal">
-          Dashboard
-        </span>
+        <div className="flex items-center gap-5">
+          <span className="font-display text-sm tracking-wide text-teal">
+            Dashboard
+          </span>
+          {actions}
+        </div>
       </div>
     </nav>
   );

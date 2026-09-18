@@ -4,6 +4,7 @@ import {
   ingestionJobs,
   matchMetrics,
   matchParticipants,
+  matchTeammates,
   matches,
   riotAccounts,
 } from "../db/schema.ts";
@@ -147,6 +148,20 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
           : 0,
       });
 
+      const teammates = detail.info.participants.filter(
+        (p) => p.teamId === participant.teamId && p.puuid !== puuid,
+      );
+      if (teammates.length > 0) {
+        await db.insert(matchTeammates).values(
+          teammates.map((t) => ({
+            matchParticipantId: participantRow.id,
+            puuid: t.puuid,
+            summonerName: t.riotIdGameName || "Invocador",
+            win: t.win,
+          })),
+        );
+      }
+
       processed++;
     }
   } catch (err) {
@@ -285,8 +300,106 @@ export async function getStoredRiotAccount(userId: string) {
     (a.match?.gameCreation.getTime() ?? 0)
   );
 
+  const [championStats, recentTeammates] = await Promise.all([
+    getChampionStats(riotAccount.id),
+    getRecentTeammates(riotAccount.id),
+  ]);
+
   return {
     account: riotAccount,
     matches: combined.slice(0, MATCHES_TO_FETCH),
+    championStats,
+    recentTeammates,
   };
+}
+
+export async function getChampionStats(riotAccountId: string) {
+  const participants = await db
+    .select()
+    .from(matchParticipants)
+    .where(eq(matchParticipants.riotAccountId, riotAccountId));
+
+  const byChampion = new Map<string, {
+    champion: string;
+    games: number;
+    wins: number;
+    killsSum: number;
+    deathsSum: number;
+    assistsSum: number;
+    kdaSum: number;
+  }>();
+
+  for (const p of participants) {
+    const entry = byChampion.get(p.champion) ?? {
+      champion: p.champion,
+      games: 0,
+      wins: 0,
+      killsSum: 0,
+      deathsSum: 0,
+      assistsSum: 0,
+      kdaSum: 0,
+    };
+    entry.games++;
+    if (p.win) entry.wins++;
+    entry.killsSum += p.kills;
+    entry.deathsSum += p.deaths;
+    entry.assistsSum += p.assists;
+
+    const [metrics] = await db
+      .select()
+      .from(matchMetrics)
+      .where(eq(matchMetrics.matchParticipantId, p.id))
+      .limit(1);
+    entry.kdaSum += metrics?.kda ??
+      (p.kills + p.assists) / Math.max(p.deaths, 1);
+
+    byChampion.set(p.champion, entry);
+  }
+
+  return [...byChampion.values()]
+    .map((c) => ({
+      champion: c.champion,
+      games: c.games,
+      winRate: Math.round((c.wins / c.games) * 100),
+      avgKills: c.killsSum / c.games,
+      avgDeaths: c.deathsSum / c.games,
+      avgAssists: c.assistsSum / c.games,
+      avgKda: c.kdaSum / c.games,
+    }))
+    .sort((a, b) => b.games - a.games);
+}
+
+export async function getRecentTeammates(riotAccountId: string) {
+  const participants = await db
+    .select({ id: matchParticipants.id })
+    .from(matchParticipants)
+    .where(eq(matchParticipants.riotAccountId, riotAccountId));
+
+  const byTeammate = new Map<
+    string,
+    { puuid: string; summonerName: string; games: number; wins: number }
+  >();
+
+  for (const p of participants) {
+    const teammates = await db
+      .select()
+      .from(matchTeammates)
+      .where(eq(matchTeammates.matchParticipantId, p.id));
+
+    for (const t of teammates) {
+      const entry = byTeammate.get(t.puuid) ?? {
+        puuid: t.puuid,
+        summonerName: t.summonerName,
+        games: 0,
+        wins: 0,
+      };
+      entry.games++;
+      if (t.win) entry.wins++;
+      byTeammate.set(t.puuid, entry);
+    }
+  }
+
+  return [...byTeammate.values()]
+    .map((t) => ({ ...t, winRate: Math.round((t.wins / t.games) * 100) }))
+    .sort((a, b) => b.games - a.games);
 }
