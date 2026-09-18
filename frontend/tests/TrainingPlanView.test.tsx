@@ -88,6 +88,36 @@ describe("TrainingPlanView", () => {
     );
   });
 
+  it("muestra un ítem como completado si el backend ya tiene progreso guardado", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              plan: { id: "p1", generatedBy: "rules" },
+              items: [
+                {
+                  id: "i1",
+                  type: "focus_area",
+                  title: "Trabajar: farming",
+                  description: "desc",
+                  llmExplanation: "Explicación del ítem.",
+                  completed: true,
+                },
+              ],
+            }),
+        }),
+      ) as unknown as typeof fetch,
+    );
+
+    render(<TrainingPlanView />);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /completado/i })).toBeDisabled()
+    );
+  });
+
   it("genera un plan cuando se hace click en el botón generar", async () => {
     const fetchMock = vi.fn((url: string, options?: Record<string, unknown>) => {
       const isPost = options?.method === "POST";

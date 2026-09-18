@@ -254,6 +254,23 @@ Deno.test("getCurrentTrainingPlan devuelve el plan generado y sus ítems", async
   assertEquals(result.items.length > 0, true);
 });
 
+Deno.test("getCurrentTrainingPlan marca completed=true solo en los ítems con progreso guardado", async () => {
+  const riotAccountId = await createTestRiotAccount();
+  await insertWeakness(riotAccountId, "vision", "low");
+  const explain = (_prompt: string) => Promise.resolve("Explicación.");
+  const generated = await generateTrainingPlan(riotAccountId, explain);
+  const itemIds = (generated.items as { id: string }[]).map((item) => item.id);
+
+  await markItemProgress(itemIds[0], {});
+
+  const result = await getCurrentTrainingPlan(riotAccountId);
+  const items = result.items as { id: string; completed: boolean }[];
+  assertEquals(items.find((item) => item.id === itemIds[0])?.completed, true);
+  for (const item of items.slice(1)) {
+    assertEquals(item.completed, false);
+  }
+});
+
 Deno.test("markItemProgress inserta un registro de progreso", async () => {
   const riotAccountId = await createTestRiotAccount();
   await insertWeakness(riotAccountId, "vision", "low");

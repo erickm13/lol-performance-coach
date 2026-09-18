@@ -9,6 +9,7 @@ type PlanItem = {
   title: string;
   description: string;
   llmExplanation: string | null;
+  completed?: boolean;
 };
 
 type Plan = { id: string; generatedBy: string } | null;
@@ -35,8 +36,12 @@ export function TrainingPlanView() {
         credentials: "include",
       });
       const data = await res.json();
+      const fetchedItems: PlanItem[] = data.items ?? [];
       setPlan(data.plan ?? null);
-      setItems(data.items ?? []);
+      setItems(fetchedItems);
+      setCompletedIds(
+        fetchedItems.filter((item) => item.completed).map((item) => item.id),
+      );
     } catch {
       // Sin conexión: el usuario puede reintentar.
     } finally {
