@@ -9,10 +9,12 @@ import {
   riotAccounts,
 } from "../db/schema.ts";
 import {
+  countDeathsBefore10,
   getAccountByRiotId,
   getLeagueEntriesByPuuid,
   getMatchById,
   getMatchIdsByPuuid,
+  getMatchTimeline,
   getSummonerByPuuid,
   RiotRateLimitError,
 } from "./client.ts";
@@ -114,6 +116,14 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
         .filter((p) => p.teamId === participant.teamId)
         .reduce((sum, p) => sum + p.kills, 0);
 
+      let deathsBefore10: number | null = null;
+      try {
+        const timeline = await getMatchTimeline(riotMatchId);
+        deathsBefore10 = countDeathsBefore10(timeline, participant.participantId);
+      } catch {
+        deathsBefore10 = null;
+      }
+
       const [participantRow] = await db
         .insert(matchParticipants)
         .values({
@@ -141,6 +151,7 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
         kda: (participant.kills + participant.assists) /
           Math.max(participant.deaths, 1),
         visionScorePerMin: participant.visionScore / minutes,
+        deathsBefore10,
         goldPerMin: participant.goldEarned / minutes,
         damagePerMin: participant.totalDamageDealtToChampions / minutes,
         killParticipation: teamKills > 0
