@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBackendUrl } from "../lib/api";
 import { RiotAccountCard } from "./RiotAccountCard";
+import { DashboardTeasers } from "./DashboardTeasers";
 import { AiChatProvider } from "./AiChatContext";
 import { AiChatFab, AiChatWidget } from "./AiChatWidget";
 
@@ -45,6 +46,7 @@ export function DashboardContent() {
         )}
 
         <RiotAccountCard emailVerified={me.emailVerified} />
+        <DashboardTeasers />
       </div>
       <AiChatFab />
       <AiChatWidget />
