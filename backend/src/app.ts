@@ -4,6 +4,7 @@ import { db } from "./db/client.ts";
 import { sql } from "npm:drizzle-orm@^0.36.0";
 import { createAuthRoutes } from "./routes/auth.ts";
 import { riotRoutes } from "./routes/riot.ts";
+import { trainingRoutes } from "./routes/training.ts";
 import { aiRoutes } from "./routes/ai.ts";
 import { sendVerificationEmail, sendPasswordResetEmail } from "./email/resend.ts";
 
@@ -19,6 +20,7 @@ app.use(
 
 app.route("/auth", createAuthRoutes({ sendVerificationEmail, sendPasswordResetEmail }));
 app.route("/riot", riotRoutes);
+app.route("/riot", trainingRoutes);
 app.route("/ai", aiRoutes);
 
 app.onError((err, c) => {
