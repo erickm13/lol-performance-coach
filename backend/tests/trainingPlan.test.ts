@@ -11,7 +11,7 @@ import {
   users,
   weaknesses,
 } from "../src/db/schema.ts";
-import { GeminiError } from "../src/analysis/gemini.ts";
+import { GroqError } from "../src/analysis/groq.ts";
 import {
   generateTrainingPlan,
   getCurrentTrainingPlan,
@@ -89,7 +89,7 @@ Deno.test("generateTrainingPlan arma ítems a partir de las debilidades y usa la
   await insertWeakness(riotAccountId, "farming", "high");
   await insertWeakness(riotAccountId, "vision", "medium");
 
-  const explain = (_prompt: string) => Promise.resolve("Explicación de Gemini simulada.");
+  const explain = (_prompt: string) => Promise.resolve("Explicación de Groq simulada.");
 
   const result = await generateTrainingPlan(riotAccountId, explain);
 
@@ -98,15 +98,15 @@ Deno.test("generateTrainingPlan arma ítems a partir de las debilidades y usa la
   assertEquals(result.items.length, 4);
   assertEquals(
     (result.items[0] as { llmExplanation: string }).llmExplanation,
-    "Explicación de Gemini simulada.",
+    "Explicación de Groq simulada.",
   );
 });
 
-Deno.test("generateTrainingPlan cae a modo solo-reglas si Gemini falla", async () => {
+Deno.test("generateTrainingPlan cae a modo solo-reglas si Groq falla", async () => {
   const riotAccountId = await createTestRiotAccount();
   await insertWeakness(riotAccountId, "farming", "high");
 
-  const explain = (_prompt: string) => Promise.reject(new GeminiError("falló"));
+  const explain = (_prompt: string) => Promise.reject(new GroqError("falló"));
 
   const result = await generateTrainingPlan(riotAccountId, explain);
 
@@ -115,7 +115,7 @@ Deno.test("generateTrainingPlan cae a modo solo-reglas si Gemini falla", async (
   assertEquals(first.llmExplanation, first.description);
 });
 
-Deno.test("generateTrainingPlan descarta explicaciones exitosas previas si Gemini falla más tarde en el mismo plan", async () => {
+Deno.test("generateTrainingPlan descarta explicaciones exitosas previas si Groq falla más tarde en el mismo plan", async () => {
   const riotAccountId = await createTestRiotAccount();
   await insertWeakness(riotAccountId, "farming", "high");
   await insertWeakness(riotAccountId, "vision", "medium");
@@ -124,9 +124,9 @@ Deno.test("generateTrainingPlan descarta explicaciones exitosas previas si Gemin
   const explain = (_prompt: string) => {
     callCount++;
     if (callCount <= 2) {
-      return Promise.resolve(`Éxito de Gemini #${callCount}`);
+      return Promise.resolve(`Éxito de Groq #${callCount}`);
     }
-    return Promise.reject(new GeminiError("falla tardía"));
+    return Promise.reject(new GroqError("falla tardía"));
   };
 
   const result = await generateTrainingPlan(riotAccountId, explain);

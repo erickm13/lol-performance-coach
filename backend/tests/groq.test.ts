@@ -1,23 +1,23 @@
 import "./test_setup.ts";
 import { assertEquals, assertRejects, assertStringIncludes } from "jsr:@std/assert@^1.0.0";
-import { generateExplanation, GeminiError } from "../src/analysis/gemini.ts";
+import { generateExplanation, GroqError } from "../src/analysis/groq.ts";
 
-const TEST_API_KEY = "test-key-for-gemini-tests";
+const TEST_API_KEY = "test-key-for-groq-tests";
 
 /**
- * Setea GEMINI_API_KEY solo mientras corre `fn` y la restaura después.
+ * Setea GROQ_API_KEY solo mientras corre `fn` y la restaura después.
  * `Deno.env` es global al proceso de test: si la dejáramos seteada a nivel de
  * módulo, se filtraría a los otros archivos de test (que corren en el mismo
- * proceso) y los haría llamar a la API real de Google.
+ * proceso) y los haría llamar a la API real de Groq.
  */
 async function withApiKey(fn: () => Promise<void>): Promise<void> {
-  const original = Deno.env.get("GEMINI_API_KEY");
-  Deno.env.set("GEMINI_API_KEY", TEST_API_KEY);
+  const original = Deno.env.get("GROQ_API_KEY");
+  Deno.env.set("GROQ_API_KEY", TEST_API_KEY);
   try {
     await fn();
   } finally {
-    if (original === undefined) Deno.env.delete("GEMINI_API_KEY");
-    else Deno.env.set("GEMINI_API_KEY", original);
+    if (original === undefined) Deno.env.delete("GROQ_API_KEY");
+    else Deno.env.set("GROQ_API_KEY", original);
   }
 }
 
@@ -28,12 +28,12 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
-Deno.test("generateExplanation devuelve el texto de la respuesta de Gemini", async () => {
+Deno.test("generateExplanation devuelve el texto de la respuesta de Groq", async () => {
   await withApiKey(async () => {
     const fetchFn = (() =>
       Promise.resolve(
         jsonResponse({
-          candidates: [{ content: { parts: [{ text: "  Explicación generada.  " }] } }],
+          choices: [{ message: { content: "  Explicación generada.  " } }],
         }),
       )) as unknown as typeof fetch;
 
@@ -42,56 +42,56 @@ Deno.test("generateExplanation devuelve el texto de la respuesta de Gemini", asy
   });
 });
 
-Deno.test("generateExplanation lanza GeminiError si Gemini responde con error HTTP", async () => {
+Deno.test("generateExplanation lanza GroqError si Groq responde con error HTTP", async () => {
   await withApiKey(async () => {
     const fetchFn = (() =>
       Promise.resolve(jsonResponse({ error: "bad request" }, 400))) as unknown as typeof fetch;
 
-    await assertRejects(() => generateExplanation("prompt", fetchFn), GeminiError);
+    await assertRejects(() => generateExplanation("prompt", fetchFn), GroqError);
   });
 });
 
-Deno.test("generateExplanation lanza GeminiError si la respuesta no trae texto", async () => {
+Deno.test("generateExplanation lanza GroqError si la respuesta no trae texto", async () => {
   await withApiKey(async () => {
     const fetchFn = (() =>
-      Promise.resolve(jsonResponse({ candidates: [] }))) as unknown as typeof fetch;
+      Promise.resolve(jsonResponse({ choices: [] }))) as unknown as typeof fetch;
 
-    await assertRejects(() => generateExplanation("prompt", fetchFn), GeminiError);
+    await assertRejects(() => generateExplanation("prompt", fetchFn), GroqError);
   });
 });
 
-Deno.test("generateExplanation lanza GeminiError si no hay API key configurada", async () => {
-  const original = Deno.env.get("GEMINI_API_KEY");
-  Deno.env.delete("GEMINI_API_KEY");
+Deno.test("generateExplanation lanza GroqError si no hay API key configurada", async () => {
+  const original = Deno.env.get("GROQ_API_KEY");
+  Deno.env.delete("GROQ_API_KEY");
   try {
-    await assertRejects(() => generateExplanation("prompt"), GeminiError);
+    await assertRejects(() => generateExplanation("prompt"), GroqError);
   } finally {
-    if (original !== undefined) Deno.env.set("GEMINI_API_KEY", original);
+    if (original !== undefined) Deno.env.set("GROQ_API_KEY", original);
   }
 });
 
-Deno.test("generateExplanation lanza GeminiError (no TypeError) si falla la red", async () => {
+Deno.test("generateExplanation lanza GroqError (no TypeError) si falla la red", async () => {
   await withApiKey(async () => {
     // Simula una caída de red cruda (DNS, conexión rechazada): Deno la reporta
     // como `TypeError: error sending request`, NO como una respuesta HTTP.
     const fetchFn = (() =>
       Promise.reject(new TypeError("error sending request for url"))) as unknown as typeof fetch;
 
-    await assertRejects(() => generateExplanation("prompt", fetchFn), GeminiError);
+    await assertRejects(() => generateExplanation("prompt", fetchFn), GroqError);
   });
 });
 
-Deno.test("generateExplanation lanza GeminiError si la llamada se aborta por timeout", async () => {
+Deno.test("generateExplanation lanza GroqError si la llamada se aborta por timeout", async () => {
   await withApiKey(async () => {
     const fetchFn = (() =>
       Promise.reject(new DOMException("Signal timed out.", "TimeoutError"))) as unknown as
         typeof fetch;
 
-    await assertRejects(() => generateExplanation("prompt", fetchFn), GeminiError);
+    await assertRejects(() => generateExplanation("prompt", fetchFn), GroqError);
   });
 });
 
-Deno.test("generateExplanation lanza GeminiError si el cuerpo no es JSON válido", async () => {
+Deno.test("generateExplanation lanza GroqError si el cuerpo no es JSON válido", async () => {
   await withApiKey(async () => {
     const fetchFn = (() =>
       Promise.resolve(
@@ -101,11 +101,11 @@ Deno.test("generateExplanation lanza GeminiError si el cuerpo no es JSON válido
         }),
       )) as unknown as typeof fetch;
 
-    await assertRejects(() => generateExplanation("prompt", fetchFn), GeminiError);
+    await assertRejects(() => generateExplanation("prompt", fetchFn), GroqError);
   });
 });
 
-Deno.test("generateExplanation manda la API key por header, nunca en la URL", async () => {
+Deno.test("generateExplanation manda la API key por header Authorization", async () => {
   await withApiKey(async () => {
     let capturedUrl = "";
     let capturedHeaders: Record<string, string> = {};
@@ -115,7 +115,7 @@ Deno.test("generateExplanation manda la API key por header, nunca en la URL", as
       capturedHeaders = (init.headers ?? {}) as Record<string, string>;
       return Promise.resolve(
         jsonResponse({
-          candidates: [{ content: { parts: [{ text: "ok" }] } }],
+          choices: [{ message: { content: "ok" } }],
         }),
       );
     }) as unknown as typeof fetch;
@@ -123,9 +123,8 @@ Deno.test("generateExplanation manda la API key por header, nunca en la URL", as
     await generateExplanation("prompt", fetchFn);
 
     assertEquals(capturedUrl.includes(TEST_API_KEY), false);
-    assertEquals(capturedUrl.includes("key="), false);
-    assertStringIncludes(capturedUrl, "generativelanguage.googleapis.com");
-    assertEquals(capturedHeaders["x-goog-api-key"], TEST_API_KEY);
+    assertStringIncludes(capturedUrl, "api.groq.com");
+    assertEquals(capturedHeaders["Authorization"], `Bearer ${TEST_API_KEY}`);
   });
 });
 
@@ -137,7 +136,7 @@ Deno.test("generateExplanation aborta la llamada con un timeout", async () => {
       capturedSignal = init.signal;
       return Promise.resolve(
         jsonResponse({
-          candidates: [{ content: { parts: [{ text: "ok" }] } }],
+          choices: [{ message: { content: "ok" } }],
         }),
       );
     }) as unknown as typeof fetch;

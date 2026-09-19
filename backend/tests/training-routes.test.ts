@@ -6,18 +6,18 @@ import { signSessionToken } from "../src/auth/jwt.ts";
 import { app } from "../src/app.ts";
 
 /**
- * Corre `fn` garantizando que GEMINI_API_KEY NO esté seteada, para que la
+ * Corre `fn` garantizando que GROQ_API_KEY NO esté seteada, para que la
  * generación de plan caiga al modo solo-reglas sin tocar la red. `Deno.env` es
  * global al proceso de test y compartido con los demás archivos, así que no
  * alcanza con asumir que no está: hay que sacarla y restaurarla.
  */
-async function withoutGeminiKey<T>(fn: () => T | Promise<T>): Promise<T> {
-  const original = Deno.env.get("GEMINI_API_KEY");
-  Deno.env.delete("GEMINI_API_KEY");
+async function withoutGroqKey<T>(fn: () => T | Promise<T>): Promise<T> {
+  const original = Deno.env.get("GROQ_API_KEY");
+  Deno.env.delete("GROQ_API_KEY");
   try {
     return await fn();
   } finally {
-    if (original !== undefined) Deno.env.set("GEMINI_API_KEY", original);
+    if (original !== undefined) Deno.env.set("GROQ_API_KEY", original);
   }
 }
 
@@ -155,9 +155,9 @@ Deno.test("POST /riot/training-plan genera un plan a partir de las debilidades g
     evidence: [],
   });
 
-  // `withoutGeminiKey` saca GEMINI_API_KEY del entorno, así que la generación
-  // cae al fallback solo-reglas sin hacer ninguna llamada de red a Google.
-  const res = await withoutGeminiKey(() =>
+  // `withoutGroqKey` saca GROQ_API_KEY del entorno, así que la generación
+  // cae al fallback solo-reglas sin hacer ninguna llamada de red a Groq.
+  const res = await withoutGroqKey(() =>
     app.request("/riot/training-plan", {
       method: "POST",
       headers: { Cookie: cookie },
@@ -178,7 +178,7 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress guarda el progreso", 
     severity: "low",
     evidence: [],
   });
-  const planRes = await withoutGeminiKey(() =>
+  const planRes = await withoutGroqKey(() =>
     app.request("/riot/training-plan", {
       method: "POST",
       headers: { Cookie: cookie },
@@ -264,7 +264,7 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress rechaza acceso cruzad
     severity: "high",
     evidence: [],
   });
-  const planResA = await withoutGeminiKey(() =>
+  const planResA = await withoutGroqKey(() =>
     app.request("/riot/training-plan", {
       method: "POST",
       headers: { Cookie: cookieA },
