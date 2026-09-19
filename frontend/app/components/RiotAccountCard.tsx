@@ -453,7 +453,16 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                     {m.win ? "Victoria" : "Derrota"}
                   </span>
                   <button
-                    onClick={() => openChat("match")}
+                    onClick={() =>
+                      openChat("match", {
+                        champion: m.champion,
+                        win: m.win,
+                        kills: m.kills,
+                        deaths: m.deaths,
+                        assists: m.assists,
+                        csPerMin: m.metrics?.csPerMin,
+                        kda: m.metrics?.kda,
+                      })}
                     aria-label="Analizar con IA"
                     title="Analizar con IA"
                     className="text-teal text-sm border border-teal/40 px-2 py-1 hover:bg-teal/10 transition-colors"
