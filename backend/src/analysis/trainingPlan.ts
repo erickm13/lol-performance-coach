@@ -7,7 +7,7 @@ import {
   weaknesses as weaknessesTable,
 } from "../db/schema.ts";
 import { getChampionStats } from "../riot/ingest.ts";
-import { generateExplanation, GeminiError } from "./gemini.ts";
+import { generateExplanation, GroqError } from "./groq.ts";
 
 const SEVERITY_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 };
 
@@ -166,7 +166,7 @@ export async function generateTrainingPlan(
       explanations.push(await explain(prompt));
     }
   } catch (err) {
-    if (!(err instanceof GeminiError)) throw err;
+    if (!(err instanceof GroqError)) throw err;
     generatedBy = "rules";
     explanations = drafts.map((d) => d.description);
   }
