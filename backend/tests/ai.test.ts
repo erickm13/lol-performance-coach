@@ -77,6 +77,34 @@ Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible 
   assertEquals(body.messages[0].role, "bot");
 });
 
+Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible (pregunta de seguimiento sobre una partida)", async () => {
+  const cookie = await createSessionCookie();
+
+  const res = await withoutGroqKey(() =>
+    app.request("/ai/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({
+        context: "match",
+        message: "¿Por qué morí tanto?",
+        match: {
+          summonerName: "TP Salchipapa",
+          champion: "Ahri",
+          win: false,
+          kills: 2,
+          deaths: 9,
+          assists: 3,
+        },
+      }),
+    })
+  );
+
+  assertEquals(res.status, 200);
+  const body = await res.json();
+  assertEquals(body.messages.length, 1);
+  assertEquals(body.messages[0].role, "bot");
+});
+
 Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible (mensaje libre)", async () => {
   const cookie = await createSessionCookie();
 

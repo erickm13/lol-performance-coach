@@ -8,6 +8,7 @@ type ChatMessage = { role: "bot" | "user"; text: string };
 type ChatContextKind = "general" | "match";
 
 export type MatchSummary = {
+  summonerName?: string;
   champion?: string;
   win?: boolean;
   kills?: number;
@@ -32,6 +33,11 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  // Recordamos con qué contexto se abrió el chat (por ejemplo, la partida
+  // analizada) para que una pregunta de seguimiento no pierda esos datos.
+  const [activeContext, setActiveContext] = useState<
+    { kind: ChatContextKind; match?: MatchSummary }
+  >({ kind: "general" });
 
   const fetchChat = useCallback(
     async (context: ChatContextKind, options?: { message?: string; match?: MatchSummary }) => {
@@ -63,6 +69,7 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
     (context: ChatContextKind = "general", match?: MatchSummary) => {
       setIsOpen(true);
       setMessages([]);
+      setActiveContext({ kind: context, match });
       fetchChat(context, { match });
     },
     [fetchChat],
@@ -74,9 +81,9 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
     (text: string) => {
       if (!text.trim()) return;
       setMessages((prev) => [...prev, { role: "user", text }]);
-      fetchChat("general", { message: text });
+      fetchChat(activeContext.kind, { message: text, match: activeContext.match });
     },
-    [fetchChat],
+    [fetchChat, activeContext],
   );
 
   return (

@@ -9,6 +9,7 @@ type ChatMessage = { role: "bot" | "user"; text: string };
 type ChatContext = "general" | "match";
 
 type MatchSummary = {
+  summonerName?: string;
   champion?: string;
   win?: boolean;
   kills?: number;
@@ -33,17 +34,49 @@ async function requireUserId(c: Context): Promise<string | null> {
   return token ? await verifySessionToken(token) : null;
 }
 
-function buildMatchPrompt(match: MatchSummary): string {
-  const resultLabel = match.win ? "Victoria" : "Derrota";
+function matchDataBlock(match: MatchSummary): string {
   const kdaLine = `${match.kills ?? "?"}/${match.deaths ?? "?"}/${match.assists ?? "?"}`;
   return (
-    `Sos un coach de League of Legends. Analizá brevemente esta partida en 2-4 oraciones, ` +
-    `en español, con un tono directo y constructivo. No inventes datos que no te di.\n` +
     `- Campeón: ${match.champion ?? "desconocido"}\n` +
-    `- Resultado: ${resultLabel}\n` +
+    `- Resultado: ${match.win ? "Victoria" : "Derrota"}\n` +
     `- KDA: ${kdaLine}${match.kda !== undefined ? ` (ratio ${match.kda})` : ""}\n` +
-    `${match.csPerMin !== undefined ? `- CS/min: ${match.csPerMin}\n` : ""}` +
-    `Dale un consejo concreto para la próxima partida con este campeón.`
+    `${match.csPerMin !== undefined ? `- CS/min: ${match.csPerMin}\n` : ""}`
+  );
+}
+
+/**
+ * Primer mensaje al abrir el análisis de una partida: saluda por nombre,
+ * resume el resultado, tira un chiste corto acorde (festejo si ganó, algo
+ * liviano si perdió, nunca burlón) y termina invitando a preguntar algo
+ * puntual sobre esa partida — el usuario sigue la conversación desde ahí.
+ */
+function buildMatchOpenerPrompt(match: MatchSummary): string {
+  const name = match.summonerName ?? "campeón";
+  return (
+    `Sos el coach personal de League of Legends de ${name}. Escribí una respuesta breve en ` +
+    `español (4-6 oraciones), en un tono cercano y de coach, no formal. Tiene que, en este orden:\n` +
+    `1. Saludar por su nombre: "Hola ${name},".\n` +
+    `2. Resumir brevemente esta partida con los datos que te doy (campeón, resultado, KDA).\n` +
+    `3. Contar un chiste corto relacionado con el resultado: si ganó, uno festejando; si perdió, ` +
+    `uno liviano que lo haga sentir mejor, nunca cruel ni burlón.\n` +
+    `4. Terminar preguntándole qué quiere saber o preguntar sobre esta partida en particular.\n` +
+    `No inventes datos que no te di.\n\n` +
+    `Datos de la partida:\n${matchDataBlock(match)}`
+  );
+}
+
+/**
+ * Pregunta de seguimiento dentro del mismo chat de análisis: mismo jugador,
+ * misma partida, pero ya no hace falta repetir el saludo ni el chiste.
+ */
+function buildMatchFollowUpPrompt(match: MatchSummary, message: string): string {
+  const name = match.summonerName ?? "campeón";
+  return (
+    `Sos el coach personal de League of Legends de ${name}, respondiendo una pregunta de ` +
+    `seguimiento sobre esta partida puntual. Respondé en español, en 2-4 oraciones, directo y ` +
+    `práctico, sin repetir el saludo. No inventes datos que no te di.\n\n` +
+    `Datos de la partida:\n${matchDataBlock(match)}\n` +
+    `Pregunta de ${name}: "${message}"`
   );
 }
 
@@ -70,8 +103,11 @@ aiRoutes.post("/chat", async (c) => {
     return c.json({ messages: [GENERAL_GREETING] });
   }
 
+  const match = (body.match ?? {}) as MatchSummary;
   const prompt = context === "match"
-    ? buildMatchPrompt((body.match ?? {}) as MatchSummary)
+    ? (body.message
+      ? buildMatchFollowUpPrompt(match, String(body.message))
+      : buildMatchOpenerPrompt(match))
     : buildGeneralPrompt(String(body.message));
 
   try {
