@@ -53,14 +53,16 @@ function matchDataBlock(match: MatchSummary): string {
 function buildMatchOpenerPrompt(match: MatchSummary): string {
   const name = match.summonerName ?? "campeón";
   return (
-    `Sos el coach personal de League of Legends de ${name}. Escribí una respuesta breve en ` +
-    `español (4-6 oraciones), en un tono cercano y de coach, no formal. Tiene que, en este orden:\n` +
-    `1. Saludar por su nombre: "Hola ${name},".\n` +
-    `2. Resumir brevemente esta partida con los datos que te doy (campeón, resultado, KDA).\n` +
-    `3. Contar un chiste corto relacionado con el resultado: si ganó, uno festejando; si perdió, ` +
-    `uno liviano que lo haga sentir mejor, nunca cruel ni burlón.\n` +
-    `4. Terminar preguntándole qué quiere saber o preguntar sobre esta partida en particular.\n` +
-    `No inventes datos que no te di.\n\n` +
+    `Sos el coach personal de League of Legends de ${name}, hablándole directo como en un chat, ` +
+    `no como si estuvieras redactando un informe. Escribí un solo mensaje breve en español ` +
+    `(4-6 oraciones), en un tono cercano y natural, que fluya como una conversación real: sin ` +
+    `numerar partes, sin encabezados ni etiquetas como "El chiste:" o "Resumen:", sin ` +
+    `estructurarlo como una lista. Tiene que sonar como si un amigo te estuviera hablando.\n\n` +
+    `Arrancá saludando a ${name} por su nombre de forma natural, mencioná de pasada cómo le fue ` +
+    `en esta partida (campeón, resultado, KDA) integrado en la misma conversación, metele un ` +
+    `chiste corto que surja naturalmente del resultado — festejando si ganó, o algo liviano y ` +
+    `cariñoso si perdió, nunca cruel ni burlón — y cerrá preguntándole qué quiere saber o ` +
+    `preguntar sobre esa partida en particular. No inventes datos que no te di.\n\n` +
     `Datos de la partida:\n${matchDataBlock(match)}`
   );
 }
