@@ -1,8 +1,13 @@
 import { Context, Hono } from "jsr:@hono/hono@^4.6.0";
 import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
 import { verifySessionToken } from "../auth/jwt.ts";
+import { eq } from "npm:drizzle-orm@^0.36.0";
+import { db } from "../db/client.ts";
+import { riotAccounts } from "../db/schema.ts";
 import {
   AlreadyLinkedError,
+  getMatchDetail,
+  getMatchHistory,
   getStoredRiotAccount,
   linkRiotAccount,
   NotLinkedError,
@@ -16,10 +21,20 @@ import {
 } from "../riot/client.ts";
 
 const SESSION_COOKIE = "session";
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 async function requireUserId(c: Context): Promise<string | null> {
   const token = getCookie(c, SESSION_COOKIE);
   return token ? await verifySessionToken(token) : null;
+}
+
+async function getRiotAccountId(userId: string): Promise<string | null> {
+  const [account] = await db
+    .select({ id: riotAccounts.id })
+    .from(riotAccounts)
+    .where(eq(riotAccounts.userId, userId))
+    .limit(1);
+  return account?.id ?? null;
 }
 
 function mapRiotError(err: unknown): { status: 404 | 409 | 502; message: string } {
@@ -92,4 +107,42 @@ riotRoutes.get("/account", async (c) => {
   if (!stored) return c.json({ account: null });
 
   return c.json(stored);
+});
+
+riotRoutes.get("/matches", async (c) => {
+  const userId = await requireUserId(c);
+  if (!userId) return c.json({ error: "No autenticado" }, 401);
+
+  const riotAccountId = await getRiotAccountId(userId);
+  if (!riotAccountId) return c.json({ matches: [], total: 0, page: 1, pageSize: 10, totalPages: 1 });
+
+  const resultParam = c.req.query("result");
+  const result = resultParam === "win" || resultParam === "loss" ? resultParam : undefined;
+  const queueParam = c.req.query("queue");
+  const queueId = queueParam ? Number(queueParam) : undefined;
+  const pageParam = Number(c.req.query("page") ?? "1");
+  const page = Number.isFinite(pageParam) && pageParam > 0 ? Math.floor(pageParam) : 1;
+
+  const history = await getMatchHistory(riotAccountId, {
+    result,
+    queueId: queueId !== undefined && Number.isFinite(queueId) ? queueId : undefined,
+    page,
+    pageSize: 10,
+  });
+  return c.json(history);
+});
+
+riotRoutes.get("/matches/:matchId", async (c) => {
+  const userId = await requireUserId(c);
+  if (!userId) return c.json({ error: "No autenticado" }, 401);
+
+  const riotAccountId = await getRiotAccountId(userId);
+  if (!riotAccountId) return c.json({ error: "No tenés una cuenta de Riot vinculada" }, 404);
+
+  const matchId = c.req.param("matchId");
+  if (!UUID_RE.test(matchId)) return c.json({ error: "Partida no encontrada" }, 404);
+
+  const detail = await getMatchDetail(riotAccountId, matchId);
+  if (!detail) return c.json({ error: "Partida no encontrada" }, 404);
+  return c.json(detail);
 });
