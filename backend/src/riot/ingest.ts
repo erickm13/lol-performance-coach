@@ -4,17 +4,39 @@ import {
   ingestionJobs,
   matchMetrics,
   matchParticipants,
+  matchTeammates,
   matches,
   riotAccounts,
 } from "../db/schema.ts";
 import {
+  countDeathsBefore10,
   getAccountByRiotId,
   getLeagueEntriesByPuuid,
   getMatchById,
   getMatchIdsByPuuid,
+  getMatchTimeline,
   getSummonerByPuuid,
   RiotRateLimitError,
 } from "./client.ts";
+import { saveWeaknesses } from "../analysis/weaknesses.ts";
+
+/**
+ * La detección de debilidades es un enriquecimiento best-effort encima de un
+ * sync que ya salió bien — no parte del contrato de link/sync. Si falla, se
+ * loguea y se sigue: dejarla propagar hacía que `mapRiotError` cayera en su
+ * rama genérica y le dijera al usuario "No pudimos conectar con Riot" cuando
+ * Riot había funcionado perfecto y las partidas ya estaban guardadas.
+ */
+async function saveWeaknessesBestEffort(riotAccountId: string): Promise<void> {
+  try {
+    await saveWeaknesses(riotAccountId);
+  } catch (err) {
+    console.error(
+      `Falló la detección de debilidades para la cuenta ${riotAccountId}:`,
+      err,
+    );
+  }
+}
 
 async function getSoloRank(puuid: string) {
   const entries = await getLeagueEntriesByPuuid(puuid);
@@ -113,6 +135,14 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
         .filter((p) => p.teamId === participant.teamId)
         .reduce((sum, p) => sum + p.kills, 0);
 
+      let deathsBefore10: number | null = null;
+      try {
+        const timeline = await getMatchTimeline(riotMatchId);
+        deathsBefore10 = countDeathsBefore10(timeline, participant.participantId);
+      } catch {
+        deathsBefore10 = null;
+      }
+
       const [participantRow] = await db
         .insert(matchParticipants)
         .values({
@@ -140,12 +170,27 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
         kda: (participant.kills + participant.assists) /
           Math.max(participant.deaths, 1),
         visionScorePerMin: participant.visionScore / minutes,
+        deathsBefore10,
         goldPerMin: participant.goldEarned / minutes,
         damagePerMin: participant.totalDamageDealtToChampions / minutes,
         killParticipation: teamKills > 0
           ? (participant.kills + participant.assists) / teamKills
           : 0,
       });
+
+      const teammates = detail.info.participants.filter(
+        (p) => p.teamId === participant.teamId && p.puuid !== puuid,
+      );
+      if (teammates.length > 0) {
+        await db.insert(matchTeammates).values(
+          teammates.map((t) => ({
+            matchParticipantId: participantRow.id,
+            puuid: t.puuid,
+            summonerName: t.riotIdGameName || "Invocador",
+            win: t.win,
+          })),
+        );
+      }
 
       processed++;
     }
@@ -213,6 +258,7 @@ export async function linkRiotAccount(
     .returning();
 
   const result = await ingestMatches(riotAccount.id, account.puuid);
+  await saveWeaknessesBestEffort(riotAccount.id);
 
   return {
     account: riotAccount,
@@ -244,6 +290,7 @@ export async function syncRiotAccount(userId: string) {
     .returning();
 
   const result = await ingestMatches(riotAccount.id, riotAccount.puuid);
+  await saveWeaknessesBestEffort(riotAccount.id);
 
   return {
     account: updatedAccount,
@@ -285,8 +332,106 @@ export async function getStoredRiotAccount(userId: string) {
     (a.match?.gameCreation.getTime() ?? 0)
   );
 
+  const [championStats, recentTeammates] = await Promise.all([
+    getChampionStats(riotAccount.id),
+    getRecentTeammates(riotAccount.id),
+  ]);
+
   return {
     account: riotAccount,
     matches: combined.slice(0, MATCHES_TO_FETCH),
+    championStats,
+    recentTeammates,
   };
+}
+
+export async function getChampionStats(riotAccountId: string) {
+  const participants = await db
+    .select()
+    .from(matchParticipants)
+    .where(eq(matchParticipants.riotAccountId, riotAccountId));
+
+  const byChampion = new Map<string, {
+    champion: string;
+    games: number;
+    wins: number;
+    killsSum: number;
+    deathsSum: number;
+    assistsSum: number;
+    kdaSum: number;
+  }>();
+
+  for (const p of participants) {
+    const entry = byChampion.get(p.champion) ?? {
+      champion: p.champion,
+      games: 0,
+      wins: 0,
+      killsSum: 0,
+      deathsSum: 0,
+      assistsSum: 0,
+      kdaSum: 0,
+    };
+    entry.games++;
+    if (p.win) entry.wins++;
+    entry.killsSum += p.kills;
+    entry.deathsSum += p.deaths;
+    entry.assistsSum += p.assists;
+
+    const [metrics] = await db
+      .select()
+      .from(matchMetrics)
+      .where(eq(matchMetrics.matchParticipantId, p.id))
+      .limit(1);
+    entry.kdaSum += metrics?.kda ??
+      (p.kills + p.assists) / Math.max(p.deaths, 1);
+
+    byChampion.set(p.champion, entry);
+  }
+
+  return [...byChampion.values()]
+    .map((c) => ({
+      champion: c.champion,
+      games: c.games,
+      winRate: Math.round((c.wins / c.games) * 100),
+      avgKills: c.killsSum / c.games,
+      avgDeaths: c.deathsSum / c.games,
+      avgAssists: c.assistsSum / c.games,
+      avgKda: c.kdaSum / c.games,
+    }))
+    .sort((a, b) => b.games - a.games);
+}
+
+export async function getRecentTeammates(riotAccountId: string) {
+  const participants = await db
+    .select({ id: matchParticipants.id })
+    .from(matchParticipants)
+    .where(eq(matchParticipants.riotAccountId, riotAccountId));
+
+  const byTeammate = new Map<
+    string,
+    { puuid: string; summonerName: string; games: number; wins: number }
+  >();
+
+  for (const p of participants) {
+    const teammates = await db
+      .select()
+      .from(matchTeammates)
+      .where(eq(matchTeammates.matchParticipantId, p.id));
+
+    for (const t of teammates) {
+      const entry = byTeammate.get(t.puuid) ?? {
+        puuid: t.puuid,
+        summonerName: t.summonerName,
+        games: 0,
+        wins: 0,
+      };
+      entry.games++;
+      if (t.win) entry.wins++;
+      byTeammate.set(t.puuid, entry);
+    }
+  }
+
+  return [...byTeammate.values()]
+    .map((t) => ({ ...t, winRate: Math.round((t.wins / t.games) * 100) }))
+    .sort((a, b) => b.games - a.games);
 }
