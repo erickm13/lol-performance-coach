@@ -1,4 +1,4 @@
-import { and, eq } from "npm:drizzle-orm@^0.36.0";
+import { and, desc, eq } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
 import {
   ingestionJobs,
@@ -188,6 +188,34 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
             puuid: t.puuid,
             summonerName: t.riotIdGameName || "Invocador",
             win: t.win,
+          })),
+        );
+      }
+
+      // Guardamos el resto del roster (compañeros y rivales) para poder
+      // mostrar ambos equipos en el detalle de partida. `riotAccountId` null
+      // los distingue de la fila del jugador rastreado: las consultas de
+      // detección de debilidades, stats de campeón, etc. siempre filtran por
+      // riotAccountId y nunca los ven.
+      const others = detail.info.participants.filter((p) => p.puuid !== puuid);
+      if (others.length > 0) {
+        await db.insert(matchParticipants).values(
+          others.map((p) => ({
+            matchId: matchRow.id,
+            riotAccountId: null,
+            puuid: p.puuid,
+            champion: p.championName,
+            role: p.teamPosition || null,
+            teamId: p.teamId,
+            win: p.win,
+            kills: p.kills,
+            deaths: p.deaths,
+            assists: p.assists,
+            csTotal: p.totalMinionsKilled + p.neutralMinionsKilled,
+            visionScore: p.visionScore,
+            goldTotal: p.goldEarned,
+            damageTotal: p.totalDamageDealtToChampions,
+            rawStats: p,
           })),
         );
       }
@@ -434,4 +462,82 @@ export async function getRecentTeammates(riotAccountId: string) {
   return [...byTeammate.values()]
     .map((t) => ({ ...t, winRate: Math.round((t.wins / t.games) * 100) }))
     .sort((a, b) => b.games - a.games);
+}
+
+export async function getMatchHistory(
+  riotAccountId: string,
+  opts: { result?: "win" | "loss"; queueId?: number; page: number; pageSize: number },
+) {
+  const conditions = [eq(matchParticipants.riotAccountId, riotAccountId)];
+  if (opts.result === "win") conditions.push(eq(matchParticipants.win, true));
+  if (opts.result === "loss") conditions.push(eq(matchParticipants.win, false));
+  if (opts.queueId !== undefined) conditions.push(eq(matches.queueId, opts.queueId));
+
+  const rows = await db
+    .select({ participant: matchParticipants, match: matches, metrics: matchMetrics })
+    .from(matchParticipants)
+    .innerJoin(matches, eq(matchParticipants.matchId, matches.id))
+    .leftJoin(matchMetrics, eq(matchMetrics.matchParticipantId, matchParticipants.id))
+    .where(and(...conditions))
+    .orderBy(desc(matches.gameCreation));
+
+  const total = rows.length;
+  const start = (opts.page - 1) * opts.pageSize;
+  const pageRows = rows.slice(start, start + opts.pageSize);
+
+  return {
+    matches: pageRows.map((r) => ({ ...r.participant, match: r.match, metrics: r.metrics })),
+    total,
+    page: opts.page,
+    pageSize: opts.pageSize,
+    totalPages: Math.max(1, Math.ceil(total / opts.pageSize)),
+  };
+}
+
+const TEAM_BLUE = 100;
+const TEAM_RED = 200;
+
+/**
+ * Devuelve `null` si la partida no existe o no pertenece a esta cuenta —
+ * mismo chequeo de pertenencia que el resto de la app, para que un
+ * `matchId` de otra cuenta nunca filtre datos ajenos.
+ */
+export async function getMatchDetail(riotAccountId: string, matchId: string) {
+  const [ownParticipant] = await db
+    .select()
+    .from(matchParticipants)
+    .where(
+      and(
+        eq(matchParticipants.matchId, matchId),
+        eq(matchParticipants.riotAccountId, riotAccountId),
+      ),
+    )
+    .limit(1);
+  if (!ownParticipant) return null;
+
+  const [match] = await db
+    .select()
+    .from(matches)
+    .where(eq(matches.id, matchId))
+    .limit(1);
+
+  const [metrics] = await db
+    .select()
+    .from(matchMetrics)
+    .where(eq(matchMetrics.matchParticipantId, ownParticipant.id))
+    .limit(1);
+
+  const allParticipants = await db
+    .select()
+    .from(matchParticipants)
+    .where(eq(matchParticipants.matchId, matchId));
+
+  return {
+    match,
+    own: { ...ownParticipant, metrics },
+    teams: {
+      blue: allParticipants.filter((p) => p.teamId === TEAM_BLUE),
+      red: allParticipants.filter((p) => p.teamId === TEAM_RED),
+    },
+  };
 }
