@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { getBackendUrl } from "../lib/api";
 import { useAiChat } from "./AiChatContext";
 
@@ -475,6 +476,10 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
             })}
           </ul>
         )}
+
+      <Link href="/dashboard/historial" className="rune-link text-sm self-start">
+        Ver historial completo →
+      </Link>
 
       {quickStats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-panel-line">
