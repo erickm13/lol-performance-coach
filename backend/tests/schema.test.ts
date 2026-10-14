@@ -12,6 +12,7 @@ import {
   trainingPlanItems,
   planProgress,
   authTokens,
+  matchTeammates,
 } from "../src/db/schema.ts";
 
 Deno.test("el esquema exporta las 10 tablas del MER con el nombre correcto", () => {
@@ -29,4 +30,8 @@ Deno.test("el esquema exporta las 10 tablas del MER con el nombre correcto", () 
 
 Deno.test("el esquema exporta la tabla auth_tokens", () => {
   assertEquals(getTableName(authTokens), "auth_tokens");
+});
+
+Deno.test("el esquema exporta la tabla match_teammates", () => {
+  assertEquals(getTableName(matchTeammates), "match_teammates");
 });

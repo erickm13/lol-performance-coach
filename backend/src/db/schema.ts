@@ -75,6 +75,16 @@ export const matchParticipants = pgTable("match_participants", {
   rawStats: jsonb("raw_stats"),
 });
 
+export const matchTeammates = pgTable("match_teammates", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  matchParticipantId: uuid("match_participant_id")
+    .notNull()
+    .references(() => matchParticipants.id),
+  puuid: text("puuid").notNull(),
+  summonerName: text("summoner_name").notNull(),
+  win: boolean("win").notNull(),
+});
+
 export const matchMetrics = pgTable("match_metrics", {
   id: uuid("id").primaryKey().defaultRandom(),
   matchParticipantId: uuid("match_participant_id")
@@ -113,6 +123,13 @@ export const trainingPlans = pgTable("training_plans", {
 export const trainingPlanItems = pgTable("training_plan_items", {
   id: uuid("id").primaryKey().defaultRandom(),
   trainingPlanId: uuid("training_plan_id").notNull().references(() => trainingPlans.id),
+  // Orden de presentación dentro del plan (0-indexado). Sin esto no hay forma
+  // de garantizar que cada `drill` quede junto a su `focus_area` ni de
+  // conservar la prioridad por severidad: la PK es un UUID aleatorio y Postgres
+  // puede devolver las filas en cualquier orden. El default 0 existe solo para
+  // que la migración aplique sobre filas preexistentes; todo insert nuevo setea
+  // el valor explícitamente.
+  position: integer("position").notNull().default(0),
   type: text("type").notNull(),
   title: text("title").notNull(),
   description: text("description").notNull(),

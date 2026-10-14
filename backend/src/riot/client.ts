@@ -105,7 +105,9 @@ export async function getLeagueEntriesByPuuid(
 }
 
 export type RiotMatchParticipant = {
+  participantId: number;
   puuid: string;
+  riotIdGameName: string;
   championName: string;
   teamPosition: string;
   teamId: number;
@@ -138,4 +140,49 @@ export async function getMatchById(
     `https://${ACCOUNT_REGION}.api.riotgames.com/lol/match/v5/matches/${matchId}`;
   const res = await riotFetch(url, fetchFn);
   return await res.json();
+}
+
+export type RiotTimelineEvent = {
+  type: string;
+  timestamp: number;
+  victimId?: number;
+};
+
+export type RiotTimelineFrame = {
+  events: RiotTimelineEvent[];
+};
+
+export type RiotMatchTimeline = {
+  info: {
+    frames: RiotTimelineFrame[];
+  };
+};
+
+export async function getMatchTimeline(
+  matchId: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<RiotMatchTimeline> {
+  const url =
+    `https://${ACCOUNT_REGION}.api.riotgames.com/lol/match/v5/matches/${matchId}/timeline`;
+  const res = await riotFetch(url, fetchFn);
+  return await res.json();
+}
+
+export function countDeathsBefore10(
+  timeline: RiotMatchTimeline,
+  participantId: number,
+): number {
+  let count = 0;
+  for (const frame of timeline.info.frames) {
+    for (const event of frame.events) {
+      if (
+        event.type === "CHAMPION_KILL" &&
+        event.victimId === participantId &&
+        event.timestamp < 600_000
+      ) {
+        count++;
+      }
+    }
+  }
+  return count;
 }
