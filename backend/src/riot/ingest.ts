@@ -187,6 +187,7 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
             matchParticipantId: participantRow.id,
             puuid: t.puuid,
             summonerName: t.riotIdGameName || "Invocador",
+            profileIconId: t.profileIcon ?? null,
             win: t.win,
           })),
         );
@@ -409,7 +410,13 @@ export async function getRecentTeammates(riotAccountId: string) {
 
   const byTeammate = new Map<
     string,
-    { puuid: string; summonerName: string; games: number; wins: number }
+    {
+      puuid: string;
+      summonerName: string;
+      profileIconId: number | null;
+      games: number;
+      wins: number;
+    }
   >();
 
   for (const p of participants) {
@@ -422,9 +429,13 @@ export async function getRecentTeammates(riotAccountId: string) {
       const entry = byTeammate.get(t.puuid) ?? {
         puuid: t.puuid,
         summonerName: t.summonerName,
+        profileIconId: t.profileIconId,
         games: 0,
         wins: 0,
       };
+      if (entry.profileIconId == null && t.profileIconId != null) {
+        entry.profileIconId = t.profileIconId;
+      }
       entry.games++;
       if (t.win) entry.wins++;
       byTeammate.set(t.puuid, entry);

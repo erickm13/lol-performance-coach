@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { getBackendUrl } from "../lib/api";
 
-export function LogoutButton() {
+export function LogoutButton({ variant = "text" }: { variant?: "text" | "outline" }) {
   const router = useRouter();
 
   async function handleLogout() {
@@ -17,11 +17,12 @@ export function LogoutButton() {
     }
   }
 
+  const className = variant === "outline"
+    ? "btn-outline"
+    : "text-sm text-mist hover:text-parchment transition-colors";
+
   return (
-    <button
-      onClick={handleLogout}
-      className="text-sm text-mist hover:text-parchment transition-colors"
-    >
+    <button onClick={handleLogout} className={className}>
       Cerrar sesión
     </button>
   );

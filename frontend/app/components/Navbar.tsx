@@ -1,25 +1,21 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 export function Navbar({ actions }: { actions?: ReactNode }) {
   return (
-    <nav className="border-b border-panel-line">
-      <div className="max-w-3xl mx-auto flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
-          <span
-            className="h-2.5 w-2.5 bg-teal"
-            style={{ clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)" }}
-          />
-          <span className="font-display text-sm tracking-wide">
-            LoL Performance Coach
-          </span>
+    <div className="mx-auto w-full max-w-[1100px] px-6">
+      <nav className="app-navbar">
+        <div className="brand">
+          <span className="brand-mark" />
+          <span className="brand-name">LOL PERFORMANCE COACH</span>
         </div>
         <div className="flex items-center gap-5">
-          <span className="font-display text-sm tracking-wide text-teal">
+          <Link className="rune-link no-underline font-medium" href="/dashboard">
             Dashboard
-          </span>
+          </Link>
           {actions}
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 }

@@ -35,7 +35,7 @@ export function DashboardContent() {
 
   return (
     <AiChatProvider>
-      <div className="rune-stagger flex flex-col gap-8 w-full max-w-3xl">
+      <div className="flex flex-col gap-5 w-full">
         {!me.emailVerified && (
           <p
             role="alert"

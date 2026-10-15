@@ -1,0 +1,1 @@
+ALTER TABLE "match_teammates" ADD COLUMN "profile_icon_id" integer;

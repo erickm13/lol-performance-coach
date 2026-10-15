@@ -8,6 +8,7 @@ type Weakness = {
   category: string;
   description: string;
   severity: "low" | "medium" | "high";
+  evidence?: string[];
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -24,10 +25,10 @@ const SEVERITY_LABELS: Record<string, string> = {
   low: "Baja",
 };
 
-const SEVERITY_CLASSES: Record<string, string> = {
-  high: "text-ember border-ember/40",
-  medium: "text-gold border-gold/40",
-  low: "text-teal border-teal/40",
+const BADGE_CLASSES: Record<string, string> = {
+  high: "badge-high",
+  medium: "badge-medium",
+  low: "badge-low",
 };
 
 export function WeaknessesList() {
@@ -43,8 +44,15 @@ export function WeaknessesList() {
   }, []);
 
   return (
-    <div className="rune-stagger flex flex-col gap-6 w-full max-w-3xl">
-      <h1 className="font-display text-xl font-semibold">Debilidades detectadas</h1>
+    <div>
+      <div className="page-head">
+        <div>
+          <h2>Debilidades detectadas</h2>
+          <p className="page-sub">
+            Basado en tus últimas partidas de cola clasificatoria solo/dúo.
+          </p>
+        </div>
+      </div>
 
       {!loaded && <p className="text-mist">Cargando...</p>}
 
@@ -54,23 +62,22 @@ export function WeaknessesList() {
         </p>
       )}
 
-      {weaknesses.map((w) => (
-        <section key={w.id} className="rune-panel p-6 flex flex-col gap-2">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <h2 className="font-display font-semibold">
-              {CATEGORY_LABELS[w.category] ?? w.category}
-            </h2>
-            <span
-              className={`text-xs font-medium uppercase tracking-wide border px-2 py-1 ${
-                SEVERITY_CLASSES[w.severity]
-              }`}
-            >
-              Severidad {SEVERITY_LABELS[w.severity] ?? w.severity}
-            </span>
+      <div className="card-list rune-stagger">
+        {weaknesses.map((w) => (
+          <div key={w.id} className="rune-panel weakness-card">
+            <div className="weakness-card-head">
+              <h3>{CATEGORY_LABELS[w.category] ?? w.category}</h3>
+              <span className={`badge ${BADGE_CLASSES[w.severity] ?? "badge-low"}`}>
+                Severidad {SEVERITY_LABELS[w.severity] ?? w.severity}
+              </span>
+            </div>
+            <p className="desc">{w.description}</p>
+            {w.evidence && w.evidence.length > 0 && (
+              <div className="evidence">Evidencia: {w.evidence.join(" · ")}</div>
+            )}
           </div>
-          <p className="text-mist text-sm">{w.description}</p>
-        </section>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

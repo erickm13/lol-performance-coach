@@ -82,6 +82,7 @@ export const matchTeammates = pgTable("match_teammates", {
     .references(() => matchParticipants.id),
   puuid: text("puuid").notNull(),
   summonerName: text("summoner_name").notNull(),
+  profileIconId: integer("profile_icon_id"),
   win: boolean("win").notNull(),
 });
 

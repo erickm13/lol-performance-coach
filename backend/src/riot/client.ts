@@ -108,6 +108,7 @@ export type RiotMatchParticipant = {
   participantId: number;
   puuid: string;
   riotIdGameName: string;
+  profileIcon: number;
   championName: string;
   teamPosition: string;
   teamId: number;
