@@ -1,4 +1,5 @@
 "use client";
+import { AcademyText } from "./AcademyText";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -11,7 +12,7 @@ import {
   itemTitle,
   type PlanItem,
   SEVERITIES,
-  trainingCopy,
+  trainingCopy as normalizeTrainingCopy,
   type WeaknessData,
 } from "../lib/training";
 import { ScreenState } from "./ScreenState";
@@ -21,6 +22,7 @@ import { ProgressMeter } from "./ProgressMeter";
 import { Tooltip } from "./Tooltip";
 import { useDataDragon } from "../lib/useDataDragon";
 import { ChampionIcon } from "./ChampionIcon";
+import { LearningIcon } from "./LearningIcon";
 
 const SPOTS: Record<string, { x: number; y: number; label: string }> = {
   farming: {
@@ -46,12 +48,16 @@ const date = (value: string) =>
     day: "numeric",
     month: "short",
   });
+
+function trainingCopy(value: string) {
+  return <AcademyText text={normalizeTrainingCopy(value)} />;
+}
 export function TrainingHub() {
   const weaknesses = useResource<WeaknessData>("/riot/weaknesses");
   const plan = useTrainingPlan();
   const assets = useDataDragon();
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [showDone, setShowDone] = useState(true);
+  const [showDone, setShowDone] = useState(false);
   const error = weaknesses.error || plan.error;
   if (error) {
     return (
@@ -140,99 +146,180 @@ export function TrainingHub() {
       : null;
   }
   return (
-    <ScrollRevealRoot className="screen-stack motion-page training-page">
+    <ScrollRevealRoot className="screen-stack motion-page training-page learning-page">
       <header className="page-head" data-reveal="up">
         <div>
-          <h2>Entrenamiento</h2>
+          <span className="learning-eyebrow">DE LA REVISIÓN A LA PRÁCTICA</span>
+          <h2>Tu entrenamiento</h2>
           <p className="page-sub">
-            De lo que muestran tus partidas a lo que puedes practicar hoy.
+            Un ejercicio a la vez. Elige tu práctica y registra lo que
+            completes.
           </p>
         </div>
-        <Link href="/dashboard/debilidades" className="rune-link">
-          Explorar mis debilidades →
+        <Link
+          href="/dashboard/debilidades"
+          className="btn-outline learning-page-link"
+        >
+          Ver mis debilidades →
         </Link>
       </header>
       {plan.notice && (
         <p className="training-save-notice" role="status">{plan.notice}</p>
       )}
       <div className="training-overview">
-        <section className="training-focus section-surface" data-reveal="left">
-          <header className="champ-stats-head">
-            <h3>Tu objetivo semanal</h3>
+        <section
+          className="training-focus training-start-card section-surface"
+          data-reveal="left"
+          aria-labelledby="training-start-title"
+        >
+          <div className="training-start-meta">
+            <span className="learning-card-kicker">
+              <LearningIcon
+                kind={next ? "practice" : drills.length ? "check" : "target"}
+              />
+              {next
+                ? "EMPIEZA AQUÍ"
+                : drills.length
+                ? "EJERCICIOS COMPLETADOS"
+                : "TU PUNTO DE PARTIDA"}
+            </span>
             {plan.data.plan && (
-              <span>
+              <span className="learning-week-date">
                 {date(plan.data.plan.weekStart)} —{" "}
                 {date(plan.data.plan.weekEnd)}
               </span>
             )}
-          </header>
-          <div className="section-body">
-            <span className="teaser-label">
-              {category
-                ? CATEGORIES[category] ?? "Tu foco"
-                : "Tu punto de partida"}
+          </div>
+          <div className="training-start-copy">
+            <span className="learning-topic-label">
+              {next
+                ? CATEGORIES[itemCategory(next)] ?? "Práctica personalizada"
+                : "Tu plan semanal"}
             </span>
-            <h3>
-              {category
-                ? GOALS[category] ??
-                  "Lleva tus objetivos a la siguiente partida."
+            <h3 id="training-start-title">
+              {next
+                ? itemTitle(next)
+                : drills.length
+                ? "Has completado tus ejercicios"
                 : enough
                 ? "Prepara tu próxima práctica"
                 : "Completa tu muestra de partidas"}
             </h3>
             <p className="desc">
-              {trainingCopy(
-                focus?.description ?? urgent?.description ?? (enough
-                  ? "No hay patrones de debilidad detectados en la muestra actual. Sigue revisando tus decisiones."
-                  : `Necesitas ${
-                    weaknesses.data.sample?.required ?? 10
-                  } partidas con métricas para detectar patrones.`),
-              )}
+              {next
+                ? trainingCopy(next.description)
+                : drills.length
+                ? "Revisa tus próximas partidas para observar cómo aplicaste lo aprendido. Tu siguiente plan estará disponible la próxima semana."
+                : trainingCopy(
+                  focus?.description ?? urgent?.description ?? (enough
+                    ? "No hay patrones de debilidad detectados en la muestra actual. Sigue revisando tus decisiones."
+                    : `Necesitas ${
+                      weaknesses.data.sample?.required ?? 10
+                    } partidas con métricas para detectar patrones.`),
+                )}
             </p>
-            {urgent && !focus && (
-              <span className={`badge badge-${urgent.severity}`}>
-                Prioridad {SEVERITIES[urgent.severity] ?? urgent.severity}
+          </div>
+          <div className="training-start-actions">
+            {next
+              ? (
+                <a
+                  className="rune-btn"
+                  href={`#exercise-${next.id}`}
+                  onClick={() => setSelectedId(next.id)}
+                >
+                  Empezar ejercicio <span aria-hidden="true">→</span>
+                </a>
+              )
+              : drills.length
+              ? (
+                <Link className="rune-btn" href="/dashboard/historial">
+                  Revisar mis partidas →
+                </Link>
+              )
+              : !plan.data.plan
+              ? enough
+                ? (
+                  <button
+                    className="rune-btn"
+                    disabled={plan.generating}
+                    onClick={plan.generate}
+                  >
+                    {plan.generating
+                      ? "Preparando tu plan…"
+                      : "Generar mi plan semanal"}
+                  </button>
+                )
+                : (
+                  <Link className="rune-btn" href="/dashboard">
+                    Actualizar partidas
+                  </Link>
+                )
+              : null}
+            {next && (
+              <span>
+                {pending.length} {pending.length === 1
+                  ? "ejercicio pendiente"
+                  : "ejercicios pendientes"}
               </span>
             )}
-            {!plan.data.plan && (
-              <div className="training-item-action">
-                {enough
-                  ? (
-                    <button
-                      className="rune-btn"
-                      disabled={plan.generating}
-                      onClick={plan.generate}
-                    >
-                      {plan.generating
-                        ? "Preparando tu plan…"
-                        : "Generar mi plan semanal"}
-                    </button>
-                  )
-                  : (
-                    <Link className="rune-btn" href="/dashboard">
-                      Actualizar partidas
-                    </Link>
-                  )}
-              </div>
-            )}
-            {plan.generating && (
-              <p className="page-sub" role="status">
-                El coach está preparando las explicaciones. Puedes esperar aquí.
-              </p>
-            )}
-            {plan.mutationError && (
-              <p className="text-ember" role="alert">{plan.mutationError}</p>
-            )}
-            {plan.data.message && (
-              <p className="page-sub" role="status">{plan.data.message}</p>
-            )}
           </div>
+          {category && (
+            <details className="training-weekly-context">
+              <summary>
+                <LearningIcon kind="target" />Objetivo de esta
+                semana<span aria-hidden="true">+</span>
+              </summary>
+              <div>
+                <strong>
+                  {GOALS[category] ??
+                    "Lleva tus objetivos a la siguiente partida."}
+                </strong>
+                <p className="desc">
+                  {trainingCopy(
+                    focus?.description ?? urgent?.description ?? "",
+                  )}
+                </p>
+                <Link
+                  className="rune-link"
+                  href={`/dashboard/debilidades#weakness-${category}`}
+                >
+                  Revisar el análisis de esta área →
+                </Link>
+                <p className="learning-context-note">
+                  {plan.data.plan
+                    ? "Este objetivo pertenece al plan guardado. Las debilidades pueden cambiar al sincronizar nuevas partidas."
+                    : "Este objetivo parte del análisis actual de tus partidas."}
+                </p>
+              </div>
+            </details>
+          )}
+          {urgent && !focus && !plan.data.plan && (
+            <span className={`badge badge-${urgent.severity}`}>
+              Prioridad {SEVERITIES[urgent.severity] ?? urgent.severity}
+            </span>
+          )}
+          {plan.generating && (
+            <p className="page-sub" role="status">
+              El coach está preparando las explicaciones. Puedes esperar aquí.
+            </p>
+          )}
+          {plan.mutationError && (
+            <p className="text-ember" role="alert">{plan.mutationError}</p>
+          )}
+          {plan.data.message && (
+            <p className="page-sub" role="status">{plan.data.message}</p>
+          )}
         </section>
-        <section className="section-surface" data-reveal="right">
-          <header className="champ-stats-head">
-            <h3>Tu progreso semanal</h3>
-          </header>
-          <div className="section-body training-progress">
+        <section
+          className="section-surface training-progress-card"
+          data-reveal="right"
+          aria-labelledby="training-progress-title"
+        >
+          <div className="training-progress-heading">
+            <span className="learning-card-kicker">PASO A PASO</span>
+            <h3 id="training-progress-title">Tu progreso semanal</h3>
+          </div>
+          <div className="training-progress">
             <strong className="training-progress-value">
               {drills.length
                 ? <CountUp value={progress} from={100} suffix="%" startOnView />
@@ -257,57 +344,60 @@ export function TrainingHub() {
                 label="Ejercicios completados esta semana"
               />
             )}
-            <p className="page-sub">
-              Este porcentaje registra tu práctica. Para valorar cambios en tu
-              rendimiento, revisa tus próximas partidas.
+            {!!drills.length && (
+              <div className="training-progress-legend">
+                <span>
+                  <i />
+                  {pending.length} pendientes
+                </span>
+                <span>
+                  <i />
+                  {done} completados
+                </span>
+              </div>
+            )}
+            <p className="learning-context-note">
+              Registra la práctica que completas. Tu evolución en el juego se
+              observa en las próximas partidas.
             </p>
-            <Link href="/dashboard/historial" className="rune-link">
-              Revisar mis partidas →
-            </Link>
           </div>
         </section>
       </div>
-      {drills.length > 0 && (
-        <section className="training-next section-surface" data-reveal="up">
-          <span className="teaser-label">Tu próxima práctica</span>
-          <h3>
-            {next
-              ? itemTitle(next)
-              : "Has completado los ejercicios de esta semana"}
-          </h3>
-          <p className="desc">
-            {next
-              ? trainingCopy(next.description)
-              : "Revisa tus nuevas partidas para observar cómo aplicaste lo aprendido. Tu siguiente plan estará disponible la próxima semana."}
-          </p>
-          {next && (
-            <a
-              className="rune-link"
-              href={`#exercise-${next.id}`}
-              onClick={() => setSelectedId(next.id)}
+      {!!groups.length && (
+        <section
+          id="weekly-plan"
+          className="training-weekly-plan"
+          data-reveal="up"
+          aria-labelledby="weekly-plan-title"
+        >
+          <header className="learning-section-intro training-plan-intro">
+            <div>
+              <h3 id="weekly-plan-title">Tus ejercicios de esta semana</h3>
+              <p>
+                Practica la indicación y márcala como completada cuando
+                termines.
+              </p>
+            </div>
+            <div
+              className="learning-filter"
+              role="group"
+              aria-label="Filtrar ejercicios"
             >
-              Ir al ejercicio →
-            </a>
-          )}
-        </section>
-      )}
-      {!!items.length && (
-        <section id="weekly-plan" className="section-surface" data-reveal="up">
-          <header className="champ-stats-head">
-            <h3>Tu plan semanal</h3>
-            <button
-              type="button"
-              className="rune-link"
-              aria-pressed={showDone}
-              onClick={() =>
-                setShowDone((old) =>
-                  !old
-                )}
-            >
-              {showDone
-                ? "Ocultar ejercicios completados"
-                : `Ver completados (${done})`}
-            </button>
+              <button
+                type="button"
+                aria-pressed={!showDone}
+                onClick={() => setShowDone(false)}
+              >
+                Pendientes <span>{pending.length}</span>
+              </button>
+              <button
+                type="button"
+                aria-pressed={showDone}
+                onClick={() => setShowDone(true)}
+              >
+                Todos <span>{drills.length}</span>
+              </button>
+            </div>
           </header>
           <div className="training-groups">
             {groups.map((group) => {
@@ -320,29 +410,56 @@ export function TrainingHub() {
               const groupDrills = groupItems.filter((item) =>
                 item.type === "drill"
               );
+              const groupDone = groupDrills.filter((item) =>
+                item.completed
+              ).length;
               return (
                 <article
                   key={group}
                   id={`training-${group}`}
-                  className="training-group"
+                  className={`training-group${
+                    groupDrills.length && groupDone === groupDrills.length
+                      ? " training-group-done"
+                      : ""
+                  }`}
                   data-reveal="up"
                 >
                   <div className="training-group-head">
-                    <h3>{CATEGORIES[group] ?? "Práctica personalizada"}</h3>
+                    <span className="learning-category-icon">
+                      <LearningIcon
+                        kind={groupDone === groupDrills.length &&
+                            groupDrills.length
+                          ? "check"
+                          : group}
+                      />
+                    </span>
+                    <div>
+                      <h3>{CATEGORIES[group] ?? "Práctica personalizada"}</h3>
+                      <span className="training-group-count">
+                        {groupDrills.length
+                          ? (
+                            <>
+                              <CountUp value={groupDone} startOnView /> de{" "}
+                              {groupDrills.length} ejercicios completados
+                            </>
+                          )
+                          : "Objetivo de tu plan"}
+                      </span>
+                    </div>
                     <Link
                       className="rune-link"
                       href={`/dashboard/debilidades#weakness-${group}`}
                     >
-                      Ver evidencia →
+                      Ver el hallazgo →
                     </Link>
                   </div>
                   {groupFocus && (
                     <div className="training-group-focus">
-                      <p className="desc">
-                        {trainingCopy(groupFocus.description)}
-                      </p>
                       <details className="training-explanation">
-                        <summary>Revisar el objetivo</summary>
+                        <summary>¿Por qué está en tu plan?</summary>
+                        <p className="desc">
+                          {trainingCopy(groupFocus.description)}
+                        </p>
                         {groupFocus.llmExplanation && (
                           <p>{trainingCopy(groupFocus.llmExplanation)}</p>
                         )}
@@ -351,9 +468,7 @@ export function TrainingHub() {
                     </div>
                   )}
                   {groupDrills.filter((item) => showDone || !item.completed)
-                    .sort((a, b) =>
-                      Number(a.completed) - Number(b.completed)
-                    )
+                    .sort((a, b) => Number(a.completed) - Number(b.completed))
                     .map((item) => (
                       <div
                         id={`exercise-${item.id}`}
@@ -364,7 +479,28 @@ export function TrainingHub() {
                         data-reveal="up"
                       >
                         <div>
-                          <span className="teaser-label">Ejercicio</span>
+                          <div className="training-exercise-meta">
+                            <span className="learning-card-kicker">
+                              EJERCICIO{" "}
+                              {String(drills.indexOf(item) + 1).padStart(
+                                2,
+                                "0",
+                              )}
+                            </span>
+                            <span
+                              className={`learning-status${
+                                item.completed ? " is-done" : ""
+                              }`}
+                            >
+                              {item.completed
+                                ? (
+                                  <>
+                                    <LearningIcon kind="check" />Completado
+                                  </>
+                                )
+                                : "Pendiente"}
+                            </span>
+                          </div>
                           <h4>{itemTitle(item)}</h4>
                           <p className="desc">
                             {trainingCopy(item.description)}
@@ -396,8 +532,8 @@ export function TrainingHub() {
       {!!recommendations.length && (
         <section className="section-surface" data-reveal="up">
           <header className="champ-stats-head">
-            <h3>Tu selección de campeones</h3>
-            <span>Recomendaciones del plan semanal</span>
+            <h3>Campeones para acompañar tu práctica</h3>
+            <span>Recomendaciones adicionales</span>
           </header>
           <div className="training-champions">
             {recommendations.map((item) => {
@@ -438,8 +574,8 @@ export function TrainingHub() {
       {!!drills.length && (
         <section id="practice-map" className="section-surface" data-reveal="up">
           <header className="champ-stats-head">
-            <h3>Lleva tu ejercicio a la Grieta</h3>
-            <span>Zona orientativa de práctica</span>
+            <h3>¿Dónde puedes practicar?</h3>
+            <span>Apoyo visual · zona orientativa</span>
           </header>
           <div className="section-body">
             <label className="practice-selector">

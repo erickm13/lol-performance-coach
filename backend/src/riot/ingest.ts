@@ -43,6 +43,7 @@ async function getSoloRank(puuid: string) {
   const solo = entries.find((e) => e.queueType === "RANKED_SOLO_5x5");
   if (!solo) {
     return {
+      rankUpdatedAt: new Date(),
       soloTier: null,
       soloRank: null,
       soloLp: null,
@@ -51,6 +52,7 @@ async function getSoloRank(puuid: string) {
     };
   }
   return {
+    rankUpdatedAt: new Date(),
     soloTier: solo.tier,
     soloRank: solo.rank,
     soloLp: solo.leaguePoints,

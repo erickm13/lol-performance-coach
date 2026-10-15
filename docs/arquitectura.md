@@ -38,7 +38,7 @@ Flujo end-to-end:
 
 El modelo entidad-relación completo (diagrama, diccionario de datos y decisiones de normalización) está en su propio documento: [modelo-entidad-relacion.md](modelo-entidad-relacion.md).
 
-Resumen de entidades: `users`, `riot_accounts`, `ingestion_jobs`, `matches`, `match_participants`, `match_metrics`, `weaknesses`, `training_plans`, `training_plan_items`, `plan_progress`.
+Resumen de entidades: `users`, `player_profiles`, `riot_accounts`, `ingestion_jobs`, `matches`, `match_participants`, `match_metrics`, `weaknesses`, `training_plans`, `training_plan_items`, `plan_progress`.
 
 ## 3. Cómo engancharían las funcionalidades futuras (sin rediseñar lo anterior)
 
@@ -52,7 +52,7 @@ Resumen de entidades: `users`, `riot_accounts`, `ingestion_jobs`, `matches`, `ma
 
 ## 4. Endpoints REST (backend Deno + Hono)
 
-Rutas realmente implementadas (prefijos montados en `app.ts`: `/auth`, `/riot`, `/ai`, `/settings`):
+Rutas realmente implementadas (prefijos montados en `app.ts`: `/auth`, `/riot`, `/ai`, `/settings`, `/player`, `/preparation`):
 
 ```
 # Salud
@@ -140,3 +140,12 @@ La proyección se centraliza en `lib/riftProjection.ts` y sus nueve referencias 
 ### Exploración de la partida
 
 `MatchReviewProvider` comparte el análisis y la selección entre `MatchCoachSummary` y `MatchEventMap`. `useMatchInsights` conserva una sola secuencia de solicitudes/caché y la espera ante 429; generar el resumen no hace una consulta LLM adicional. El resumen elige ejemplos existentes, prioriza un error confirmado sobre hipótesis y muestra estados vacíos/parciales sin inventar evaluaciones ni una jerarquía de severidad. Las fases temporales solo filtran la presentación, conservando los índices originales del timeline y la cobertura completa del backend. La selección explícita (clic, toque o Enter/Espacio) fija el panel y atenúa otros marcadores/flechas; hover/foco permite una previsualización. `Tooltip` expone estas opciones de forma optativa para conservar su comportamiento en los demás componentes. `MatchSectionNav` enlaza las regiones accesibles de resumen/equipos/mapa, sigue el desplazamiento y respeta movimiento reducido.
+
+
+## Perfil, aprendizaje y comunidad (incremento 2026-10-15)
+
+La migración **0009** agrega el perfil opcional uno a uno del usuario, la versión de reglas aplicada a la cuenta y la fecha de sincronización del rango. Las rutas `/player/profile`, `/player/ranking`, `/preparation/catalog` y `/preparation/guide` requieren sesión. El registro acepta preferencias opcionales en la misma transacción que crea el usuario. El ranking publica solo participantes que dieron consentimiento, por región y rango oficial Solo/Dúo. Universidad es opcional y autodeclarada.
+
+El chat obtiene perfil, muestra reciente por rol, debilidades, plan/cumplimiento y partida propia desde el servidor; recibe un historial acotado para continuidad y deja de confiar en estadísticas suministradas por el cliente. Las reglas usan referencias internas por rol y excluyen soporte del objetivo de CS. Los nuevos planes adaptan prioridad/ejercicios al perfil y tiempo disponible; no sustituyen un plan activo. El mapa incluye preferencias compactas, con caché v5 ligada a su revisión, sin cambiar coordenadas ni reducir cobertura de eventos.
+
+La Academia es un catálogo editorial versionado con 73 términos originales y trece guías; los enlaces en consejos se resuelven localmente, sin HTML ni URLs del LLM. La preparación manual usa plantillas transparentes y catálogos de Data Dragon con caché de una hora en el servidor; no usa Groq ni acceso automático al cliente. El detalle de contratos, fuentes, criterios y limitaciones está en [perfil-academia-comunidad.md](perfil-academia-comunidad.md).

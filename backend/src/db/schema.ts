@@ -18,6 +18,20 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const playerProfiles = pgTable("player_profiles", {
+  userId: uuid("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  primaryRole: text("primary_role"), secondaryRole: text("secondary_role"),
+  champions: jsonb("champions").$type<string[]>().notNull().default([]),
+  experience: text("experience"),
+  improvementAreas: jsonb("improvement_areas").$type<string[]>().notNull().default([]),
+  targetRoles: jsonb("target_roles").$type<string[]>().notNull().default([]),
+  weeklyMinutes: integer("weekly_minutes"),
+  universityName: text("university_name"), universityKey: text("university_key"),
+  rankingVisible: boolean("ranking_visible").notNull().default(false),
+  onboardingCompleted: boolean("onboarding_completed").notNull().default(false),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const riotAccounts = pgTable("riot_accounts", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull().references(() => users.id),
@@ -26,6 +40,8 @@ export const riotAccounts = pgTable("riot_accounts", {
   tagLine: text("tag_line").notNull(),
   region: text("region").notNull(),
   primaryRole: text("primary_role"),
+  analysisVersion: text("analysis_version").notNull().default("legacy"),
+  rankUpdatedAt: timestamp("rank_updated_at", { withTimezone: true }),
   profileIconId: integer("profile_icon_id"),
   summonerLevel: integer("summoner_level"),
   soloTier: text("solo_tier"),
@@ -158,4 +174,13 @@ export const authTokens = pgTable("auth_tokens", {
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   usedAt: timestamp("used_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// One revocable, expiring connection per platform account; no LCU secrets.
+export const liveDraftConnections = pgTable("live_draft_connections", {
+  userId: uuid("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  receivedAt: timestamp("received_at", { withTimezone: true }),
+  snapshot: jsonb("snapshot"),
 });

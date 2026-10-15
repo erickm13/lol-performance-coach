@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { AcademyNavigationContext } from "./AcademyNavigationContext";
 import { getBackendUrl } from "../lib/api";
 
 type ChatMessage = { role: "bot" | "user"; text: string };
@@ -9,6 +10,7 @@ type ChatContextKind = "general" | "match";
 const JUNGLE_CAMPS = ["Gromp", "Krug", "Lóbrego", "Picuchillo", "Escurridizo"];
 
 export type MatchSummary = {
+  id?: string;
   summonerName?: string;
   champion?: string;
   win?: boolean;
@@ -44,7 +46,7 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
   const hasConversation = useRef(false);
   const lastRequest = useRef<{
     context: ChatContextKind;
-    options?: { message?: string; match?: MatchSummary };
+    options?: { message?: string; match?: MatchSummary; history?: ChatMessage[] };
   } | null>(null);
   // Recordamos con qué contexto se abrió el chat (por ejemplo, la partida
   // analizada) para que una pregunta de seguimiento no pierda esos datos.
@@ -63,7 +65,7 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fetchChat = useCallback(
-    async (context: ChatContextKind, options?: { message?: string; match?: MatchSummary }) => {
+    async (context: ChatContextKind, options?: { message?: string; match?: MatchSummary; history?: ChatMessage[] }) => {
       activeRequest.current?.abort();
       const controller = new AbortController();
       activeRequest.current = controller;
@@ -79,7 +81,8 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify({
             context,
             message: options?.message,
-            match: options?.match,
+            matchId: options?.match?.id,
+            history: options?.history ?? [],
           }),
         });
         const data = await res.json().catch(() => null);
@@ -129,10 +132,10 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
       const message = text.trim();
       if (!message || activeRequest.current) return false;
       setMessages((prev) => [...prev, { role: "user", text: message }]);
-      void fetchChat(activeContext.kind, { message, match: activeContext.match });
+      void fetchChat(activeContext.kind, { message, match: activeContext.match, history: messages.slice(-8) });
       return true;
     },
-    [fetchChat, activeContext],
+    [fetchChat, activeContext, messages],
   );
 
   const retryLastRequest = useCallback(() => {
@@ -144,7 +147,7 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
     <AiChatContext.Provider
       value={{ coachName, isOpen, messages, loading, error, activeContext, openChat, closeChat, sendMessage, retryLastRequest }}
     >
-      {children}
+      <AcademyNavigationContext.Provider value={closeChat}>{children}</AcademyNavigationContext.Provider>
     </AiChatContext.Provider>
   );
 }

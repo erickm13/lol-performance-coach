@@ -1,4 +1,5 @@
 "use client";
+import { AcademyText } from "./AcademyText";
 import { duration } from "../lib/matches";
 import { CoachIcon } from "./CoachIcon";
 import { CountUp } from "./CountUp";
@@ -100,7 +101,7 @@ export function MatchCoachSummary() {
               ? (
                 <>
                   <h4>{card.title}</h4>
-                  <p>{card.copy}</p>
+                  <p><AcademyText text={card.copy ?? ""} /></p>
                   <button
                     type="button"
                     className="rune-link"

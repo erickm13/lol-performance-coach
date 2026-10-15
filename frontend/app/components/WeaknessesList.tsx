@@ -1,4 +1,5 @@
 "use client";
+import { AcademyText } from "./AcademyText";
 import Link from "next/link";
 import { useResource } from "../lib/useResource";
 import {
@@ -13,6 +14,7 @@ import { matchDate } from "../lib/matches";
 import { ScreenState } from "./ScreenState";
 import { ScrollRevealRoot } from "./ScrollRevealRoot";
 import { CountUp } from "./CountUp";
+import { LearningIcon } from "./LearningIcon";
 export function WeaknessesList() {
   const resource = useResource<WeaknessData>("/riot/weaknesses");
   const plan = useResource<PlanData>("/riot/training-plan");
@@ -39,44 +41,66 @@ export function WeaknessesList() {
     );
   }
   const insufficient = data.sample && data.sample.count < data.sample.required;
+  const severityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 };
+  const findings = [...data.weaknesses].sort((a, b) =>
+    (severityOrder[a.severity] ?? 3) - (severityOrder[b.severity] ?? 3)
+  );
+  const highPriority =
+    findings.filter((finding) => finding.severity === "high").length;
   return (
-    <ScrollRevealRoot className="screen-stack motion-page weaknesses-page">
+    <ScrollRevealRoot className="screen-stack motion-page weaknesses-page learning-page">
       <header className="page-head" data-reveal="up">
         <div>
-          <h2>Debilidades detectadas</h2>
+          <span className="learning-eyebrow">ENTIENDE TUS PARTIDAS</span>
+          <h2>¿Qué puedes mejorar?</h2>
           <p className="page-sub">
-            Patrones de las últimas diez partidas guardadas, de las colas que
-            hayas sincronizado.
+            Descubre los patrones, revisa las partidas y elige qué practicar.
           </p>
         </div>
-        <Link className="rune-link" href="/dashboard/entrenamiento">
-          Ir a mi entrenamiento →
+        <Link
+          className="btn-outline learning-page-link"
+          href="/dashboard/entrenamiento"
+        >
+          Mi entrenamiento →
         </Link>
       </header>
-      <div className="analysis-sample" data-reveal="up">
-        <div>
-          <span className="teaser-label">Muestra disponible</span>
-          <p>
+      <section
+        className="learning-snapshot"
+        aria-label="Resumen del análisis"
+        data-reveal="up"
+      >
+        <div className="learning-snapshot-stat">
+          <span>Partidas analizadas</span>
+          <strong>
             {data.sample
               ? (
                 <>
-                  <CountUp value={data.sample.count} startOnView /> de{" "}
-                  {data.sample.required} partidas con métricas
+                  <CountUp value={data.sample.count} startOnView />
+                  <small>/ {data.sample.required}</small>
                 </>
               )
-              : "Últimas partidas guardadas"}
-          </p>
+              : "Últimas guardadas"}
+          </strong>
+          <small>Muestra de las últimas diez partidas</small>
         </div>
-        <div>
-          <span className="teaser-label">Patrones detectados</span>
-          <p>
-            <CountUp value={data.weaknesses.length} startOnView />
-          </p>
+        <div className="learning-snapshot-stat">
+          <span>Áreas para mejorar</span>
+          <strong>
+            <CountUp value={findings.length} startOnView />
+          </strong>
+          <small>Patrones detectados por el sistema</small>
         </div>
-        <Link className="rune-link" href="/dashboard">
+        <div className="learning-snapshot-stat">
+          <span>Prioridad alta</span>
+          <strong className={highPriority ? "learning-priority-number" : ""}>
+            <CountUp value={highPriority} startOnView />
+          </strong>
+          <small>Hallazgos para revisar primero</small>
+        </div>
+        <Link className="rune-link learning-snapshot-action" href="/dashboard">
           Actualizar partidas →
         </Link>
-      </div>
+      </section>
       {insufficient && (
         <ScreenState
           title="Todavía faltan partidas para detectar patrones"
@@ -102,37 +126,70 @@ export function WeaknessesList() {
           revisando tus partidas para encontrar oportunidades de mejora.
         </ScreenState>
       )}
+      {!!findings.length && (
+        <div className="learning-section-intro" data-reveal="up">
+          <div>
+            <h3>Tus áreas de mejora</h3>
+            <p>
+              Ordenadas por prioridad. Cada hallazgo incluye una acción y sus
+              evidencias.
+            </p>
+          </div>
+          <nav
+            className="weakness-jump-nav"
+            aria-label="Ir a un área de mejora"
+          >
+            {findings.map((finding) => (
+              <a key={finding.id} href={`#weakness-${finding.category}`}>
+                <LearningIcon kind={finding.category} />
+                {CATEGORIES[finding.category] ?? finding.category}
+              </a>
+            ))}
+          </nav>
+        </div>
+      )}
       <div className="weakness-action-list">
-        {data.weaknesses.map((w, index) => (
+        {findings.map((w, index) => (
           <article
             id={`weakness-${w.category}`}
             key={w.id}
             className="section-surface weakness-action-card"
+            data-priority={w.severity}
             data-reveal="up"
-            data-reveal-delay={String(index % 3)}
+            data-reveal-delay={String(index % 2)}
           >
-            <header className="champ-stats-head">
-              <h3>{CATEGORIES[w.category] ?? w.category}</h3>
+            <header className="learning-card-heading">
+              <span className="learning-category-icon">
+                <LearningIcon kind={w.category} />
+              </span>
+              <div>
+                <span className="learning-card-kicker">
+                  ÁREA {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3>{CATEGORIES[w.category] ?? w.category}</h3>
+              </div>
               <span className={`badge badge-${w.severity}`}>
                 Prioridad {SEVERITIES[w.severity] ?? w.severity}
               </span>
             </header>
             <div className="section-body">
               <div className="weakness-reason">
-                <div>
-                  <span className="teaser-label">
-                    Qué muestran tus partidas
-                  </span>
-                  <p className="desc">{w.description}</p>
+                <div className="weakness-observation">
+                  <h4>Lo que muestran tus partidas</h4>
+                  <p className="desc">
+                    <AcademyText text={w.description} />
+                  </p>
                 </div>
-                <div>
-                  <span className="teaser-label">Qué puedes trabajar</span>
+                <div className="weakness-next-action">
+                  <span className="learning-card-kicker">
+                    TU SIGUIENTE PASO
+                  </span>
                   <p className="desc">
                     {GOALS[w.category] ??
                       "Revisa estas decisiones y prepara tu próximo ejercicio."}
                   </p>
                   <Link
-                    className="rune-link"
+                    className="learning-action-link"
                     href={plan.data?.items.some((item) =>
                         itemCategory(item) === w.category
                       )
@@ -142,14 +199,14 @@ export function WeaknessesList() {
                     {plan.data?.items.some((item) =>
                         itemCategory(item) === w.category
                       )
-                      ? "Ver ejercicios para este objetivo"
+                      ? "Practicar esta área"
                       : "Preparar mi entrenamiento"} →
                   </Link>
                 </div>
               </div>
               <details className="weakness-evidence">
                 <summary>
-                  Partidas que sustentan este hallazgo{w.evidenceMatches?.length
+                  Ver partidas de evidencia{w.evidenceMatches?.length
                     ? ` (${w.evidenceMatches.length})`
                     : ""}
                 </summary>
@@ -194,6 +251,38 @@ export function WeaknessesList() {
           </article>
         ))}
       </div>
+      {data.analysis && (
+        <details className="analysis-method learning-method" data-reveal="up">
+          <summary>Cómo se detectan estos patrones</summary>
+          <p className="page-sub">
+            {data.analysis.note}{" "}
+            La referencia se elige por el rol registrado en cada partida, no por
+            tu preferencia de perfil.
+          </p>
+          <div className="table-scroll">
+            <table className="reference-table">
+              <thead>
+                <tr>
+                  <th>Línea</th>
+                  <th>CS/min</th>
+                  <th>Visión/min</th>
+                  <th>Participación en kills</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(data.analysis.references).map(([key, item]) => (
+                  <tr key={key}>
+                    <th>{item.label}</th>
+                    <td>{item.cs ?? "No se evalúa"}</td>
+                    <td>{item.vision}</td>
+                    <td>{Math.round(item.participation * 100)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      )}
     </ScrollRevealRoot>
   );
 }

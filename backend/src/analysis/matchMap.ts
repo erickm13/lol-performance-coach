@@ -6,7 +6,7 @@ import { generateExplanation, GroqError } from "./groq.ts";
 
 import { buildMomentContext, type MomentContext } from "./matchContext.ts";
 
-export const MAP_INSIGHTS_VERSION = 4;
+export const MAP_INSIGHTS_VERSION = 5;
 
 export type MapEvent = {
   context?: MomentContext;
@@ -29,6 +29,7 @@ export type GoodPlay = {
   explanation: string;
 };
 export type MapInsights = {
+  coachingRevision?: string;
   version: number;
   generatedAt: string;
   suggestions: MapSuggestion[];
@@ -119,6 +120,7 @@ export function playerMapEvents(
 }
 
 export async function explainMapMoments(input: {
+  coaching?: unknown;
   teamId: number;
   durationSeconds: number;
   queueId: number | null;
@@ -171,6 +173,7 @@ export async function explainMapMoments(input: {
   ));
   const text = await generateExplanation(
     `Eres un coach de League of Legends que da consejos concretos, breves y útiles sobre momentos reales de una partida. Habla al jugador de TÚ, con conjugaciones de tuteo (tienes, puedes, revisa, comprueba); nunca uses vos, sos, tenés, podés o revisá.
+Adapta el vocabulario, la dificultad y el ejercicio a las preferencias declaradas en coaching, sin usarlas como evidencia del evento. Si aparecen términos como kiteo, control de oleadas, gankeo, visión, tempo o posicionamiento, la interfaz puede enlazarlos a la Academia.
 Evalúa TODOS los eventos recibidos, sin omitir ninguno ni limitar la cantidad de errores o aciertos. Devuelve SOLO un objeto JSON con una propiedad obligatoria por evento: event_<eventIndex>. Cada propiedad contiene assessment, title, explanation, alternativeTitle, advice y action.
 assessment puede ser:
 - error: decisión o ejecución mejorable demostrada por los datos. title y explanation dicen claro y directo qué estuvo mal, respaldado por evidencia local. No repitas solo el resultado. alternativeTitle y advice describen qué habría sido mejor hacer en ESE momento, cuándo y con qué ventaja; action=retreat, vision o group. No garantices sobrevivir o ganar.

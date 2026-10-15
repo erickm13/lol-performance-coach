@@ -78,8 +78,8 @@ npm run dev
 3. **Inicio de sesión.** Entra con tus credenciales. La sesión se mantiene con una cookie firmada (JWT).
 4. **Vincular cuenta de Riot.** En el dashboard, en la tarjeta de cuenta de Riot, introduce tu Riot ID. Al vincular, el sistema ejecuta la **ingesta inicial** de tus partidas recientes de forma síncrona.
 5. **Dashboard.** Verás tus partidas recientes, tu foco de mejora y el siguiente ejercicio pendiente, con el cumplimiento semanal de tus ejercicios. Haz clic en la fila de una partida para abrir su detalle; los iconos mantienen sus tooltips y el botón del coach abre el chat.
-6. **Debilidades detectadas** (`/dashboard/debilidades`). El motor de reglas lista los patrones por prioridad y muestra la muestra disponible de las últimas diez partidas guardadas (sin restringir a Solo/Dúo). Cada hallazgo explica qué trabajar y permite desplegar enlaces a las partidas que lo sustentan. Se distinguen cuenta sin vincular, muestra insuficiente, ausencia de patrones y error de carga.
-7. **Entrenamiento** (`/dashboard/entrenamiento`). Reúne el objetivo de la semana, tu siguiente práctica y el plan semanal. Genera tu plan desde aquí; los ejercicios se agrupan por objetivo y las recomendaciones de campeones aparecen aparte. Las explicaciones del coach son desplegables. La ruta antigua `/dashboard/plan` redirige a esta sección.
+6. **Debilidades** (`/dashboard/debilidades`). El resumen muestra partidas disponibles, áreas de mejora y prioridades altas. Los hallazgos aparecen por prioridad: cada tarjeta distingue lo observado en tus partidas del siguiente paso para practicarlo. Despliega «Ver partidas de evidencia» para abrir las partidas que lo sustentan. La muestra contempla las últimas diez partidas guardadas, sin restringir a Solo/Dúo. Se distinguen cuenta sin vincular, muestra insuficiente, ausencia de patrones y error de carga.
+7. **Entrenamiento** (`/dashboard/entrenamiento`). Empieza por la tarjeta «Empieza aquí» y pulsa «Empezar ejercicio» para ir a la práctica pendiente. Junto a ella se muestra tu progreso semanal. El objetivo de la semana y las explicaciones del coach se pueden desplegar. Los ejercicios se agrupan por área; «Pendientes» muestra lo que falta y «Todos» incluye lo completado. Genera tu plan desde aquí si aún no tienes uno; las recomendaciones de campeones y el mapa orientativo aparecen después. La ruta antigua `/dashboard/plan` redirige a esta sección.
 8. **Marcar progreso.** Completa los ejercicios desde el plan o desde el mapa del ejercicio seleccionado. Los pendientes aparecen primero y puedes ocultar los completados. El porcentaje principal cuenta únicamente ejercicios (`drill`); revisar objetivos o recomendaciones se registra aparte y no aumenta ese porcentaje. Cumplimiento no implica mejora de rendimiento: contrástalo con tus próximas partidas. La confirmación espera a que el servidor guarde el progreso, y los errores permiten reintentar.
 9. **Re-sincronizar.** Cuando juegues más partidas, usa *sincronizar* para traer las nuevas y reevaluar debilidades y plan.
 10. **Chat de coach (IA).** El widget de chat flotante responde preguntas sobre tu rendimiento, anclado a tus métricas reales.
@@ -110,7 +110,7 @@ Desde la raíz del repo, con tu `.env` ya configurado:
 docker compose up -d --build backend
 ```
 
-El backend aplica automáticamente la migración `0008` al arrancar. Si usás el frontend con `npm run dev`, recargá la página; si también corre en Docker, reconstruí ese servicio:
+El backend aplica automáticamente las migraciones pendientes, incluida `0009` para perfil y comunidad, al arrancar. Si usás el frontend con `npm run dev`, recargá la página; si también corre en Docker, reconstruí ese servicio:
 
 ```bash
 docker compose up -d --build frontend
@@ -135,3 +135,16 @@ cd frontend && npm test          # 26 tests
 ```
 
 Ver el detalle en [evidencias-de-pruebas.md](evidencias-de-pruebas.md).
+
+
+## Perfil, Academia, ranking y preparación manual
+
+- **Mi cuenta → Mi perfil de jugador**: completa o edita líneas, campeones, experiencia, objetivos y tiempo disponible. El registro ya ofrece el formulario por pasos; las cuentas anteriores tienen un recordatorio. Universidad y participación pública son opcionales.
+- El coach usa tus preferencias junto con tus propias partidas y el avance del plan. Las cifras y la partida se consultan en el servidor. Un plan semanal ya activo conserva su cumplimiento; los planes nuevos incorporan estas preferencias.
+- En **Debilidades**, despliega «Cómo se detectan estos patrones», al final de la página, para ver las referencias internas por rol. Soporte queda fuera del objetivo de CS.
+- En **Preparar partida → Desde el cliente · En vivo**, descarga y ejecuta el acompañante en Windows con Node.js 22 o posterior. Introduce la URL de API indicada y el código privado que generas en la web. Deja el programa abierto: la selección y la guía se actualizan automáticamente; si LoL no asignó una línea, elígela en la web. «Simular selección» conserva el formulario manual. Instrucciones y límites en [Cliente en vivo](cliente-en-vivo.md).
+- Las palabras enlazadas de los consejos abren la **Academia**, con definición, guías prácticas, ejercicios y recursos originales. Puedes volver al chat sin perder la conversación durante la navegación interna.
+- **Ranking** permite consultar la comunidad global o una universidad dentro de la región elegida. Publica solo participantes con consentimiento, correo verificado, Riot vinculado y rango guardado. Usa liga/división/LP oficiales de Solo/Dúo y muestra cuándo se actualizaron. Sincroniza partidas para refrescarlo.
+- **Preparar partida** permite elegir rol, tu campeón y los aliados/rivales conocidos de forma manual. Ofrece campeones con razones, runas, hechizos, objetos de inicio, ruta de compras, botas y alternativas con precios/componentes del catálogo actual. Si cambias la selección, regenera la guía. Las plantillas explican opciones por función; ajusta en el cliente tu elección final, fragmentos y coste restante.
+
+Ver [perfil-academia-comunidad.md](perfil-academia-comunidad.md) para fuentes, criterios y actualización del stack. Hace falta reconstruir el backend para aplicar la migración 0009.

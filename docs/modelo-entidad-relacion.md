@@ -6,6 +6,7 @@
 
 ```mermaid
 erDiagram
+    users ||--o| player_profiles : "personaliza"
     users ||--o{ riot_accounts : "vincula"
     users ||--o{ auth_tokens : "genera"
     riot_accounts ||--o{ ingestion_jobs : "dispara"
@@ -24,6 +25,21 @@ erDiagram
         boolean email_verified
         timestamptz created_at
     }
+    player_profiles {
+        uuid user_id PK,FK
+        text primary_role
+        text secondary_role
+        jsonb champions
+        text experience
+        jsonb improvement_areas
+        jsonb target_roles
+        int weekly_minutes "nullable"
+        text university_name "nullable"
+        text university_key "nullable"
+        boolean ranking_visible "false por defecto"
+        boolean onboarding_completed
+        timestamptz updated_at
+    }
     auth_tokens {
         uuid id PK
         uuid user_id FK
@@ -41,6 +57,8 @@ erDiagram
         text tag_line
         text region
         text primary_role "opcional, acota alcance"
+        text analysis_version
+        timestamptz rank_updated_at "nullable"
         timestamptz linked_at
     }
     ingestion_jobs {
@@ -227,7 +245,7 @@ Debilidad recurrente detectada por el motor de reglas, agregada a nivel de cuent
 | category | text | `early_game`, `vision`, `farming`, `objectives`, `consistency` |
 | description | text | Descripción generada por el motor de reglas |
 | severity | text | `low`/`medium`/`high` |
-| evidence | jsonb | Lista de `match_metrics.id` que sustentan el hallazgo — es lo único que el LLM puede citar al explicar |
+| evidence | jsonb | Lista de `match_participants.id` que sustentan el hallazgo; la API resuelve únicamente evidencia de la cuenta propia |
 | detected_at | timestamptz | Cuándo se detectó |
 
 ### `training_plans` / `training_plan_items` / `plan_progress`
@@ -245,7 +263,7 @@ El plan semanal, sus ítems accionables, y el registro de cumplimiento que cierr
 | training_plan_items | type | text | `focus_area`/`drill`/`champion_priority`/`champion_avoid` |
 | training_plan_items | title / description | text | Contenido del ítem |
 | training_plan_items | llm_explanation | text | Texto generado por el LLM (Groq), anclado a `evidence_metric_refs` |
-| training_plan_items | evidence_metric_refs | jsonb | `match_metrics.id` citados — mecanismo de grounding |
+| training_plan_items | evidence_metric_refs | jsonb | Identificadores de participantes heredados de la evidencia del hallazgo |
 | plan_progress | id | uuid, PK | Identificador del registro |
 | plan_progress | training_plan_item_id | uuid, FK | Ítem que se está marcando |
 | plan_progress | completed_at | timestamptz | Cuándo se marcó cumplido |
@@ -258,3 +276,10 @@ El plan semanal, sus ítems accionables, y el registro de cumplimiento que cierr
 - **`weaknesses` es independiente de una partida puntual**: una debilidad es un patrón a través de varias partidas, no pertenece a una sola fila de `match_metrics` — por eso referencia varias vía el campo `evidence`.
 - **Sin tabla intermedia entre `match_participants` y `riot_accounts`**: es una FK directa nullable, porque la relación es 1 a muchos simple (una cuenta aparece en muchas partidas; un participante de una partida es a lo sumo una cuenta vinculada).
 - **Columnas `jsonb` de escape** (`raw_stats`, `extra`, `evidence`, `evidence_metric_refs`) en vez de tablas EAV: para un modelo con un conjunto de métricas conocido y acotado (alcance de un solo juego), columnas fijas + un escape jsonb es más simple de consultar que un modelo Entidad-Atributo-Valor completo, que se justificaría más si soportaran múltiples juegos con métricas muy distintas entre sí.
+
+
+### Perfil y actualización del rango (migración 0009)
+
+`player_profiles.user_id` es PK y FK a `users.id` con `ON DELETE CASCADE`. El perfil persiste al desvincular Riot y desaparece al eliminar al usuario. Las listas de campeones/objetivos/roles son JSONB acotadas y validadas en el servidor; experiencia es autodeclarada. Universidad normaliza nombres conocidos y admite nombre libre; no se considera verificada. `ranking_visible` controla publicación voluntaria y empieza en falso. No se publican correo, objetivos ni experiencia.
+
+`riot_accounts.analysis_version` permite recalcular referencias por rol de cuentas existentes sin borrar historial. `rank_updated_at` se actualiza cuando Riot devuelve el rango al vincular o sincronizar; no se inventa una fecha para registros antiguos. [Contratos y recorrido](perfil-academia-comunidad.md).

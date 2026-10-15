@@ -502,6 +502,7 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                     <button
                       onClick={() =>
                         openChat("match", {
+                          id: m.match?.id,
                           summonerName: account?.summonerName,
                           champion: m.champion,
                           win: m.win,

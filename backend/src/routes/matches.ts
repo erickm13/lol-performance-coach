@@ -1,3 +1,4 @@
+import { compactCoachContext } from "../coaching/context.ts";
 import { Hono } from "jsr:@hono/hono@^4.6.0";
 import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
 import { and, count, desc, eq, inArray, sql } from "npm:drizzle-orm@^0.36.0";
@@ -336,13 +337,16 @@ matchRoutes.post("/matches/:id/insights", async (c) => {
     own.participantId,
     detail.info.participants,
   );
-  const cached = extra?.mapInsights?.version === MAP_INSIGHTS_VERSION &&
+  const coaching = await compactCoachContext(c.get("userId"));
+  const coachingRevision = JSON.stringify(coaching);
+  const cached = extra?.mapInsights?.coachingRevision === coachingRevision && extra?.mapInsights?.version === MAP_INSIGHTS_VERSION &&
       Array.isArray(extra.mapInsights.observations)
     ? extra.mapInsights
     : null;
   const current = mergeMapInsights(cached, null, events.length);
   if (current.progress.complete) return c.json(current);
-  const key = owned.metrics.id;
+  const metricId = owned.metrics.id;
+  const key = `${metricId}:${coachingRevision}`;
   if (Date.now() < mapRateLimitUntil) {
     const retryAfterSeconds = Math.ceil(
       (mapRateLimitUntil - Date.now()) / 1000,
@@ -362,10 +366,10 @@ matchRoutes.post("/matches/:id/insights", async (c) => {
       // Re-read after acquiring the shared request slot. A second tab may have
       // finished a batch after this HTTP request loaded its ownership row.
       const [row] = await db.select({ extra: matchMetrics.extra })
-        .from(matchMetrics).where(eq(matchMetrics.id, key)).limit(1);
+        .from(matchMetrics).where(eq(matchMetrics.id, metricId)).limit(1);
       if (!row) throw new Error("La partida ya no está disponible");
       const stored = row.extra as { mapInsights?: MapInsights } | null;
-      const saved = stored?.mapInsights?.version === MAP_INSIGHTS_VERSION &&
+      const saved = stored?.mapInsights?.coachingRevision === coachingRevision && stored?.mapInsights?.version === MAP_INSIGHTS_VERSION &&
           Array.isArray(stored.mapInsights.observations)
         ? stored.mapInsights
         : null;
@@ -399,6 +403,7 @@ matchRoutes.post("/matches/:id/insights", async (c) => {
         if (eventIndexes.length === 4) break;
       }
       const batch = await explainMapMoments({
+        coaching,
         teamId: owned.participant.teamId,
         durationSeconds: owned.match.gameDurationSeconds,
         queueId: owned.match.queueId,
@@ -423,12 +428,12 @@ matchRoutes.post("/matches/:id/insights", async (c) => {
         },
         events,
       }, eventIndexes);
-      const insights = mergeMapInsights(latest, batch, events.length);
+      const insights = { ...mergeMapInsights(latest, batch, events.length), coachingRevision };
       await db.update(matchMetrics).set({
         extra: sql`coalesce(${matchMetrics.extra}, '{}'::jsonb) || ${
           JSON.stringify({ mapInsights: insights })
         }::jsonb`,
-      }).where(eq(matchMetrics.id, key));
+      }).where(eq(matchMetrics.id, metricId));
       return insights;
     })().finally(() => insightRequests.delete(key));
     insightRequests.set(key, request);

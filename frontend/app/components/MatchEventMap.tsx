@@ -1,4 +1,5 @@
 "use client";
+import { AcademyText } from "./AcademyText";
 import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import {
@@ -115,21 +116,21 @@ function CoachEventReview(
                 ? "Posible error"
                 : "Error"}: {mistake.mistakeTitle}
             </h4>
-            <p className="tooltip-copy">{mistake.mistake}</p>
+            <p className="tooltip-copy"><AcademyText text={mistake.mistake} /></p>
           </>
         )
         : good
         ? (
           <>
             <h4>Buena jugada: {good.title}</h4>
-            <p className="tooltip-copy">{good.explanation}</p>
+            <p className="tooltip-copy"><AcademyText text={good.explanation} /></p>
           </>
         )
         : observation
         ? (
           <>
             <h4>Evaluación: {observation.title}</h4>
-            <p className="tooltip-copy">{observation.explanation}</p>
+            <p className="tooltip-copy"><AcademyText text={observation.explanation} /></p>
           </>
         )
         : <h4>{LABELS[event.kind]}</h4>}
@@ -596,7 +597,7 @@ export function MatchEventMap() {
                             {eventTime(event)}
                           </strong>
                           <p className="map-tip-heading">{suggestion.title}</p>
-                          <p className="tooltip-copy">{suggestion.advice}</p>
+                          <p className="tooltip-copy"><AcademyText text={suggestion.advice} /></p>
                           <p className="tooltip-caption">
                             {ACTION_LABELS[suggestion.action]} ·{" "}
                             {destination.description}

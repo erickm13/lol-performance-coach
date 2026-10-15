@@ -1,10 +1,13 @@
 "use client";
+import { PlayerPreferencesFields } from "./PlayerPreferencesFields";
+import { emptyPreferences, type PlayerPreferences } from "../lib/player";
 import { PasswordInput } from "./PasswordInput";
 
 import { useState } from "react";
 import { getBackendUrl } from "../lib/api";
 
 export function RegisterForm() {
+  const [preferences, setPreferences] = useState<PlayerPreferences>(emptyPreferences);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,7 +30,7 @@ export function RegisterForm() {
       const res = await fetch(`${getBackendUrl()}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, playerProfile: preferences }),
       });
 
       if (!res.ok) {
@@ -46,7 +49,7 @@ export function RegisterForm() {
 
   if (success) {
     return (
-      <div className="rune-panel rune-stagger w-full max-w-sm p-8">
+      <div className="rune-panel rune-stagger w-full max-w-2xl p-8">
         <p className="text-parchment">
           Revisa tu correo para verificar tu cuenta.
         </p>
@@ -61,7 +64,7 @@ export function RegisterForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rune-panel rune-stagger flex flex-col gap-5 w-full max-w-sm p-8"
+      className="rune-panel rune-stagger flex flex-col gap-5 w-full max-w-2xl p-8"
     >
       <h1 className="font-display text-2xl font-semibold tracking-tight">
         Crear cuenta
@@ -108,6 +111,7 @@ export function RegisterForm() {
           className="rune-field text-parchment text-base"
         />
       </label>
+      <fieldset className="registration-preferences" disabled={submitting}><legend>Personaliza tu coach</legend><PlayerPreferencesFields value={preferences} onChange={setPreferences} /></fieldset>
       <button type="submit" disabled={submitting} className="rune-btn">
         {submitting ? "Creando cuenta..." : "Crear cuenta"}
       </button>
