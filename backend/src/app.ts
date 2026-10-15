@@ -7,6 +7,9 @@ import { riotRoutes } from "./routes/riot.ts";
 import { settingsRoutes } from "./routes/settings.ts";
 import { matchRoutes } from "./routes/matches.ts";
 import { trainingRoutes } from "./routes/training.ts";
+import { preparationRoutes } from "./routes/preparation.ts";
+import { liveDraftRoutes } from "./routes/liveDraft.ts";
+import { playerRoutes } from "./routes/player.ts";
 import { aiRoutes } from "./routes/ai.ts";
 import { sendVerificationEmail, sendPasswordResetEmail } from "./email/resend.ts";
 
@@ -26,6 +29,9 @@ app.route("/riot", trainingRoutes);
 app.route("/riot", matchRoutes);
 app.route("/settings", settingsRoutes);
 app.route("/ai", aiRoutes);
+app.route("/player", playerRoutes);
+app.route("/preparation/live", liveDraftRoutes);
+app.route("/preparation", preparationRoutes);
 
 app.onError((err, c) => {
   console.error(err);

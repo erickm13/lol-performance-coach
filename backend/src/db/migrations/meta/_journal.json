@@ -64,6 +64,20 @@
       "when": 1792060438492,
       "tag": "0008_clumsy_catseye",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792092789464,
+      "tag": "0009_tiresome_random",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792103224523,
+      "tag": "0010_live_draft_connection",
+      "breakpoints": true
     }
   ]
 }

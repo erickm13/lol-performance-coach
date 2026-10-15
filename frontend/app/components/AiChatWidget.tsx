@@ -1,4 +1,5 @@
 "use client";
+import { AcademyText } from "./AcademyText";
 
 import { useEffect, useRef, useState } from "react";
 import { useAiChat } from "./AiChatContext";
@@ -146,7 +147,7 @@ export function AiChatWidget() {
             {message.role === "bot" && <span className="ai-chat-message-avatar"><ChatGlyph kind="coach" /></span>}
             <div className="ai-chat-message-content">
               <span className="ai-chat-message-author">{message.role === "bot" ? coachName : "TÚ"}</span>
-              <div className="ai-chat-bubble">{message.text}</div>
+              <div className="ai-chat-bubble">{message.role === "bot" ? <AcademyText text={message.text} /> : message.text}</div>
             </div>
           </div>
         ))}
@@ -191,7 +192,7 @@ export function AiChatWidget() {
               }
             }}
             rows={1}
-            maxLength={2000}
+            maxLength={1800}
             aria-label="Tu mensaje para el coach"
             placeholder={matchContext ? "Pregunta sobre esta partida..." : "¿En qué quieres mejorar?"}
           />

@@ -32,7 +32,7 @@ export function AccountMenu() {
   return (
     <details className="account-menu" ref={ref}>
       <summary
-        className={pathname === "/dashboard/configuracion" ? "text-teal" : ""}
+        className={["/dashboard/configuracion", "/dashboard/perfil"].includes(pathname) ? "text-teal" : ""}
       >
         Mi cuenta <span aria-hidden="true">⌄</span>
       </summary>
@@ -45,6 +45,7 @@ export function AccountMenu() {
         >
           Configuración de cuenta
         </Link>
+        <Link href="/dashboard/perfil" aria-current={pathname === "/dashboard/perfil" ? "page" : undefined}>Mi perfil de jugador</Link>
         <LogoutButton variant="outline" />
       </div>
     </details>

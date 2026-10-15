@@ -18,6 +18,8 @@ import {
   markItemProgress,
 } from "../analysis/trainingPlan.ts";
 
+import { ROLE_REFERENCES, RULES_VERSION, saveWeaknesses } from "../analysis/weaknesses.ts";
+
 const SESSION_COOKIE = "session";
 
 async function requireUserId(c: Context): Promise<string | null> {
@@ -78,6 +80,8 @@ trainingRoutes.get("/weaknesses", async (c) => {
     });
   }
 
+  const [account] = await db.select({ analysisVersion: riotAccounts.analysisVersion }).from(riotAccounts).where(eq(riotAccounts.id, riotAccountId)).limit(1);
+  if (account?.analysisVersion !== RULES_VERSION) await saveWeaknesses(riotAccountId);
   const rows = await db
     .select()
     .from(weaknesses)
@@ -133,6 +137,7 @@ trainingRoutes.get("/weaknesses", async (c) => {
     .orderBy(desc(matches.gameCreation)).limit(10);
   return c.json({
     linked: true,
+    analysis: { version: RULES_VERSION, references: ROLE_REFERENCES, note: "Referencias internas de práctica por rol; no son estadísticas oficiales de rango. Soporte no recibe objetivo de CS. Consistencia compara grupos del mismo rol con al menos tres partidas." },
     sample: {
       count: recent.filter((item) => item.metricId).length,
       required: 10,

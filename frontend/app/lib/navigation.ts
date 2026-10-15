@@ -3,6 +3,9 @@ export const PRODUCT_LINKS = [
   { label: "Entrenamiento", href: "/dashboard/entrenamiento" },
   { label: "Debilidades", href: "/dashboard/debilidades" },
   { label: "Historial", href: "/dashboard/historial" },
+  { label: "Academia", href: "/dashboard/academia" },
+  { label: "Ranking", href: "/dashboard/ranking" },
+  { label: "Preparar partida", href: "/dashboard/preparar" },
 ];
 export function navActive(pathname: string, href: string) {
   if (

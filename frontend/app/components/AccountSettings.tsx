@@ -159,6 +159,7 @@ export function AccountSettings() {
           </span>
         </div>
       </section>
+      <section className="section-surface" data-reveal="up"><header className="champ-stats-head"><h3>Tu perfil de jugador</h3></header><div className="section-body"><p className="page-sub">Edita tus líneas, campeones, objetivos, tiempo de práctica, universidad y participación en el ranking.</p><Link className="rune-link" href="/dashboard/perfil">Editar mi perfil de jugador →</Link></div></section>
       <section
         id="settings-security"
         className="rune-panel settings-section"

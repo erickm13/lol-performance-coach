@@ -298,6 +298,7 @@ export function MatchHistory() {
                       className="history-coach btn-outline"
                       onClick={() =>
                         openChat("match", {
+                          id: m.match.id,
                           champion: m.champion,
                           win: m.win,
                           kills: m.kills,

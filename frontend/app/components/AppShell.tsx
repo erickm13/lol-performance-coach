@@ -4,6 +4,7 @@ import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { ChatScope } from "./ChatScope";
 import { useResource } from "../lib/useResource";
+import { ProfileReminder } from "./ProfileReminder";
 import { ScreenState } from "./ScreenState";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -28,7 +29,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {session.error}
               </ScreenState>
             )
-            : <ChatScope>{children}</ChatScope>}
+            : <ChatScope><ProfileReminder />{children}</ChatScope>}
         </div>
       </main>
     </div>

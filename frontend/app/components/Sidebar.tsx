@@ -35,7 +35,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
 
-      <div className="sidebar-foot">
+      <div className="sidebar-foot"><Link href="/dashboard/perfil" className="nav-item" onClick={onNavigate} aria-current={pathname === "/dashboard/perfil" ? "page" : undefined}>Mi perfil de jugador</Link>
         <Link
           href="/dashboard/configuracion"
           className="nav-item"

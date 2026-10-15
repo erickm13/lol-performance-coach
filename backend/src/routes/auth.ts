@@ -6,7 +6,8 @@ import {
 } from "jsr:@hono/hono@^4.6.0/cookie";
 import { eq } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
-import { users } from "../db/schema.ts";
+import { playerProfiles, users } from "../db/schema.ts";
+import { parsePreferences, ProfileValidationError } from "../player/profile.ts";
 import { hashPassword, verifyPassword } from "../auth/password.ts";
 import { signSessionToken, verifySessionToken } from "../auth/jwt.ts";
 import { createAuthToken, consumeAuthToken } from "../auth/tokens.ts";
@@ -27,9 +28,12 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
   const auth = new Hono();
 
   auth.post("/register", async (c) => {
-    const { email, password } = (await c.req.json()) as {
+    const input = await c.req.json().catch(() => null);
+    if (!input || typeof input !== "object" || Array.isArray(input)) return c.json({ error: "Los datos de registro no son válidos." }, 400);
+    const { email, password, playerProfile } = input as {
       email?: string;
       password?: string;
+      playerProfile?: unknown;
     };
 
     if (
@@ -53,11 +57,18 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
       return c.json({ error: "Ese email ya está registrado" }, 409);
     }
 
+    let preferences;
+    try { preferences = playerProfile === undefined ? null : parsePreferences(playerProfile); }
+    catch (error) {
+      if (error instanceof ProfileValidationError) return c.json({ error: error.message }, 400);
+      throw error;
+    }
     const passwordHash = await hashPassword(password);
-    const [user] = await db
-      .insert(users)
-      .values({ email, passwordHash })
-      .returning();
+    const user = await db.transaction(async (tx) => {
+      const [created] = await tx.insert(users).values({ email, passwordHash }).returning();
+      if (preferences) await tx.insert(playerProfiles).values({ userId: created.id, ...preferences });
+      return created;
+    });
 
     const token = await createAuthToken(user.id, "email_verification");
     try {

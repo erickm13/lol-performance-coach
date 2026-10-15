@@ -166,6 +166,7 @@ export function MatchDetailView({ matchId }: { matchId: string }) {
                 className="rune-btn history-coach"
                 onClick={() =>
                   openChat("match", {
+                          id: data.match.id,
                     champion: p.champion,
                     win: p.win,
                     kills: p.kills,

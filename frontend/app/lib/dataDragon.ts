@@ -114,3 +114,18 @@ export function dataDragonDescriptionText(description: string): string {
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
+
+export type ChampionSummary = { key?: string; id: string; name: string; title: string; tags: string[]; info: { attack: number; magic: number; defense: number } };
+const championCatalogRequests = new Map<string, Promise<ChampionSummary[]>>();
+export function loadChampionCatalog(version: string): Promise<ChampionSummary[]> {
+  const cached = championCatalogRequests.get(version);
+  if (cached) return cached;
+  const request = fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/es_MX/champion.json`).then(async (response) => {
+    if (!response.ok) throw new Error("No se pudo cargar el catálogo de campeones.");
+    const body = await response.json();
+    if (!body.data || typeof body.data !== "object") throw new Error("Catálogo de campeones inválido.");
+    return (Object.values(body.data) as ChampionSummary[]).filter((item) => item.id && item.name).sort((a, b) => a.name.localeCompare(b.name, "es"));
+  }).catch((error) => { championCatalogRequests.delete(version); throw error; });
+  championCatalogRequests.set(version, request);
+  return request;
+}

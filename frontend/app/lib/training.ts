@@ -31,13 +31,14 @@ export type WeaknessData = {
   weaknesses: Weakness[];
   linked?: boolean;
   sample?: { count: number; required: number };
+  analysis?: { version: string; note: string; references: Record<string, { label: string; cs: number | null; vision: number; participation: number }> };
 };
 export const CATEGORIES: Record<string, string> = {
   farming: "Farmeo",
   vision: "Visión",
   early_game: "Juego temprano",
   consistency: "Consistencia",
-  objectives: "Participación en objetivos",
+  objectives: "Participación en equipo",
 };
 export const SEVERITIES: Record<string, string> = {
   high: "Alta",
