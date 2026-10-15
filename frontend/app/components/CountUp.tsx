@@ -1,59 +1,52 @@
 "use client";
-
-import { useEffect, useRef, useState } from "react";
+import { useAnimatedNumber } from "../lib/useAnimatedNumber";
 
 export function CountUp({
   value,
   decimals = 0,
   suffix = "",
+  prefix = "",
+  from = 0,
   durationMs = 1500,
   delayMs = 300,
+  startOnView = false,
+  useGrouping = false,
 }: {
   value: number;
   decimals?: number;
   suffix?: string;
+  prefix?: string;
+  from?: number;
   durationMs?: number;
   delayMs?: number;
+  startOnView?: boolean;
+  useGrouping?: boolean;
 }) {
-  const [display, setDisplay] = useState(0);
-  const rafRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      setDisplay(value);
-      return;
-    }
-
-    let startTime: number | null = null;
-    const step = (now: number) => {
-      if (startTime === null) startTime = now;
-      const t = Math.min(1, (now - startTime) / durationMs);
-      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
-      setDisplay(value * eased);
-      if (t < 1) {
-        rafRef.current = requestAnimationFrame(step);
-      } else {
-        setDisplay(value);
-      }
-    };
-
-    const timer = setTimeout(() => {
-      rafRef.current = requestAnimationFrame(step);
-    }, delayMs);
-
-    return () => {
-      clearTimeout(timer);
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, [value, durationMs, delayMs]);
-
+  const { ref, display } = useAnimatedNumber(value, {
+    from,
+    durationMs,
+    delayMs,
+    startOnView,
+  });
+  const format = (number: number) =>
+    `${prefix}${
+      useGrouping
+        ? number.toLocaleString("es", {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals,
+        })
+        : number.toFixed(decimals)
+    }${suffix}`;
   return (
-    <>
-      {display.toFixed(decimals)}
-      {suffix}
-    </>
+    <span
+      ref={ref}
+      className="count-up-value"
+      style={{
+        minWidth: `${Math.max(format(value).length, format(from).length)}ch`,
+      }}
+    >
+      <span className="sr-only">{format(value)}</span>
+      <span aria-hidden="true">{format(display)}</span>
+    </span>
   );
 }

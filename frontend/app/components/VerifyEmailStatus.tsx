@@ -39,14 +39,20 @@ export function VerifyEmailStatus({ token }: { token: string | null }) {
         <p className="text-mist">Verificando tu email...</p>
       )}
       {status === "success" && (
-        <p className="text-parchment">
-          ¡Tu email quedó verificado! Ya podés iniciar sesión.
-        </p>
+        <div role="status">
+          <p className="text-parchment">
+            ¡Tu email quedó verificado! Ya puedes iniciar sesión.
+          </p>
+          <a href="/login" className="rune-link">Iniciar sesión →</a>
+        </div>
       )}
       {status === "error" && (
         <p role="alert" className="text-ember">
           No pudimos verificar tu email. El link puede haber expirado.
         </p>
+      )}
+      {status === "error" && (
+        <a href="/login" className="rune-link">Volver al acceso →</a>
       )}
     </div>
   );

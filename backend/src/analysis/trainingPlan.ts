@@ -13,15 +13,20 @@ const SEVERITY_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 };
 
 const DRILL_BY_CATEGORY: Record<string, string> = {
   farming:
-    "Jugá 2 partidas normales priorizando no perder oleadas de creeps hasta el minuto 15.",
-  vision: "Comprá un control ward cada vez que vuelvas a base durante 3 partidas normales.",
+    "Juega 2 partidas normales priorizando no perder oleadas de creeps hasta el minuto 15.",
+  vision:
+    "Compra un control ward cada vez que vuelvas a base durante 3 partidas normales.",
   consistency:
-    "Repasá el replay de tu peor partida de la semana y anotá en qué momento se te fue la partida.",
-  objectives: "Antes de pelear por un objetivo, esperá a estar agrupado con al menos 2 compañeros.",
-  early_game: "Jugá más defensivo en la línea hasta el minuto 10: evitá trades sin ventaja clara.",
+    "Repasa el replay de tu peor partida de la semana y anota en qué momento se te fue la partida.",
+  objectives:
+    "Antes de pelear por un objetivo, espera a estar agrupado con al menos 2 compañeros.",
+  early_game:
+    "Juega más defensivo en la línea hasta el minuto 10: evita trades sin ventaja clara.",
 };
 
-function currentWeekRange(now = new Date()): { weekStart: string; weekEnd: string } {
+function currentWeekRange(
+  now = new Date(),
+): { weekStart: string; weekEnd: string } {
   const day = now.getDay();
   const diffToMonday = day === 0 ? -6 : 1 - day;
   const monday = new Date(now);
@@ -41,9 +46,11 @@ type PlanItemDraft = {
   evidenceMetricRefs: string[];
 };
 
-export type TrainingPlanItemWithProgress = typeof trainingPlanItems.$inferSelect & {
-  completed: boolean;
-};
+export type TrainingPlanItemWithProgress =
+  & typeof trainingPlanItems.$inferSelect
+  & {
+    completed: boolean;
+  };
 
 /**
  * Shape único que devuelven tanto `generateTrainingPlan` como
@@ -160,8 +167,8 @@ export async function generateTrainingPlan(
     explanations = [];
     for (const d of drafts) {
       const prompt =
-        `Sos un coach de League of Legends. Con este dato: "${d.description}". ` +
-        `Escribí 1-2 oraciones en español explicando este punto del plan de entrenamiento, ` +
+        `Eres un coach de League of Legends. Con este dato: "${d.description}". ` +
+        `Escribe 1-2 oraciones en español explicando este punto del plan de entrenamiento, ` +
         `citando el número exacto que te di. No inventes causas que no estén en el dato.`;
       explanations.push(await explain(prompt));
     }
@@ -173,7 +180,13 @@ export async function generateTrainingPlan(
 
   const [plan] = await db
     .insert(trainingPlans)
-    .values({ riotAccountId, weekStart, weekEnd, status: "active", generatedBy })
+    .values({
+      riotAccountId,
+      weekStart,
+      weekEnd,
+      status: "active",
+      generatedBy,
+    })
     .returning();
 
   const inserted = await db
@@ -233,7 +246,9 @@ export async function getCurrentTrainingPlan(
       .from(planProgress)
       .where(inArray(planProgress.trainingPlanItemId, itemIds))
     : [];
-  const completedItemIds = new Set(progressRows.map((row) => row.trainingPlanItemId));
+  const completedItemIds = new Set(
+    progressRows.map((row) => row.trainingPlanItemId),
+  );
   const itemsWithProgress = items.map((item) => ({
     ...item,
     completed: completedItemIds.has(item.id),

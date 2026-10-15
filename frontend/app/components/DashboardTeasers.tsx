@@ -1,79 +1,104 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { getBackendUrl } from "../lib/api";
-
-type Weakness = {
-  id: string;
-  category: string;
-  description: string;
-  severity: "low" | "medium" | "high";
-};
-
-const SEVERITY_LABELS: Record<string, string> = { high: "Alta", medium: "Media", low: "Baja" };
-const SEVERITY_CLASSES: Record<string, string> = {
-  high: "text-ember",
-  medium: "text-gold",
-  low: "text-teal",
-};
-const CATEGORY_LABELS: Record<string, string> = {
-  farming: "Farmeo",
-  vision: "Visión",
-  consistency: "Consistencia",
-  objectives: "Participación en objetivos",
-  early_game: "Juego temprano",
-};
-
+import Link from "next/link";
+import { useResource } from "../lib/useResource";
+import {
+  CATEGORIES,
+  itemTitle,
+  type PlanData,
+  SEVERITIES,
+  trainingCopy,
+  type WeaknessData,
+} from "../lib/training";
+import { ProgressMeter } from "./ProgressMeter";
+import { CountUp } from "./CountUp";
 export function DashboardTeasers() {
-  const [weaknesses, setWeaknesses] = useState<Weakness[]>([]);
-  const [hasPlan, setHasPlan] = useState(false);
-  const [planItemCount, setPlanItemCount] = useState(0);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    Promise.all([
-      fetch(`${getBackendUrl()}/riot/weaknesses`, { credentials: "include" }).then((r) =>
-        r.json()
-      ),
-      fetch(`${getBackendUrl()}/riot/training-plan`, { credentials: "include" }).then((r) =>
-        r.json()
-      ),
-    ])
-      .then(([w, p]) => {
-        setWeaknesses(w.weaknesses ?? []);
-        setHasPlan(Boolean(p.plan));
-        setPlanItemCount((p.items ?? []).length);
-      })
-      .catch(() => {})
-      .finally(() => setLoaded(true));
-  }, []);
-
-  if (!loaded || weaknesses.length === 0) return null;
-
-  const topWeakness = weaknesses[0];
-
+  const weaknesses = useResource<WeaknessData>("/riot/weaknesses");
+  const plan = useResource<PlanData>("/riot/training-plan");
+  if (weaknesses.error || plan.error) {
+    return (
+      <div className="screen-notice" role="alert">
+        <p>No pudimos cargar tu próxima práctica.</p>
+        <button
+          className="rune-link"
+          onClick={() => {
+            weaknesses.reload();
+            plan.reload();
+          }}
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
+  if (!weaknesses.data || !plan.data) {
+    return (
+      <p className="page-sub" role="status">Preparando tu próxima práctica…</p>
+    );
+  }
+  if (weaknesses.data.linked === false) return null;
+  const urgent = weaknesses.data.weaknesses[0];
+  const drills = plan.data.items.filter((item) => item.type === "drill");
+  const done = drills.filter((item) => item.completed).length;
+  const next = drills.find((item) => !item.completed);
+  const progress = drills.length ? Math.round(done / drills.length * 100) : 0;
   return (
     <div className="teaser-grid">
-      <a
+      <Link
         href="/dashboard/debilidades"
         className="rune-panel teaser-card hover:bg-panel-line/20 transition-colors"
       >
-        <span className="teaser-label">Debilidad más urgente</span>
-        <h3 className={SEVERITY_CLASSES[topWeakness.severity]}>
-          {SEVERITY_LABELS[topWeakness.severity]} — {CATEGORY_LABELS[topWeakness.category] ??
-            topWeakness.category}
+        <span className="teaser-label">Tu foco de mejora</span>
+        <h3>
+          {urgent
+            ? `${CATEGORIES[urgent.category] ?? urgent.category} · Prioridad ${
+              SEVERITIES[urgent.severity] ?? urgent.severity
+            }`
+            : "Explora tus patrones"}
         </h3>
-        <p className="desc">{topWeakness.description}</p>
-        <span className="rune-link text-sm">Ver todas las debilidades →</span>
-      </a>
-      <a
-        href="/dashboard/plan"
+        <p className="desc">
+          {urgent?.description ??
+            "Revisa la muestra de tus partidas y descubre qué puedes trabajar."}
+        </p>
+        <span className="rune-link text-sm">Ver debilidades y evidencia →</span>
+      </Link>
+      <Link
+        href={next
+          ? `/dashboard/entrenamiento#exercise-${next.id}`
+          : "/dashboard/entrenamiento"}
         className="rune-panel teaser-card hover:bg-panel-line/20 transition-colors"
       >
-        <span className="teaser-label">Plan de esta semana</span>
-        <h3>{hasPlan ? `${planItemCount} ítems` : "Todavía no generaste un plan"}</h3>
-        <span className="rune-link text-sm">Ver plan completo →</span>
-      </a>
+        <span className="teaser-label">Tu próxima práctica</span>
+        <h3>
+          {next
+            ? itemTitle(next)
+            : plan.data.plan && drills.length
+            ? "Ejercicios de la semana completados"
+            : "Prepara tu plan semanal"}
+        </h3>
+        <p className="desc">
+          {next
+            ? trainingCopy(next.description)
+            : "Convierte tus patrones en un objetivo y ejercicios para tu siguiente partida."}
+        </p>
+        {!!drills.length && (
+          <>
+            <ProgressMeter
+              value={progress}
+              label="Cumplimiento de ejercicios del plan semanal"
+            />
+            <p className="page-sub">
+              <CountUp value={done} startOnView /> de{" "}
+              <CountUp value={drills.length} startOnView />{" "}
+              ejercicios completados
+            </p>
+          </>
+        )}
+        <span className="rune-link text-sm">
+          {plan.data.plan
+            ? "Continuar entrenamiento"
+            : "Crear mi entrenamiento"} →
+        </span>
+      </Link>
     </div>
   );
 }

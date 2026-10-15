@@ -84,12 +84,12 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
         });
         const data = await res.json().catch(() => null);
         if (!res.ok) {
-          throw new Error(typeof data?.error === "string" ? data.error : "No pudimos obtener una respuesta. Intentá de nuevo.");
+          throw new Error(typeof data?.error === "string" ? data.error : "No pudimos obtener una respuesta. Intenta de nuevo.");
         }
         const received: ChatMessage[] = Array.isArray(data?.messages)
           ? data.messages.filter((message: ChatMessage) => message?.role === "bot" && typeof message.text === "string" && message.text.trim())
           : [];
-        if (!received.length) throw new Error("No recibimos una respuesta del coach. Intentá de nuevo.");
+        if (!received.length) throw new Error("No recibimos una respuesta del coach. Intenta de nuevo.");
         if (activeRequest.current === controller) {
           setMessages((prev) => [...prev, ...received]);
         }
@@ -97,7 +97,7 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
         if (!controller.signal.aborted && activeRequest.current === controller) {
           setError(err instanceof Error && !(err instanceof TypeError)
             ? err.message
-            : "No se pudo conectar con el coach. Revisá tu conexión e intentá de nuevo.");
+            : "No se pudo conectar con el coach. Revisa tu conexión e intenta de nuevo.");
         }
       } finally {
         if (activeRequest.current === controller) {
@@ -156,3 +156,5 @@ export function useAiChat(): AiChatState {
   }
   return ctx;
 }
+
+export function useHasAiChatProvider() { return useContext(AiChatContext) !== null; }

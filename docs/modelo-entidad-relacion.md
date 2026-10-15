@@ -11,7 +11,7 @@ erDiagram
     riot_accounts ||--o{ ingestion_jobs : "dispara"
     riot_accounts ||--o{ training_plans : "recibe"
     riot_accounts ||--o{ weaknesses : "acumula"
-    matches ||--o{ match_participants : "contiene 10"
+    matches ||--o{ match_participants : "participantes vinculados"
     match_participants ||--o| match_metrics : "tiene"
     riot_accounts ||--o{ match_participants : "identifica cuál es el jugador seguido"
     training_plans ||--o{ training_plan_items : "contiene"
@@ -60,6 +60,8 @@ erDiagram
         int queue_id
         timestamptz game_creation "clave para analisis por horario"
         int game_duration_seconds
+        jsonb raw_detail "caché del detalle Match-V5"
+        jsonb raw_timeline "caché del timeline Match-V5"
     }
     match_participants {
         uuid id PK
@@ -188,9 +190,11 @@ Una partida, deduplicada por `riot_match_id` — si dos jugadores vinculados coi
 | queue_id | int | Tipo de cola (Ranked Solo/Duo, etc.) |
 | game_creation | timestamptz | Timestamp de inicio — base para el análisis por horario/día |
 | game_duration_seconds | int | Duración de la partida |
+| raw_detail | jsonb, nullable | Detalle completo de Riot, incluidos ambos equipos; caché para consulta del detalle |
+| raw_timeline | jsonb, nullable | Timeline de Riot; permite consultar eventos sin nuevas llamadas |
 
 ### `match_participants`
-Una fila por cada uno de los 10 jugadores de una partida. Solo las filas del jugador vinculado tienen `riot_account_id` distinto de null; las otras 9 se guardan igual para no perder la posibilidad de comparar individual vs. equipo más adelante.
+En esta implementación se guarda una fila por jugador vinculado que haya ingerido la partida, con sus métricas normalizadas. Los demás jugadores se conservan en `matches.raw_detail` para mostrar ambos equipos; `match_teammates` guarda el resumen de los compañeros. El esquema permite agregar participantes sin cuenta vinculada más adelante.
 
 | Campo | Tipo | Descripción |
 |---|---|---|

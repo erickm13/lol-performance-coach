@@ -193,7 +193,7 @@ export function AiChatWidget() {
             rows={1}
             maxLength={2000}
             aria-label="Tu mensaje para el coach"
-            placeholder={matchContext ? "Preguntá sobre esta partida..." : "¿En qué querés mejorar?"}
+            placeholder={matchContext ? "Pregunta sobre esta partida..." : "¿En qué quieres mejorar?"}
           />
           <button type="submit" disabled={!canSend} aria-label="Enviar mensaje" className="ai-chat-send"><ChatGlyph kind="send" /></button>
         </div>

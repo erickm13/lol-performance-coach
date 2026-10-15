@@ -1,5 +1,5 @@
-import { TrainingPlanView } from "../../components/TrainingPlanView";
+import { redirect } from "next/navigation";
 
 export default function TrainingPlanPage() {
-  return <TrainingPlanView />;
+  redirect("/dashboard/entrenamiento#weekly-plan");
 }

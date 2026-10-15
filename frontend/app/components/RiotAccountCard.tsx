@@ -10,6 +10,7 @@ import { ChampionIcon } from "./ChampionIcon";
 import { CoachIcon } from "./CoachIcon";
 import { ItemIcon } from "./ItemIcon";
 import { SummonerSpellIcon } from "./SummonerSpellIcon";
+import { RankEmblem } from "./RankEmblem";
 import { Tooltip } from "./Tooltip";
 import { DEFAULT_DDRAGON_VERSION, loadItemCatalog, loadSummonerSpellCatalog, type ItemCatalog, type SummonerSpellCatalog } from "../lib/dataDragon";
 
@@ -44,6 +45,7 @@ type MatchMetrics = {
 };
 
 type Match = {
+  match?: { id: string };
   champion: string;
   win: boolean;
   kills: number;
@@ -223,12 +225,12 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
       }
       const reloaded = await loadAccount();
       if (!reloaded) {
-        setSyncNotice({ kind: "error", text: "La actualización terminó, pero no pudimos recargar los datos. Intentá de nuevo." });
+        setSyncNotice({ kind: "error", text: "La actualización terminó, pero no pudimos recargar los datos. Intenta de nuevo." });
       } else if (data.partial) {
         setSyncNotice({ kind: "warning", text: "Actualización parcial: algunas partidas no se pudieron descargar. Se conserva la fecha de la última sincronización completa." });
       }
     } catch {
-      setSyncNotice({ kind: "error", text: "No se pudo conectar con el servidor. Intentá de nuevo." });
+      setSyncNotice({ kind: "error", text: "No se pudo conectar con el servidor. Intenta de nuevo." });
     } finally {
       setSyncing(false);
     }
@@ -307,7 +309,7 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
 
         <section className="rune-panel p-6">
           <h2 className="font-display text-lg font-semibold mb-3">
-            Qué vas a poder hacer acá
+            Qué vas a poder hacer aquí
           </h2>
           <p className="text-sm text-mist leading-relaxed">
             Cuando vincules tu cuenta, vamos a analizar tus partidas
@@ -381,12 +383,9 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
           {account.soloTier && (
             <div className="rank-badge">
               <span className="rank-emblem-slot">
-                <Image
-                  src={`/ranks/${account.soloTier.toLowerCase()}.png`}
-                  alt={`Emblema de ${TIER_LABELS[account.soloTier] ?? account.soloTier}`}
-                  width={170}
-                  height={170}
-                  className="rank-emblem"
+                <RankEmblem
+                  tier={account.soloTier}
+                  label={`Emblema de ${TIER_LABELS[account.soloTier] ?? account.soloTier}`}
                 />
               </span>
               <div className="rank-badge-col">
@@ -449,8 +448,8 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
 
                 return (
                   <div
-                    key={i}
-                    className={`match-row-mini ${m.win ? "win" : "loss"}`}
+                    key={m.match?.id ?? i}
+                    className={`match-row-mini ${m.win ? "win" : "loss"}${m.match?.id ? " is-navigable" : ""}`}
                   >
                     <div className="left">
                       <ChampionIcon champion={m.champion} version={ddragonVersion} className="mini-champ" />
@@ -459,9 +458,15 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                           <SummonerSpellIcon key={si} spellId={spellId} version={ddragonVersion} spell={spellCatalog[spellId]} loading={spellsLoading} />
                         ))}
                       </div>
-                      <span style={{ color: "var(--parchment)" }}>
-                        {m.champion}
-                      </span>
+                      {m.match?.id ? (
+                        <Link
+                          href={`/dashboard/partida/${m.match.id}`}
+                          className="dashboard-match-link"
+                          aria-label={`Ver detalle de ${m.champion}, ${m.win ? "victoria" : "derrota"}, ${m.kills}/${m.deaths}/${m.assists}`}
+                        >
+                          {m.champion}
+                        </Link>
+                      ) : <span style={{ color: "var(--parchment)" }}>{m.champion}</span>}
                     </div>
 
                     <div className="match-build">

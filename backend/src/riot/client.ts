@@ -51,9 +51,10 @@ export async function getAccountByRiotId(
   tagLine: string,
   fetchFn: typeof fetch = fetch,
 ): Promise<RiotAccount> {
-  const url = `https://${ACCOUNT_REGION}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${
-    encodeURIComponent(gameName)
-  }/${encodeURIComponent(tagLine)}`;
+  const url =
+    `https://${ACCOUNT_REGION}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${
+      encodeURIComponent(gameName)
+    }/${encodeURIComponent(tagLine)}`;
   const res = await riotFetch(url, fetchFn);
   return await res.json();
 }
@@ -109,6 +110,16 @@ export type RiotMatchParticipant = {
   puuid: string;
   riotIdGameName: string;
   profileIcon: number;
+  riotIdTagline?: string;
+  summoner1Id?: number;
+  summoner2Id?: number;
+  item0?: number;
+  item1?: number;
+  item2?: number;
+  item3?: number;
+  item4?: number;
+  item5?: number;
+  item6?: number;
   championName: string;
   teamPosition: string;
   teamId: number;
@@ -125,6 +136,7 @@ export type RiotMatchParticipant = {
 
 export type RiotMatch = {
   info: {
+    mapId?: number;
     gameVersion: string;
     queueId: number;
     gameCreation: number;
@@ -146,10 +158,38 @@ export async function getMatchById(
 export type RiotTimelineEvent = {
   type: string;
   timestamp: number;
+  creatorId?: number;
+  participantId?: number;
+  killerTeamId?: number;
+  teamId?: number;
+  itemId?: number;
+  beforeId?: number;
+  afterId?: number;
+  wardType?: string;
+  monsterType?: string;
+  monsterSubType?: string;
+  buildingType?: string;
+  towerType?: string;
   victimId?: number;
+  killerId?: number;
+  assistingParticipantIds?: number[];
+  position?: { x: number; y: number };
+};
+
+export type RiotParticipantFrame = {
+  participantId: number;
+  position?: { x: number; y: number };
+  level?: number;
+  totalGold?: number;
+  currentGold?: number;
+  minionsKilled?: number;
+  jungleMinionsKilled?: number;
+  championStats?: { health?: number; healthMax?: number };
 };
 
 export type RiotTimelineFrame = {
+  timestamp?: number;
+  participantFrames?: Record<string, RiotParticipantFrame>;
   events: RiotTimelineEvent[];
 };
 

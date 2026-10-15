@@ -1,4 +1,5 @@
 "use client";
+import { PasswordInput } from "./PasswordInput";
 
 import { useState } from "react";
 import { getBackendUrl } from "../lib/api";
@@ -13,6 +14,7 @@ export function RegisterForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
     setError(null);
 
     if (password !== confirmPassword) {
@@ -46,7 +48,11 @@ export function RegisterForm() {
     return (
       <div className="rune-panel rune-stagger w-full max-w-sm p-8">
         <p className="text-parchment">
-          Revisá tu correo para verificar tu cuenta.
+          Revisa tu correo para verificar tu cuenta.
+        </p>
+        <a href="/login" className="rune-link">Ir a iniciar sesión →</a>
+        <p className="password-hint">
+          Si no encuentras el mensaje, revisa la carpeta de spam.
         </p>
       </div>
     );
@@ -69,18 +75,24 @@ export function RegisterForm() {
         Email
         <input
           type="email"
+          autoComplete="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="rune-field text-parchment text-base"
         />
       </label>
+      <p className="password-hint" id="password-requirements">
+        Usa al menos 8 caracteres. Puedes mostrar la contraseña para
+        comprobarla.
+      </p>
       <label className="flex flex-col gap-1.5 text-sm text-mist">
         Contraseña
-        <input
-          type="password"
+        <PasswordInput
+          autoComplete="new-password"
           required
           minLength={8}
+          aria-describedby="password-requirements"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="rune-field text-parchment text-base"
@@ -88,8 +100,8 @@ export function RegisterForm() {
       </label>
       <label className="flex flex-col gap-1.5 text-sm text-mist">
         Confirmar contraseña
-        <input
-          type="password"
+        <PasswordInput
+          autoComplete="new-password"
           required
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
@@ -100,7 +112,7 @@ export function RegisterForm() {
         {submitting ? "Creando cuenta..." : "Crear cuenta"}
       </button>
       <a href="/login" className="rune-link text-sm pt-1">
-        ¿Ya tenés cuenta? Iniciá sesión
+        ¿Ya tienes cuenta? Inicia sesión
       </a>
     </form>
   );
