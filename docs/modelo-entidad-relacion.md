@@ -114,7 +114,7 @@ erDiagram
         text type "focus_area|drill|champion_priority|champion_avoid"
         text title
         text description
-        text llm_explanation "texto generado por Claude, anclado a evidence"
+        text llm_explanation "texto generado por el LLM (Groq), anclado a evidence"
         jsonb evidence_metric_refs
     }
     plan_progress {
@@ -240,7 +240,7 @@ El plan semanal, sus ítems accionables, y el registro de cumplimiento que cierr
 | training_plan_items | training_plan_id | uuid, FK | Plan al que pertenece |
 | training_plan_items | type | text | `focus_area`/`drill`/`champion_priority`/`champion_avoid` |
 | training_plan_items | title / description | text | Contenido del ítem |
-| training_plan_items | llm_explanation | text | Texto generado por Claude, anclado a `evidence_metric_refs` |
+| training_plan_items | llm_explanation | text | Texto generado por el LLM (Groq), anclado a `evidence_metric_refs` |
 | training_plan_items | evidence_metric_refs | jsonb | `match_metrics.id` citados — mecanismo de grounding |
 | plan_progress | id | uuid, PK | Identificador del registro |
 | plan_progress | training_plan_item_id | uuid, FK | Ítem que se está marcando |

@@ -32,7 +32,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 
 1. Integrar la obtención de datos de partidas y perfil mediante la API oficial de Riot Games, respetando límites de tasa y buenas prácticas.
 2. Definir e implementar un modelo de métricas de rendimiento (por rol y por fase de juego, dentro del alcance definido).
-3. Construir un motor de detección de debilidades recurrentes basado en reglas, y un componente de generación de recomendaciones explicadas mediante un modelo de lenguaje (Claude), ancladas a las métricas calculadas.
+3. Construir un motor de detección de debilidades recurrentes basado en reglas, y un componente de generación de recomendaciones explicadas mediante un modelo de lenguaje (LLM servido por Groq), ancladas a las métricas calculadas.
 4. Desarrollar un frontend de dashboard con historial, tendencias y plan semanal de entrenamiento.
 5. Desplegar la solución en un entorno cloud con autenticación, persistencia, registros (logs) y documentación de arquitectura.
 6. Evaluar la utilidad del sistema mediante pruebas técnicas y un protocolo de validación con usuarios piloto (muestra reducida).
@@ -44,7 +44,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 - Registro e inicio de sesión, y vinculación de cuenta de juego según los mecanismos permitidos por Riot.
 - Ingesta de N partidas recientes de **League of Legends** (ventana configurable).
 - Cálculo de métricas y almacenamiento histórico.
-- Detección de debilidades mediante un **motor de reglas**, y generación del plan de entrenamiento con **explicaciones generadas por un LLM (Claude)**, citando siempre las métricas que las sustentan.
+- Detección de debilidades mediante un **motor de reglas**, y generación del plan de entrenamiento con **explicaciones generadas por un LLM (Groq, modelo `gpt-oss-20b`)**, citando siempre las métricas que las sustentan.
 - Dashboard web responsive.
 - API backend, base de datos, trabajos de ingesta/análisis, contenedores y CI básico.
 - Documento técnico: arquitectura, riesgos, manual de uso y evidencias de pruebas.
@@ -74,7 +74,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 1. El usuario se autentica y vincula su cuenta de League of Legends.
 2. El sistema descarga y normaliza las partidas recientes.
 3. Un motor de análisis calcula indicadores clave de desempeño (KPI) y detecta patrones mediante reglas (muertes tempranas, CS bajo, visión, consistencia, entre otros).
-4. Se genera un plan semanal (focos de mejora, drills y campeones a priorizar o limitar). Claude recibe las métricas y debilidades detectadas de forma estructurada y redacta la explicación en lenguaje natural, citando siempre el dato que la sustenta — el modelo explica, no decide qué está mal.
+4. Se genera un plan semanal (focos de mejora, drills y campeones a priorizar o limitar). El LLM (Groq) recibe las métricas y debilidades detectadas de forma estructurada y redacta la explicación en lenguaje natural, citando siempre el dato que la sustenta — el modelo explica, no decide qué está mal.
 5. El usuario registra el cumplimiento; el sistema reevalúa en la siguiente ventana de partidas.
 
 ## 8. Arquitectura lógica propuesta
@@ -83,7 +83,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 - **Backend API:** REST en TypeScript sobre **Deno**.
 - **Workers:** cola de trabajos (Redis) para ingesta y cálculo de métricas.
 - **Datos:** PostgreSQL (usuarios, partidas, métricas, planes) y caché en Redis.
-- **IA (controlada):** Claude (Sonnet por defecto) para la explicación del plan, con prompts restringidos y grounding obligatorio en las métricas calculadas — sin margen para afirmar causas no verificables.
+- **IA (controlada):** LLM servido por Groq (modelo `openai/gpt-oss-20b`) para la explicación del plan, con prompts restringidos y grounding obligatorio en las métricas calculadas — sin margen para afirmar causas no verificables. Si el LLM falla, el sistema entrega el plan en modo solo-reglas.
 - **Nube:** contenedores Docker, reverse proxy, variables de entorno y CI (GitHub Actions).
 - **Observabilidad:** logs estructurados básicos de trabajos y errores de la API de Riot.
 

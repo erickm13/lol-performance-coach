@@ -5,6 +5,8 @@ Proyecto de Seminario Profesional 2. Ver el contexto completo en:
 - [docs/propuesta.md](docs/propuesta.md) — objetivos, alcance y justificación
 - [docs/arquitectura.md](docs/arquitectura.md) — arquitectura lógica y flujo end-to-end
 - [docs/modelo-entidad-relacion.md](docs/modelo-entidad-relacion.md) — modelo de datos completo
+- [docs/manual-de-uso.md](docs/manual-de-uso.md) — instalación y recorrido de usuario
+- [docs/evidencias-de-pruebas.md](docs/evidencias-de-pruebas.md) — resultados de las pruebas automatizadas
 
 ## Requisitos
 

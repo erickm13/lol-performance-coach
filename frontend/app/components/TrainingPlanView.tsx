@@ -69,6 +69,11 @@ export function TrainingPlanView() {
       }
       setPlan(data.plan ?? null);
       setItems(data.items ?? []);
+      setCompletedIds(
+        (data.items ?? [])
+          .filter((item: PlanItem) => item.completed)
+          .map((item: PlanItem) => item.id),
+      );
     } catch {
       setMessage("No se pudo generar el plan. Intentá de nuevo.");
     } finally {
@@ -108,12 +113,20 @@ export function TrainingPlanView() {
     return <p className="text-mist">Cargando...</p>;
   }
 
+  const doneCount = items.filter((item) => completedIds.includes(item.id)).length;
+  const progress = items.length > 0
+    ? Math.round((doneCount / items.length) * 100)
+    : 0;
+
   return (
-    <div className="rune-stagger flex flex-col gap-6 w-full max-w-3xl">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="font-display text-xl font-semibold">
-          Plan de entrenamiento semanal
-        </h1>
+    <div>
+      <div className="page-head">
+        <div>
+          <h2>Plan de entrenamiento semanal</h2>
+          <p className="page-sub">
+            Ejercicios anclados a las métricas de tus últimas partidas.
+          </p>
+        </div>
         {!plan && (
           <button onClick={handleGenerate} disabled={generating} className="rune-btn">
             {generating ? "Generando..." : "Generar plan de esta semana"}
@@ -121,33 +134,52 @@ export function TrainingPlanView() {
         )}
       </div>
 
-      {message && <p className="text-mist text-sm">{message}</p>}
+      {message && <p className="text-mist text-sm mb-4">{message}</p>}
 
-      {items.map((item) => {
-        const done = completedIds.includes(item.id);
-        const error = itemErrors[item.id];
-        return (
-          <section key={item.id} className="rune-panel p-6 flex flex-col gap-2">
-            <span className="text-mist text-xs uppercase tracking-wide">
-              {TYPE_LABELS[item.type] ?? item.type}
-            </span>
-            <h2 className="font-display font-semibold">{item.title}</h2>
-            <p className="text-mist text-sm leading-relaxed">
-              {item.llmExplanation ?? item.description}
-            </p>
-            {error && (
-              <p className="text-ember text-sm mt-2">{error}</p>
-            )}
-            <button
-              onClick={() => handleComplete(item.id)}
-              disabled={done}
-              className="rune-btn self-start mt-2"
+      {items.length > 0 && (
+        <div className="plan-progress">
+          <div className="progress-track">
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
+          </div>
+          <span className="progress-label tabular">
+            {doneCount} de {items.length} completados
+          </span>
+        </div>
+      )}
+
+      <div className="card-list rune-stagger">
+        {items.map((item) => {
+          const done = completedIds.includes(item.id);
+          const error = itemErrors[item.id];
+          return (
+            <div
+              key={item.id}
+              className={`rune-panel plan-item ${done ? "done" : ""}`}
             >
-              {done ? "Completado" : "Marcar completado"}
-            </button>
-          </section>
-        );
-      })}
+              <button
+                type="button"
+                onClick={() => handleComplete(item.id)}
+                disabled={done}
+                aria-label={done ? "Completado" : "Marcar completado"}
+                className={`plan-check ${done ? "done" : ""}`}
+              >
+                {done ? "✓" : ""}
+              </button>
+              <div className="min-w-0">
+                <span className="teaser-label">
+                  {TYPE_LABELS[item.type] ?? item.type}
+                </span>
+                <h3>{item.title}</h3>
+                <p className="desc">{item.description}</p>
+                {item.llmExplanation && (
+                  <p className="plan-explain">Por qué: {item.llmExplanation}</p>
+                )}
+                {error && <p className="text-ember text-sm mt-2">{error}</p>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
