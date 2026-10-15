@@ -1,4 +1,4 @@
-import { and, eq } from "npm:drizzle-orm@^0.36.0";
+import { and, desc, eq, isNotNull } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
 import {
   ingestionJobs,
@@ -60,6 +60,41 @@ async function getSoloRank(puuid: string) {
 }
 
 const MATCHES_TO_FETCH = 10;
+const TEAMMATE_RANK_TTL_MS = 6 * 60 * 60 * 1000;
+const teammateRankCache = new Map<
+  string,
+  { soloTier: string | null; expiresAt: number }
+>();
+const teammateRankRequests = new Map<string, Promise<string | null>>();
+
+async function getCachedTeammateSoloTier(puuid: string): Promise<string | null> {
+  const cached = teammateRankCache.get(puuid);
+  if (cached && cached.expiresAt > Date.now()) return cached.soloTier;
+
+  const pending = teammateRankRequests.get(puuid);
+  if (pending) return await pending;
+
+  const request = getLeagueEntriesByPuuid(puuid)
+    .then((entries) =>
+      entries.find((entry) => entry.queueType === "RANKED_SOLO_5x5")?.tier ?? null
+    )
+    .catch((err) => {
+      console.warn(`No se pudo consultar el rango de un compañero de Riot: ${err}`);
+      return null;
+    })
+    .then((soloTier) => {
+      teammateRankCache.set(puuid, {
+        soloTier,
+        // Evita repetir consultas; si Riot falla, reintenta después de 5 minutos.
+        expiresAt: Date.now() + (soloTier ? TEAMMATE_RANK_TTL_MS : 5 * 60 * 1000),
+      });
+      return soloTier;
+    })
+    .finally(() => teammateRankRequests.delete(puuid));
+
+  teammateRankRequests.set(puuid, request);
+  return await request;
+}
 
 export class AlreadyLinkedError extends Error {}
 export class PuuidTakenError extends Error {}
@@ -333,9 +368,18 @@ export async function getStoredRiotAccount(userId: string) {
     (a.match?.gameCreation.getTime() ?? 0)
   );
 
-  const [championStats, recentTeammates] = await Promise.all([
+  const [championStats, recentTeammates, [lastSuccessfulSync]] = await Promise.all([
     getChampionStats(riotAccount.id),
     getRecentTeammates(riotAccount.id),
+    db.select({ finishedAt: ingestionJobs.finishedAt })
+      .from(ingestionJobs)
+      .where(and(
+        eq(ingestionJobs.riotAccountId, riotAccount.id),
+        eq(ingestionJobs.status, "done"),
+        isNotNull(ingestionJobs.finishedAt),
+      ))
+      .orderBy(desc(ingestionJobs.finishedAt))
+      .limit(1),
   ]);
 
   return {
@@ -343,6 +387,7 @@ export async function getStoredRiotAccount(userId: string) {
     matches: combined.slice(0, MATCHES_TO_FETCH),
     championStats,
     recentTeammates,
+    lastSyncedAt: lastSuccessfulSync?.finishedAt ?? null,
   };
 }
 
@@ -442,7 +487,20 @@ export async function getRecentTeammates(riotAccountId: string) {
     }
   }
 
-  return [...byTeammate.values()]
+  const sortedTeammates = [...byTeammate.values()]
     .map((t) => ({ ...t, winRate: Math.round((t.wins / t.games) * 100) }))
     .sort((a, b) => b.games - a.games);
+
+  // La tabla muestra siete jugadores; consulta solo esos PUUID y conserva sus rangos en caché.
+  const topTeammates = await Promise.all(
+    sortedTeammates.slice(0, 7).map(async (teammate) => ({
+      ...teammate,
+      soloTier: await getCachedTeammateSoloTier(teammate.puuid),
+    })),
+  );
+  const topByPuuid = new Map(topTeammates.map((teammate) => [teammate.puuid, teammate]));
+
+  return sortedTeammates.map((teammate) =>
+    topByPuuid.get(teammate.puuid) ?? { ...teammate, soloTier: null }
+  );
 }

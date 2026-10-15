@@ -2,25 +2,16 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { getBackendUrl } from "../lib/api";
 import { useAiChat } from "./AiChatContext";
 import { CountUp } from "./CountUp";
-
-let DDRAGON_VERSION = "16.20.1";
-
-const SUMMONER_SPELL_ICONS: Record<number, string> = {
-  1: "SummonerBoost",
-  3: "SummonerExhaust",
-  4: "SummonerFlash",
-  6: "SummonerHaste",
-  7: "SummonerHeal",
-  11: "SummonerSmite",
-  12: "SummonerTeleport",
-  13: "SummonerMana",
-  14: "SummonerDot",
-  21: "SummonerBarrier",
-  32: "SummonerSnowball",
-};
+import { ChampionIcon } from "./ChampionIcon";
+import { CoachIcon } from "./CoachIcon";
+import { ItemIcon } from "./ItemIcon";
+import { SummonerSpellIcon } from "./SummonerSpellIcon";
+import { Tooltip } from "./Tooltip";
+import { DEFAULT_DDRAGON_VERSION, loadItemCatalog, loadSummonerSpellCatalog, type ItemCatalog, type SummonerSpellCatalog } from "../lib/dataDragon";
 
 const TIER_LABELS: Record<string, string> = {
   IRON: "Hierro",
@@ -76,6 +67,7 @@ type Teammate = {
   puuid: string;
   summonerName: string;
   profileIconId: number | null;
+  soloTier: string | null;
   games: number;
   wins: number;
   winRate: number;
@@ -94,21 +86,6 @@ type RiotAccount = {
   soloLosses: number | null;
 };
 
-function itemIconUrl(itemId: number): string | null {
-  if (!itemId) return null;
-  return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/item/${itemId}.png`;
-}
-
-function spellIconUrl(spellId: number): string | null {
-  const name = SUMMONER_SPELL_ICONS[spellId];
-  if (!name) return null;
-  return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/spell/${name}.png`;
-}
-
-function championIconUrl(champion: string): string {
-  return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/champion/${champion}.png`;
-}
-
 function computeQuickStats(matches: Match[]) {
   if (matches.length === 0) return null;
   const withMetrics = matches.filter((m) => m.metrics);
@@ -122,7 +99,7 @@ function computeQuickStats(matches: Match[]) {
     : 0;
   const wins = matches.filter((m) => m.win).length;
   const winRate = Math.round((wins / matches.length) * 100);
-  return { kdaAvg, csAvg, winRate, gamesAnalyzed: matches.length };
+  return { kdaAvg, csAvg, winRate, gamesAnalyzed: matches.length, metricGames: withMetrics.length };
 }
 
 export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
@@ -136,18 +113,26 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
   const [linking, setLinking] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [, bumpDdragon] = useState(0);
+  const [ddragonVersion, setDdragonVersion] = useState(DEFAULT_DDRAGON_VERSION);
+  const [itemCatalog, setItemCatalog] = useState<ItemCatalog>({});
+  const [itemsLoading, setItemsLoading] = useState(true);
+  const [spellCatalog, setSpellCatalog] = useState<SummonerSpellCatalog>({});
+  const [spellsLoading, setSpellsLoading] = useState(true);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const [syncNotice, setSyncNotice] = useState<{ kind: "error" | "warning"; text: string } | null>(null);
   const { openChat } = useAiChat();
 
   // Mantiene la versión de Data Dragon al día para que no falten íconos/ítems nuevos.
   useEffect(() => {
     let active = true;
     fetch("https://ddragon.leagueoflegends.com/api/versions.json")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("No se pudo consultar la versión de Data Dragon");
+        return r.json();
+      })
       .then((versions: string[]) => {
-        if (active && versions[0] && versions[0] !== DDRAGON_VERSION) {
-          DDRAGON_VERSION = versions[0];
-          bumpDdragon((n) => n + 1);
+        if (active && Array.isArray(versions) && /^\d+\.\d+\.\d+$/.test(versions[0])) {
+          setDdragonVersion(versions[0]);
         }
       })
       .catch(() => {});
@@ -156,18 +141,38 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    setItemCatalog({});
+    setItemsLoading(true);
+    loadItemCatalog(ddragonVersion)
+      .then((catalog) => { if (active) setItemCatalog(catalog); })
+      .catch(() => { /* El dashboard sigue disponible si falla el catálogo. */ })
+      .finally(() => { if (active) setItemsLoading(false); });
+    setSpellCatalog({});
+    setSpellsLoading(true);
+    loadSummonerSpellCatalog(ddragonVersion)
+      .then((catalog) => { if (active) setSpellCatalog(catalog); })
+      .catch(() => { /* Los íconos conocidos se conservan aunque falle el catálogo. */ })
+      .finally(() => { if (active) setSpellsLoading(false); });
+    return () => { active = false; };
+  }, [ddragonVersion]);
+
   async function loadAccount() {
     try {
       const res = await fetch(`${getBackendUrl()}/riot/account`, {
         credentials: "include",
       });
+      if (!res.ok) return false;
       const data = await res.json();
       setAccount(data.account);
       setMatches(data.matches ?? []);
       setChampionStats(data.championStats ?? []);
       setRecentTeammates(data.recentTeammates ?? []);
+      setLastSyncedAt(data.lastSyncedAt ?? null);
+      return true;
     } catch {
-      // Sin conexión: dejamos el estado como estaba, el usuario puede reintentar.
+      return false;
     } finally {
       setLoaded(true);
     }
@@ -205,16 +210,25 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
 
   async function handleSync() {
     setSyncing(true);
+    setSyncNotice(null);
     try {
       const res = await fetch(`${getBackendUrl()}/riot/sync`, {
         method: "POST",
         credentials: "include",
       });
-      if (res.ok) {
-        await loadAccount();
+      const data = await res.json();
+      if (!res.ok) {
+        setSyncNotice({ kind: "error", text: data.error ?? "No se pudieron actualizar las partidas." });
+        return;
+      }
+      const reloaded = await loadAccount();
+      if (!reloaded) {
+        setSyncNotice({ kind: "error", text: "La actualización terminó, pero no pudimos recargar los datos. Intentá de nuevo." });
+      } else if (data.partial) {
+        setSyncNotice({ kind: "warning", text: "Actualización parcial: algunas partidas no se pudieron descargar. Se conserva la fecha de la última sincronización completa." });
       }
     } catch {
-      // Sin conexión: el usuario puede reintentar con el mismo botón.
+      setSyncNotice({ kind: "error", text: "No se pudo conectar con el servidor. Intentá de nuevo." });
     } finally {
       setSyncing(false);
     }
@@ -308,6 +322,8 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
   }
 
   const quickStats = computeQuickStats(matches);
+  const lastSyncDate = lastSyncedAt ? new Date(lastSyncedAt) : null;
+  const validSyncDate = lastSyncDate && !Number.isNaN(lastSyncDate.getTime()) ? lastSyncDate : null;
   const soloTotal = (account.soloWins ?? 0) + (account.soloLosses ?? 0);
   const soloWinRate = soloTotal > 0
     ? Math.round(((account.soloWins ?? 0) / soloTotal) * 100)
@@ -318,17 +334,28 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
       <div className="riot-card">
         <div className="riot-identity">
           <div className="riot-identity-main">
-          <div className="avatar-wrap">
+          <div className="avatar-wrap rank-avatar" data-tier={account.soloTier?.toLowerCase()}>
             {account.profileIconId
               ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={`https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/profileicon/${account.profileIconId}.png`}
+                  src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/profileicon/${account.profileIconId}.png`}
                   alt=""
-                  className="avatar"
+                  className={`avatar ${account.soloTier ? "avatar-ranked" : ""}`}
                 />
               )
               : <div className="avatar" />}
+            {account.soloTier && (
+              <Image
+                src={`/rank-frames/${account.soloTier.toLowerCase()}.png?v=original`}
+                alt=""
+                aria-hidden="true"
+                width={account.soloTier === "PLATINUM" ? 554 : 2296}
+                height={account.soloTier === "PLATINUM" ? 717 : 2976}
+                sizes="256px"
+                className="rank-frame-account"
+              />
+            )}
             {account.summonerLevel !== null && (
               <span className="level-badge tabular">{account.summonerLevel}</span>
             )}
@@ -353,7 +380,15 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
 
           {account.soloTier && (
             <div className="rank-badge">
-              <div className="rank-emblem" aria-hidden="true" />
+              <span className="rank-emblem-slot">
+                <Image
+                  src={`/ranks/${account.soloTier.toLowerCase()}.png`}
+                  alt={`Emblema de ${TIER_LABELS[account.soloTier] ?? account.soloTier}`}
+                  width={170}
+                  height={170}
+                  className="rank-emblem"
+                />
+              </span>
               <div className="rank-badge-col">
                 <span className="tier">
                   {TIER_LABELS[account.soloTier] ?? account.soloTier}{" "}
@@ -373,13 +408,28 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
           )}
         </div>
 
-        <button
-          onClick={handleSync}
-          disabled={syncing}
-          className="rune-btn btn-sm self-start"
-        >
-          {syncing ? "Actualizando..." : "Actualizar partidas"}
-        </button>
+        <div className="sync-toolbar">
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            aria-busy={syncing}
+            className="rune-btn btn-sm self-start"
+          >
+            {syncing ? "Actualizando..." : "Actualizar partidas"}
+          </button>
+          <p className="sync-status" role="status">
+            {validSyncDate ? (
+              <>Última sincronización: <time dateTime={validSyncDate.toISOString()}>
+                {new Intl.DateTimeFormat("es-GT", { dateStyle: "medium", timeStyle: "short" }).format(validSyncDate)}
+              </time></>
+            ) : "Todavía no hay una sincronización completa registrada."}
+          </p>
+        </div>
+        {syncNotice && (
+          <p className={`sync-notice ${syncNotice.kind}`} role={syncNotice.kind === "error" ? "alert" : "status"}>
+            {syncNotice.text}
+          </p>
+        )}
 
         {matches.length === 0
           ? <p className="text-mist text-sm">Todavía no hay partidas guardadas.</p>
@@ -403,41 +453,26 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                     className={`match-row-mini ${m.win ? "win" : "loss"}`}
                   >
                     <div className="left">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={championIconUrl(m.champion)}
-                        alt={m.champion}
-                        className="mini-champ"
-                        onError={(e) => {
-                          e.currentTarget.style.visibility = "hidden";
-                        }}
-                      />
+                      <ChampionIcon champion={m.champion} version={ddragonVersion} className="mini-champ" />
                       <div className="flex gap-0.5">
-                        {spells.map((s, si) => {
-                          const url = spellIconUrl(s);
-                          return url
-                            ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img key={si} src={url} alt="" className="mini-spell" />
-                            )
-                            : <span key={si} className="mini-spell" />;
-                        })}
+                        {spells.map((spellId, si) => (
+                          <SummonerSpellIcon key={si} spellId={spellId} version={ddragonVersion} spell={spellCatalog[spellId]} loading={spellsLoading} />
+                        ))}
                       </div>
                       <span style={{ color: "var(--parchment)" }}>
                         {m.champion}
                       </span>
                     </div>
 
-                    <div className="flex gap-0.5">
-                      {items.map((itemId, ii) => {
-                        const url = itemIconUrl(itemId);
-                        return url
-                          ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img key={ii} src={url} alt="" className="mini-item" />
-                          )
-                          : <span key={ii} className="mini-item" />;
-                      })}
+                    <div className="match-build">
+                      <div className="match-build-items">
+                        {items.slice(0, 6).map((itemId, ii) => itemId ? (
+                          <ItemIcon key={ii} itemId={itemId} version={ddragonVersion} item={itemCatalog[itemId]} loading={itemsLoading} />
+                        ) : null)}
+                      </div>
+                      {!!items[6] && (
+                        <ItemIcon itemId={items[6]} version={ddragonVersion} item={itemCatalog[items[6]]} loading={itemsLoading} className="match-trinket" />
+                      )}
                     </div>
 
                     <span className="match-kda tabular">
@@ -471,11 +506,12 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                           csPerMin: m.metrics?.csPerMin,
                           kda: m.metrics?.kda,
                         })}
-                      aria-label="Analizar con IA"
-                      title="Analizar con IA"
-                      className="text-teal text-sm border border-teal/40 px-2 py-1 hover:bg-teal/10 transition-colors"
+                      type="button"
+                      aria-label={`Analizar partida de ${m.champion} con el coach`}
+                      title="Analizar esta partida con tu coach"
+                      className="match-coach-button"
                     >
-                      ✨
+                      <CoachIcon />
                     </button>
                   </div>
                 );
@@ -499,25 +535,33 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
             <span className="val tabular">
               <CountUp value={quickStats.kdaAvg} decimals={2} />
             </span>
-            <span className="lbl">KDA promedio</span>
+            <Tooltip className="metric-tooltip-trigger lbl" label="Qué significa KDA promedio" content={
+              <><strong className="tooltip-title">KDA promedio</strong><p className="tooltip-copy">Promedio por partida de (asesinatos + asistencias) dividido entre muertes. Si no hubo muertes, se divide entre 1. Calculado sobre {quickStats.metricGames} partidas con métricas de las {quickStats.gamesAnalyzed} recientes guardadas.</p></>
+            }>KDA promedio <span aria-hidden="true">ⓘ</span></Tooltip>
           </div>
           <div className="stat-tile">
             <span className="val tabular">
               <CountUp value={quickStats.winRate} suffix="%" />
             </span>
-            <span className="lbl">Win rate ({quickStats.gamesAnalyzed})</span>
+            <Tooltip className="metric-tooltip-trigger lbl" label="Qué significa Win rate" content={
+              <><strong className="tooltip-title">Porcentaje de victorias</strong><p className="tooltip-copy">Victorias divididas entre las {quickStats.gamesAnalyzed} partidas recientes guardadas, multiplicado por 100. Es el porcentaje de esta muestra, no el de toda la temporada.</p></>
+            }>Win rate ({quickStats.gamesAnalyzed}) <span aria-hidden="true">ⓘ</span></Tooltip>
           </div>
           <div className="stat-tile">
             <span className="val tabular">
               <CountUp value={quickStats.csAvg} decimals={1} />
             </span>
-            <span className="lbl">CS / min</span>
+            <Tooltip className="metric-tooltip-trigger lbl" label="Qué significa CS por minuto" content={
+              <><strong className="tooltip-title">CS por minuto</strong><p className="tooltip-copy">Súbditos y monstruos eliminados por minuto de partida. Es el promedio de las {quickStats.metricGames} partidas con métricas dentro de esta muestra reciente.</p></>
+            }>CS / min <span aria-hidden="true">ⓘ</span></Tooltip>
           </div>
           <div className="stat-tile">
             <span className="val tabular">
               <CountUp value={quickStats.gamesAnalyzed} />
             </span>
-            <span className="lbl">Partidas analizadas</span>
+            <Tooltip className="metric-tooltip-trigger lbl" label="Qué significa Partidas analizadas" content={
+              <><strong className="tooltip-title">Partidas analizadas</strong><p className="tooltip-copy">Este resumen usa las {quickStats.gamesAnalyzed} partidas más recientes guardadas. Los acumulados por campeón pueden incluir más partidas históricas sincronizadas.</p></>
+            }>Partidas analizadas <span aria-hidden="true">ⓘ</span></Tooltip>
           </div>
         </div>
       )}
@@ -538,15 +582,7 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
               {championStats.slice(0, 7).map((c) => (
                 <div key={c.champion} className="champ-row">
                   <div className="left">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={championIconUrl(c.champion)}
-                      alt=""
-                      className="champ-icon-sm"
-                      onError={(e) => {
-                        e.currentTarget.style.visibility = "hidden";
-                      }}
-                    />
+                    <ChampionIcon champion={c.champion} version={ddragonVersion} className="champ-icon-sm" />
                     <div className="champ-id">
                       <span className="champ-name">{c.champion}</span>
                     </div>
@@ -597,17 +633,30 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                         <div className="summoner-cell">
                           {t.profileIconId != null
                             ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={`https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/profileicon/${t.profileIconId}.png`}
-                                alt=""
-                                className="summoner-icon"
-                                onError={(e) => {
-                                  e.currentTarget.style.visibility = "hidden";
-                                }}
-                              />
+                              <span className="summoner-avatar rank-avatar" data-tier={t.soloTier?.toLowerCase()}>
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/profileicon/${t.profileIconId}.png`}
+                                  alt=""
+                                  className="summoner-icon"
+                                  onError={(e) => {
+                                    e.currentTarget.style.visibility = "hidden";
+                                  }}
+                                />
+                                {t.soloTier && (
+                                  <Image
+                                    src={`/rank-frames/${t.soloTier.toLowerCase()}.png?v=original`}
+                                    alt=""
+                                    aria-hidden="true"
+                                    width={t.soloTier === "PLATINUM" ? 554 : 2296}
+                                    height={t.soloTier === "PLATINUM" ? 717 : 2976}
+                                    sizes="96px"
+                                    className="rank-frame-teammate"
+                                  />
+                                )}
+                              </span>
                             )
-                            : <div className="summoner-icon" />}
+                            : <span className="summoner-avatar"><span className="summoner-icon" /></span>}
                           <span className="summoner-name">{t.summonerName}</span>
                         </div>
                       </td>
