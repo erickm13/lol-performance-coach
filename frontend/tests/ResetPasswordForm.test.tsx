@@ -24,19 +24,24 @@ describe("ResetPasswordForm", () => {
     fireEvent.change(screen.getByLabelText(/nueva contraseña/i), {
       target: { value: "newpassword123" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /guardar nueva contraseña/i }));
-
-    await waitFor(() => expect(pushMock).toHaveBeenCalledWith("/login"));
-  });
-
-  it("muestra error si el token es null", async () => {
-    render(<ResetPasswordForm token={null} />);
-    fireEvent.change(screen.getByLabelText(/nueva contraseña/i), {
+    fireEvent.change(screen.getByLabelText(/confirmar contraseña/i), {
       target: { value: "newpassword123" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /guardar nueva contraseña/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /guardar nueva contraseña/i }),
+    );
 
-    expect(await screen.findByText(/link inválido/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/contraseña actualizada/i),
+    ).toBeInTheDocument();
+  });
+
+  it("muestra el enlace inválido cuando el token es null", async () => {
+    render(<ResetPasswordForm token={null} />);
+
+    expect(
+      await screen.findByText(/este enlace no es válido/i),
+    ).toBeInTheDocument();
   });
 
   it("muestra error si falla la conexión de red", async () => {
@@ -49,10 +54,15 @@ describe("ResetPasswordForm", () => {
     fireEvent.change(screen.getByLabelText(/nueva contraseña/i), {
       target: { value: "newpassword123" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /guardar nueva contraseña/i }));
+    fireEvent.change(screen.getByLabelText(/confirmar contraseña/i), {
+      target: { value: "newpassword123" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: /guardar nueva contraseña/i }),
+    );
 
-    expect(
-      await screen.findByRole("alert", { hidden: false }),
-    ).toHaveTextContent(/no se pudo conectar con el servidor/i);
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /no se pudo conectar con el servidor/i,
+    );
   });
 });

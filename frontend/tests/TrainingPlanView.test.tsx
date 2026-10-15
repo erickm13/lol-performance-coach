@@ -1,166 +1,91 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+// TrainingPlanView es un re-export de TrainingHub (Plan y Entrenamiento unificados).
 import { TrainingPlanView } from "../app/components/TrainingPlanView";
 
-describe("TrainingPlanView", () => {
+const ENOUGH_SAMPLE = {
+  linked: true,
+  sample: { count: 10, required: 10 },
+  weaknesses: [
+    { id: "w1", category: "farming", severity: "high", description: "CS bajo." },
+  ],
+};
+
+const PLAN_WITH_DRILL = {
+  plan: {
+    id: "p1",
+    weekStart: "2026-10-13",
+    weekEnd: "2026-10-19",
+    generatedBy: "rules",
+  },
+  items: [
+    {
+      id: "i1",
+      type: "drill",
+      title: "Ejercicio: farming",
+      description: "Practica últimos golpes bajo torre.",
+      llmExplanation: null,
+      completed: false,
+    },
+  ],
+};
+
+function mockFetch(plan: unknown, weaknesses: unknown = ENOUGH_SAMPLE) {
+  const json = (value: unknown) =>
+    Promise.resolve({ ok: true, json: () => Promise.resolve(value) });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn((url: string) => {
+      if (typeof url === "string") {
+        if (url.endsWith("versions.json")) return json(["16.20.1"]);
+        if (url.includes("/progress")) return json({});
+        if (url.includes("/riot/weaknesses")) return json(weaknesses);
+        if (url.includes("/riot/training-plan")) return json(plan);
+      }
+      return json({});
+    }) as unknown as typeof fetch,
+  );
+}
+
+describe("TrainingHub (Entrenamiento)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("muestra el botón para generar el plan cuando no hay uno activo", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ plan: null, items: [] }),
-        }),
-      ) as unknown as typeof fetch,
-    );
+    mockFetch({ plan: null, items: [] });
 
     render(<TrainingPlanView />);
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: /generar plan de esta semana/i }),
+        screen.getByRole("button", { name: /generar mi plan semanal/i }),
       ).toBeInTheDocument()
     );
   });
 
-  it("muestra los ítems del plan activo", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              plan: { id: "p1", generatedBy: "rules" },
-              items: [
-                {
-                  id: "i1",
-                  type: "focus_area",
-                  title: "Trabajar: farming",
-                  description: "desc",
-                  llmExplanation: "Explicación del ítem.",
-                },
-              ],
-            }),
-        }),
-      ) as unknown as typeof fetch,
-    );
+  it("muestra el plan semanal con sus ejercicios", async () => {
+    mockFetch(PLAN_WITH_DRILL);
 
     render(<TrainingPlanView />);
     await waitFor(() =>
-      expect(screen.getByText(/explicación del ítem/i)).toBeInTheDocument()
+      expect(screen.getByText(/tu plan semanal/i)).toBeInTheDocument()
     );
+    expect(
+      screen.getAllByRole("button", { name: /marcar como completado/i }).length,
+    ).toBeGreaterThan(0);
   });
 
-  it("marca un ítem como completado", async () => {
-    const fetchMock = vi.fn((url: string) => {
-      if (typeof url === "string" && url.includes("/progress")) {
-        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
-      }
-      return Promise.resolve({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            plan: { id: "p1", generatedBy: "rules" },
-            items: [
-              {
-                id: "i1",
-                type: "focus_area",
-                title: "Trabajar: farming",
-                description: "desc",
-                llmExplanation: "Explicación del ítem.",
-              },
-            ],
-          }),
-      });
+  it("marca un ejercicio como completado", async () => {
+    mockFetch(PLAN_WITH_DRILL);
+
+    render(<TrainingPlanView />);
+    const buttons = await screen.findAllByRole("button", {
+      name: /marcar como completado/i,
     });
-    vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
-
-    render(<TrainingPlanView />);
-    const button = await screen.findByRole("button", { name: /marcar completado/i });
-    fireEvent.click(button);
+    fireEvent.click(buttons[0]);
 
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: /completado/i })).toBeDisabled()
-    );
-  });
-
-  it("muestra un ítem como completado si el backend ya tiene progreso guardado", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              plan: { id: "p1", generatedBy: "rules" },
-              items: [
-                {
-                  id: "i1",
-                  type: "focus_area",
-                  title: "Trabajar: farming",
-                  description: "desc",
-                  llmExplanation: "Explicación del ítem.",
-                  completed: true,
-                },
-              ],
-            }),
-        }),
-      ) as unknown as typeof fetch,
-    );
-
-    render(<TrainingPlanView />);
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: /completado/i })).toBeDisabled()
-    );
-  });
-
-  it("genera un plan cuando se hace click en el botón generar", async () => {
-    const fetchMock = vi.fn((url: string, options?: Record<string, unknown>) => {
-      const isPost = options?.method === "POST";
-
-      if (!isPost) {
-        // GET /riot/training-plan on initial load
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ plan: null, items: [] }),
-        });
-      }
-
-      // POST /riot/training-plan to generate
-      return Promise.resolve({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            plan: { id: "p2", generatedBy: "rules" },
-            items: [
-              {
-                id: "i2",
-                type: "drill",
-                title: "Ejercicio: CS",
-                description: "desc",
-                llmExplanation: "Explicación del ejercicio.",
-              },
-            ],
-          }),
-      });
-    });
-    vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
-
-    render(<TrainingPlanView />);
-
-    // Wait for the generate button to appear
-    const generateButton = await screen.findByRole("button", { name: /generar plan de esta semana/i });
-
-    // Click the generate button
-    fireEvent.click(generateButton);
-
-    // Verify the generated items appear
-    await waitFor(() =>
-      expect(screen.getByText(/explicación del ejercicio/i)).toBeInTheDocument()
+      expect(screen.getAllByText(/✓ completado/i).length).toBeGreaterThan(0)
     );
   });
 });

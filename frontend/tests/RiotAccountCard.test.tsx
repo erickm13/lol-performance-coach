@@ -37,7 +37,17 @@ function setupFetch(syncStatus: number, syncBody: object, nextTimestamp = newTim
 
 describe("sincronización y ayuda del dashboard", () => {
   beforeEach(() => {
-    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches: true,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
   });
 
   it("muestra la fecha guardada y la reemplaza después de una sincronización completa", async () => {

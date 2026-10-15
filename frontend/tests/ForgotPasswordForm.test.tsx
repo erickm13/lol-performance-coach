@@ -15,14 +15,14 @@ describe("ForgotPasswordForm", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "a@b.com" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /enviar link/i }));
+    fireEvent.click(screen.getByRole("button", { name: /enviar enlace/i }));
 
     await waitFor(() =>
-      expect(screen.getByText(/si el email existe/i)).toBeInTheDocument(),
+      expect(screen.getByText(/si existe una cuenta/i)).toBeInTheDocument(),
     );
   });
 
-  it("muestra la confirmación genérica incluso si falla la conexión de red", async () => {
+  it("muestra un error si falla la conexión de red", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(() => Promise.reject(new Error("network error"))) as unknown as typeof fetch,
@@ -32,10 +32,12 @@ describe("ForgotPasswordForm", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "a@b.com" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /enviar link/i }));
+    fireEvent.click(screen.getByRole("button", { name: /enviar enlace/i }));
 
     await waitFor(() =>
-      expect(screen.getByText(/si el email existe/i)).toBeInTheDocument(),
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        /no pudimos enviar la solicitud/i,
+      ),
     );
   });
 });
