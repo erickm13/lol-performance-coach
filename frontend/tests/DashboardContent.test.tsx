@@ -20,15 +20,33 @@ describe("DashboardContent", () => {
   });
 
   it("una vez logueado, renderiza la tarjeta de cuenta de Riot", async () => {
+    // El dashboard monta varios componentes que piden distintos endpoints;
+    // devolvemos formas válidas por URL para que ninguno reviente al leerlas.
+    const json = (value: unknown) =>
+      Promise.resolve({ ok: true, json: () => Promise.resolve(value) });
     vi.stubGlobal(
       "fetch",
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({ id: "1", email: "a@b.com", emailVerified: true }),
-        }),
-      ) as unknown as typeof fetch,
+      vi.fn((url: string) => {
+        if (typeof url === "string") {
+          if (url.endsWith("versions.json")) return json(["16.20.1"]);
+          if (url.includes("/riot/account")) {
+            return json({
+              account: null,
+              matches: [],
+              championStats: [],
+              recentTeammates: [],
+              lastSyncedAt: null,
+            });
+          }
+          if (url.includes("/riot/weaknesses")) {
+            return json({ linked: false, weaknesses: [] });
+          }
+          if (url.includes("/riot/training-plan")) {
+            return json({ linked: false, items: [] });
+          }
+        }
+        return json({ id: "1", email: "a@b.com", emailVerified: true });
+      }) as unknown as typeof fetch,
     );
 
     render(<DashboardContent />);

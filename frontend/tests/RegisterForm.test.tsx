@@ -27,7 +27,7 @@ describe("RegisterForm", () => {
     fireEvent.click(screen.getByRole("button", { name: /crear cuenta/i }));
 
     await waitFor(() =>
-      expect(screen.getByText(/revisá tu correo/i)).toBeInTheDocument(),
+      expect(screen.getByText(/revisa tu correo/i)).toBeInTheDocument(),
     );
   });
 
