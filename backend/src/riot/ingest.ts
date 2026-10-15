@@ -155,12 +155,17 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
           .insert(matches)
           .values({
             riotMatchId,
+            rawDetail: detail,
             patchVersion: detail.info.gameVersion,
             queueId: detail.info.queueId,
             gameCreation: new Date(detail.info.gameCreation),
             gameDurationSeconds: detail.info.gameDuration,
           })
           .returning();
+      }
+
+      if (!matchRow.rawDetail) {
+        await db.update(matches).set({ rawDetail: detail }).where(eq(matches.id, matchRow.id));
       }
 
       const csTotal = participant.totalMinionsKilled +
@@ -174,6 +179,7 @@ async function ingestMatches(riotAccountId: string, puuid: string) {
       try {
         const timeline = await getMatchTimeline(riotMatchId);
         deathsBefore10 = countDeathsBefore10(timeline, participant.participantId);
+        await db.update(matches).set({ rawTimeline: timeline }).where(eq(matches.id, matchRow.id));
       } catch {
         deathsBefore10 = null;
       }
@@ -351,7 +357,8 @@ export async function getStoredRiotAccount(userId: string) {
   const combined = [];
   for (const p of participants) {
     const [m] = await db
-      .select()
+      .select({ id: matches.id, riotMatchId: matches.riotMatchId, patchVersion: matches.patchVersion,
+        queueId: matches.queueId, gameCreation: matches.gameCreation, gameDurationSeconds: matches.gameDurationSeconds })
       .from(matches)
       .where(eq(matches.id, p.matchId))
       .limit(1);

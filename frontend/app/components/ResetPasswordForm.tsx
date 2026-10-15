@@ -1,17 +1,19 @@
 "use client";
+import { PasswordInput } from "./PasswordInput";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { getBackendUrl } from "../lib/api";
 
 export function ResetPasswordForm({ token }: { token: string | null }) {
-  const router = useRouter();
+  const [success, setSuccess] = useState(false);
+  const [repeat, setRepeat] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
     setError(null);
 
     if (!token) {
@@ -19,6 +21,10 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
       return;
     }
 
+    if (newPassword !== repeat) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
     setSubmitting(true);
     try {
       const res = await fetch(`${getBackendUrl()}/auth/reset-password`, {
@@ -33,7 +39,7 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
         return;
       }
 
-      router.push("/login");
+      setSuccess(true);
     } catch {
       setError("No se pudo conectar con el servidor");
     } finally {
@@ -41,6 +47,27 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
     }
   }
 
+  if (success) {
+    return (
+      <div className="rune-panel rune-stagger w-full max-w-sm p-8">
+        <h1 className="font-display text-2xl">Contraseña actualizada</h1>
+        <p className="page-sub" role="status">
+          Ya puedes iniciar sesión con tu nueva contraseña.
+        </p>
+        <a href="/login" className="rune-link">Iniciar sesión →</a>
+      </div>
+    );
+  }
+  if (!token) {
+    return (
+      <div className="rune-panel rune-stagger w-full max-w-sm p-8">
+        <p role="alert">Este enlace no es válido.</p>
+        <a href="/forgot-password" className="rune-link">
+          Solicitar un nuevo enlace →
+        </a>
+      </div>
+    );
+  }
   return (
     <form
       onSubmit={handleSubmit}
@@ -54,20 +81,37 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
           {error}
         </p>
       )}
+      <p className="password-hint" id="reset-requirements">
+        Usa al menos 8 caracteres y confirma tu nueva contraseña.
+      </p>
       <label className="flex flex-col gap-1.5 text-sm text-mist">
         Nueva contraseña
-        <input
-          type="password"
+        <PasswordInput
+          autoComplete="new-password"
           required
           minLength={8}
+          aria-describedby="reset-requirements"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
+          className="rune-field text-parchment text-base"
+        />
+      </label>
+      <label className="flex flex-col gap-1.5 text-sm text-mist">
+        Confirmar contraseña<PasswordInput
+          required
+          minLength={8}
+          autoComplete="new-password"
+          value={repeat}
+          onChange={(event) => setRepeat(event.target.value)}
           className="rune-field text-parchment text-base"
         />
       </label>
       <button type="submit" disabled={submitting} className="rune-btn">
         {submitting ? "Guardando..." : "Guardar nueva contraseña"}
       </button>
+      <a className="rune-link text-sm" href="/forgot-password">
+        Solicitar otro enlace de recuperación →
+      </a>
     </form>
   );
 }

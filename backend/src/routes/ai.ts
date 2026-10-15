@@ -21,12 +21,14 @@ type MatchSummary = {
 
 const GENERAL_GREETING: ChatMessage = {
   role: "bot",
-  text: "¡Hola! Preguntame lo que quieras sobre tu progreso, tus partidas o tu plan de entrenamiento.",
+  text:
+    "¡Hola! Pregúntame lo que quieras sobre tu progreso, tus partidas o tu plan de entrenamiento.",
 };
 
 const FALLBACK_MESSAGE: ChatMessage = {
   role: "bot",
-  text: "No pude conectar con la IA en este momento. Intentá de nuevo en un rato.",
+  text:
+    "No pude conectar con la IA en este momento. Intenta de nuevo en un rato.",
 };
 
 async function requireUserId(c: Context): Promise<string | null> {
@@ -35,11 +37,15 @@ async function requireUserId(c: Context): Promise<string | null> {
 }
 
 function matchDataBlock(match: MatchSummary): string {
-  const kdaLine = `${match.kills ?? "?"}/${match.deaths ?? "?"}/${match.assists ?? "?"}`;
+  const kdaLine = `${match.kills ?? "?"}/${match.deaths ?? "?"}/${
+    match.assists ?? "?"
+  }`;
   return (
     `- Campeón: ${match.champion ?? "desconocido"}\n` +
     `- Resultado: ${match.win ? "Victoria" : "Derrota"}\n` +
-    `- KDA: ${kdaLine}${match.kda !== undefined ? ` (ratio ${match.kda})` : ""}\n` +
+    `- KDA: ${kdaLine}${
+      match.kda !== undefined ? ` (ratio ${match.kda})` : ""
+    }\n` +
     `${match.csPerMin !== undefined ? `- CS/min: ${match.csPerMin}\n` : ""}`
   );
 }
@@ -53,15 +59,15 @@ function matchDataBlock(match: MatchSummary): string {
 function buildMatchOpenerPrompt(match: MatchSummary): string {
   const name = match.summonerName ?? "campeón";
   return (
-    `Sos el coach personal de League of Legends de ${name}, hablándole directo como en un chat, ` +
-    `no como si estuvieras redactando un informe. Escribí un solo mensaje breve en español ` +
+    `Eres el coach personal de League of Legends de ${name}, hablándole directo como en un chat, ` +
+    `no como si estuvieras redactando un informe. Escribe un solo mensaje breve en español ` +
     `(4-6 oraciones), en un tono cercano y natural, que fluya como una conversación real: sin ` +
     `numerar partes, sin encabezados ni etiquetas como "El chiste:" o "Resumen:", sin ` +
     `estructurarlo como una lista. Tiene que sonar como si un amigo te estuviera hablando.\n\n` +
-    `Arrancá saludando a ${name} por su nombre de forma natural, mencioná de pasada cómo le fue ` +
-    `en esta partida (campeón, resultado, KDA) integrado en la misma conversación, metele un ` +
+    `Comienza saludando a ${name} por su nombre de forma natural, menciona de pasada cómo le fue ` +
+    `en esta partida (campeón, resultado, KDA) integrado en la misma conversación, añade un ` +
     `chiste corto que surja naturalmente del resultado — festejando si ganó, o algo liviano y ` +
-    `cariñoso si perdió, nunca cruel ni burlón — y cerrá preguntándole qué quiere saber o ` +
+    `cariñoso si perdió, nunca cruel ni burlón — y cierra preguntándole qué quiere saber o ` +
     `preguntar sobre esa partida en particular. No inventes datos que no te di.\n\n` +
     `Datos de la partida:\n${matchDataBlock(match)}`
   );
@@ -71,11 +77,14 @@ function buildMatchOpenerPrompt(match: MatchSummary): string {
  * Pregunta de seguimiento dentro del mismo chat de análisis: mismo jugador,
  * misma partida, pero ya no hace falta repetir el saludo ni el chiste.
  */
-function buildMatchFollowUpPrompt(match: MatchSummary, message: string): string {
+function buildMatchFollowUpPrompt(
+  match: MatchSummary,
+  message: string,
+): string {
   const name = match.summonerName ?? "campeón";
   return (
-    `Sos el coach personal de League of Legends de ${name}, respondiendo una pregunta de ` +
-    `seguimiento sobre esta partida puntual. Respondé en español, en 2-4 oraciones, directo y ` +
+    `Eres el coach personal de League of Legends de ${name}, respondiendo una pregunta de ` +
+    `seguimiento sobre esta partida puntual. Responde en español, en 2-4 oraciones, directo y ` +
     `práctico, sin repetir el saludo. No inventes datos que no te di.\n\n` +
     `Datos de la partida:\n${matchDataBlock(match)}\n` +
     `Pregunta de ${name}: "${message}"`
@@ -84,7 +93,7 @@ function buildMatchFollowUpPrompt(match: MatchSummary, message: string): string 
 
 function buildGeneralPrompt(message: string): string {
   return (
-    `Sos un coach de League of Legends que ayuda a un jugador a mejorar. Respondé en ` +
+    `Eres un coach de League of Legends que ayuda a un jugador a mejorar. Responde en ` +
     `español, en 2-4 oraciones, de forma directa y práctica.\n` +
     `Pregunta del jugador: "${message}"`
   );

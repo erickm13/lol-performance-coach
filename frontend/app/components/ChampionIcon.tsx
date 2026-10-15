@@ -88,7 +88,7 @@ export function ChampionIcon({ champion, version, className }: {
           ) : (
             <p className="tooltip-copy" role="status">
               {failed
-                ? "No se pudo cargar la información. Volvé a abrir el tooltip para reintentar."
+                ? "No se pudo cargar la información. Vuelve a abrir el tooltip para reintentar."
                 : "Cargando información del campeón..."}
             </p>
           )}

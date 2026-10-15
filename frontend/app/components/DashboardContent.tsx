@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { getBackendUrl } from "../lib/api";
 import { RiotAccountCard } from "./RiotAccountCard";
 import { DashboardTeasers } from "./DashboardTeasers";
-import { AiChatProvider } from "./AiChatContext";
-import { AiChatFab, AiChatWidget } from "./AiChatWidget";
+import { ChatScope } from "./ChatScope";
 
 type Me = { id: string; email: string; emailVerified: boolean };
 
@@ -34,7 +33,7 @@ export function DashboardContent() {
   if (!me) return <p className="text-mist">Cargando...</p>;
 
   return (
-    <AiChatProvider>
+    <ChatScope>
       <div className="flex flex-col gap-5 w-full">
         {!me.emailVerified && (
           <p
@@ -48,8 +47,6 @@ export function DashboardContent() {
         <RiotAccountCard emailVerified={me.emailVerified} />
         <DashboardTeasers />
       </div>
-      <AiChatFab />
-      <AiChatWidget />
-    </AiChatProvider>
+    </ChatScope>
   );
 }

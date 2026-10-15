@@ -1,9 +1,17 @@
 import { Context, Hono } from "jsr:@hono/hono@^4.6.0";
 import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
-import { eq, sql } from "npm:drizzle-orm@^0.36.0";
+import { and, desc, eq, inArray, sql } from "npm:drizzle-orm@^0.36.0";
 import { verifySessionToken } from "../auth/jwt.ts";
 import { db } from "../db/client.ts";
-import { riotAccounts, weaknesses, trainingPlans, trainingPlanItems } from "../db/schema.ts";
+import {
+  matches,
+  matchMetrics,
+  matchParticipants,
+  riotAccounts,
+  trainingPlanItems,
+  trainingPlans,
+  weaknesses,
+} from "../db/schema.ts";
 import {
   generateTrainingPlan,
   getCurrentTrainingPlan,
@@ -26,9 +34,13 @@ async function getRiotAccountId(userId: string): Promise<string | null> {
   return account?.id ?? null;
 }
 
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-async function verifyItemOwnership(itemId: string, riotAccountId: string): Promise<boolean> {
+async function verifyItemOwnership(
+  itemId: string,
+  riotAccountId: string,
+): Promise<boolean> {
   // Un itemId que no es UUID llegaría a Postgres como cast a uuid, tiraría un
   // error de sintaxis y saldría como 500. Para el cliente es indistinguible de
   // un ítem inexistente, así que lo tratamos igual: no encontrado.
@@ -58,7 +70,13 @@ trainingRoutes.get("/weaknesses", async (c) => {
   if (!userId) return c.json({ error: "No autenticado" }, 401);
 
   const riotAccountId = await getRiotAccountId(userId);
-  if (!riotAccountId) return c.json({ weaknesses: [] });
+  if (!riotAccountId) {
+    return c.json({
+      weaknesses: [],
+      linked: false,
+      sample: { count: 0, required: 10 },
+    });
+  }
 
   const rows = await db
     .select()
@@ -70,7 +88,64 @@ trainingRoutes.get("/weaknesses", async (c) => {
       when 'low' then 2
       else 3
     end`);
-  return c.json({ weaknesses: rows });
+  // Evidence stores participant IDs, not public match IDs. Resolve only rows
+  // owned by this account; never expose another account's evidence or raw data.
+  const evidenceIds = [
+    ...new Set(
+      rows.flatMap((row) =>
+        Array.isArray(row.evidence)
+          ? row.evidence.filter((id): id is string =>
+            typeof id === "string" && UUID_RE.test(id)
+          )
+          : []
+      ),
+    ),
+  ];
+  const evidence = evidenceIds.length
+    ? await db.select({
+      participantId: matchParticipants.id,
+      matchId: matches.id,
+      champion: matchParticipants.champion,
+      win: matchParticipants.win,
+      playedAt: matches.gameCreation,
+    }).from(matchParticipants).innerJoin(
+      matches,
+      eq(matches.id, matchParticipants.matchId),
+    )
+      .where(
+        and(
+          eq(matchParticipants.riotAccountId, riotAccountId),
+          inArray(matchParticipants.id, evidenceIds),
+        ),
+      )
+    : [];
+  const byId = new Map(evidence.map((item) => [item.participantId, item]));
+  // Same ten-row window as the detector, including its handling of missing metrics.
+  const recent = await db.select({ metricId: matchMetrics.id }).from(
+    matchParticipants,
+  )
+    .innerJoin(matches, eq(matches.id, matchParticipants.matchId))
+    .leftJoin(
+      matchMetrics,
+      eq(matchMetrics.matchParticipantId, matchParticipants.id),
+    )
+    .where(eq(matchParticipants.riotAccountId, riotAccountId))
+    .orderBy(desc(matches.gameCreation)).limit(10);
+  return c.json({
+    linked: true,
+    sample: {
+      count: recent.filter((item) => item.metricId).length,
+      required: 10,
+    },
+    weaknesses: rows.map((row) => ({
+      ...row,
+      evidenceMatches: Array.isArray(row.evidence)
+        ? row.evidence.flatMap((id) =>
+          typeof id === "string" && byId.has(id) ? [byId.get(id)!] : []
+        )
+        : [],
+    })),
+  });
 });
 
 trainingRoutes.get("/training-plan", async (c) => {
@@ -114,7 +189,9 @@ trainingRoutes.post("/training-plan/items/:itemId/progress", async (c) => {
 
   const body = await c.req.json().catch(() => ({}));
   const progress = await markItemProgress(itemId, {
-    selfRating: typeof body.selfRating === "number" ? body.selfRating : undefined,
+    selfRating: typeof body.selfRating === "number"
+      ? body.selfRating
+      : undefined,
     note: typeof body.note === "string" ? body.note : undefined,
   });
   return c.json(progress, 201);

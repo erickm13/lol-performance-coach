@@ -54,6 +54,8 @@ export const matches = pgTable("matches", {
   queueId: integer("queue_id"),
   gameCreation: timestamp("game_creation", { withTimezone: true }).notNull(),
   gameDurationSeconds: integer("game_duration_seconds").notNull(),
+  rawDetail: jsonb("raw_detail"),
+  rawTimeline: jsonb("raw_timeline"),
 });
 
 export const matchParticipants = pgTable("match_participants", {

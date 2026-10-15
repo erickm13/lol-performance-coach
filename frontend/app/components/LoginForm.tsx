@@ -1,10 +1,11 @@
 "use client";
+import { PasswordInput } from "./PasswordInput";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBackendUrl } from "../lib/api";
 
-export function LoginForm() {
+export function LoginForm({ notice }: { notice?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,6 +14,7 @@ export function LoginForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
     setError(null);
     setSubmitting(true);
 
@@ -46,6 +48,7 @@ export function LoginForm() {
       <h1 className="font-display text-2xl font-semibold tracking-tight">
         Iniciar sesión
       </h1>
+      {notice && <p className="text-teal text-sm" role="status">{notice}</p>}
       {error && (
         <p role="alert" className="text-ember text-sm">
           {error}
@@ -55,6 +58,7 @@ export function LoginForm() {
         Email
         <input
           type="email"
+          autoComplete="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -63,8 +67,8 @@ export function LoginForm() {
       </label>
       <label className="flex flex-col gap-1.5 text-sm text-mist">
         Contraseña
-        <input
-          type="password"
+        <PasswordInput
+          autoComplete="current-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -79,7 +83,7 @@ export function LoginForm() {
           ¿Olvidaste tu contraseña?
         </a>
         <a href="/register" className="rune-link">
-          ¿No tenés cuenta? Registrate
+          ¿No tienes cuenta? Regístrate
         </a>
       </div>
     </form>

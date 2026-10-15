@@ -2,13 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogoutButton } from "./LogoutButton";
-
-const LINKS = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Debilidades", href: "/dashboard/debilidades" },
-  { label: "Plan", href: "/dashboard/plan" },
-];
+import { AccountMenu } from "./AccountMenu";
+import { navActive, PRODUCT_LINKS } from "../lib/navigation";
 
 export function TopBar({
   onToggleMenu,
@@ -20,7 +15,10 @@ export function TopBar({
   const pathname = usePathname();
 
   return (
-    <nav className="app-navbar">
+    <nav
+      className="app-navbar dashboard-topbar"
+      aria-label="Navegación del dashboard"
+    >
       <div className="flex items-center gap-4">
         <button
           type="button"
@@ -39,13 +37,14 @@ export function TopBar({
         </div>
       </div>
 
-      <div className="flex items-center gap-5">
-        {LINKS.map((l) => {
-          const active = pathname === l.href;
+      <div className="topbar-links">
+        {PRODUCT_LINKS.map((l) => {
+          const active = navActive(pathname, l.href);
           return (
             <Link
               key={l.href}
               href={l.href}
+              aria-current={active ? "page" : undefined}
               className={`text-sm font-medium transition-colors ${
                 active ? "text-teal" : "text-mist hover:text-parchment"
               }`}
@@ -54,7 +53,7 @@ export function TopBar({
             </Link>
           );
         })}
-        <LogoutButton variant="outline" />
+        <AccountMenu />
       </div>
     </nav>
   );
