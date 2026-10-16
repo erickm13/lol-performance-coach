@@ -3,7 +3,7 @@ import { assertEquals } from "jsr:@std/assert@^1.0.0";
 import postgres from "npm:postgres@^3.4.4";
 import { runMigrations } from "../src/db/migrate.ts";
 
-Deno.test("runMigrations crea las 12 tablas del modelo entidad-relación", async () => {
+Deno.test("runMigrations crea las 14 tablas del modelo entidad-relación", async () => {
   await runMigrations();
 
   const connectionString = Deno.env.get("DATABASE_URL")!;
@@ -18,11 +18,13 @@ Deno.test("runMigrations crea las 12 tablas del modelo entidad-relación", async
   assertEquals(tableNames, [
     "auth_tokens",
     "ingestion_jobs",
+    "live_draft_connections",
     "match_metrics",
     "match_participants",
     "match_teammates",
     "matches",
     "plan_progress",
+    "player_profiles",
     "riot_accounts",
     "training_plan_items",
     "training_plans",
