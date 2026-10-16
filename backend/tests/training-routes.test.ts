@@ -5,19 +5,18 @@ import { riotAccounts, users, weaknesses } from "../src/db/schema.ts";
 import { signSessionToken } from "../src/auth/jwt.ts";
 import { app } from "../src/app.ts";
 
-/**
- * Corre `fn` garantizando que GROQ_API_KEY NO esté seteada, para que la
- * generación de plan caiga al modo solo-reglas sin tocar la red. `Deno.env` es
- * global al proceso de test y compartido con los demás archivos, así que no
- * alcanza con asumir que no está: hay que sacarla y restaurarla.
- */
-async function withoutGroqKey<T>(fn: () => T | Promise<T>): Promise<T> {
-  const original = Deno.env.get("GROQ_API_KEY");
-  Deno.env.delete("GROQ_API_KEY");
+/** Desactiva ambos proveedores durante la prueba, sin llamadas a la red. */
+async function withoutLlmKeys<T>(fn: () => T | Promise<T>): Promise<T> {
+  const variables = ["GROQ_API_KEY", "GEMINI_API_KEY"];
+  const originals = variables.map((name) => Deno.env.get(name));
+  variables.forEach((name) => Deno.env.delete(name));
   try {
     return await fn();
   } finally {
-    if (original !== undefined) Deno.env.set("GROQ_API_KEY", original);
+    variables.forEach((name, i) => {
+      if (originals[i] === undefined) Deno.env.delete(name);
+      else Deno.env.set(name, originals[i]!);
+    });
   }
 }
 
@@ -155,9 +154,8 @@ Deno.test("POST /riot/training-plan genera un plan a partir de las debilidades g
     evidence: [],
   });
 
-  // `withoutGroqKey` saca GROQ_API_KEY del entorno, así que la generación
-  // cae al fallback solo-reglas sin hacer ninguna llamada de red a Groq.
-  const res = await withoutGroqKey(() =>
+  // Sin claves de proveedores, el plan usa solo reglas y no toca la red.
+  const res = await withoutLlmKeys(() =>
     app.request("/riot/training-plan", {
       method: "POST",
       headers: { Cookie: cookie },
@@ -178,7 +176,7 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress guarda el progreso", 
     severity: "low",
     evidence: [],
   });
-  const planRes = await withoutGroqKey(() =>
+  const planRes = await withoutLlmKeys(() =>
     app.request("/riot/training-plan", {
       method: "POST",
       headers: { Cookie: cookie },
@@ -264,7 +262,7 @@ Deno.test("POST /riot/training-plan/items/:itemId/progress rechaza acceso cruzad
     severity: "high",
     evidence: [],
   });
-  const planResA = await withoutGroqKey(() =>
+  const planResA = await withoutLlmKeys(() =>
     app.request("/riot/training-plan", {
       method: "POST",
       headers: { Cookie: cookieA },

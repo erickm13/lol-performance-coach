@@ -42,25 +42,25 @@ Deno.test("POST /ai/chat devuelve el saludo genérico por defecto", async () => 
   assertEquals(body.messages[0].role, "bot");
 });
 
-/**
- * Corre `fn` garantizando que GROQ_API_KEY NO esté seteada, para ejercitar el
- * error de configuración recuperable sin tocar la red real. `Deno.env` es global al proceso
- * de test y compartido con los demás archivos.
- */
-async function withoutGroqKey<T>(fn: () => T | Promise<T>): Promise<T> {
-  const original = Deno.env.get("GROQ_API_KEY");
-  Deno.env.delete("GROQ_API_KEY");
+/** Desactiva ambos proveedores durante la prueba, sin llamadas a la red. */
+async function withoutLlmKeys<T>(fn: () => T | Promise<T>): Promise<T> {
+  const variables = ["GROQ_API_KEY", "GEMINI_API_KEY"];
+  const originals = variables.map((name) => Deno.env.get(name));
+  variables.forEach((name) => Deno.env.delete(name));
   try {
     return await fn();
   } finally {
-    if (original !== undefined) Deno.env.set("GROQ_API_KEY", original);
+    variables.forEach((name, i) => {
+      if (originals[i] === undefined) Deno.env.delete(name);
+      else Deno.env.set(name, originals[i]!);
+    });
   }
 }
 
-Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no está disponible (contexto de partida)", async () => {
+Deno.test("POST /ai/chat cae al error de configuración recuperable si no hay proveedores disponibles (contexto de partida)", async () => {
   const cookie = await createSessionCookie();
 
-  const res = await withoutGroqKey(() =>
+  const res = await withoutLlmKeys(() =>
     app.request("/ai/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
@@ -78,10 +78,10 @@ Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no e
   assertEquals(body.messages, undefined);
 });
 
-Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no está disponible (pregunta de seguimiento sobre una partida)", async () => {
+Deno.test("POST /ai/chat cae al error de configuración recuperable si no hay proveedores disponibles (pregunta de seguimiento sobre una partida)", async () => {
   const cookie = await createSessionCookie();
 
-  const res = await withoutGroqKey(() =>
+  const res = await withoutLlmKeys(() =>
     app.request("/ai/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
@@ -107,10 +107,10 @@ Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no e
   assertEquals(body.messages, undefined);
 });
 
-Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no está disponible (mensaje libre)", async () => {
+Deno.test("POST /ai/chat cae al error de configuración recuperable si no hay proveedores disponibles (mensaje libre)", async () => {
   const cookie = await createSessionCookie();
 
-  const res = await withoutGroqKey(() =>
+  const res = await withoutLlmKeys(() =>
     app.request("/ai/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
@@ -126,4 +126,73 @@ Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no e
   assertEquals(body.code, "configuration");
   assertEquals(typeof body.error, "string");
   assertEquals(body.messages, undefined);
+});
+
+Deno.test("Chat integrado respalda en Gemini tras cuota de Groq y mantiene 429 cuando ambos están limitados", async () => {
+  const cookie = await createSessionCookie();
+  const names = ["GROQ_API_KEY", "GEMINI_API_KEY"];
+  const saved = names.map((name) => Deno.env.get(name));
+  const originalFetch = globalThis.fetch;
+  const calls: string[] = [];
+  const request = () =>
+    app.request("/ai/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: cookie },
+      body: JSON.stringify({
+        context: "general",
+        message: "¿Cómo mejoro mi visión?",
+      }),
+    });
+  try {
+    names.forEach((name) => Deno.env.set(name, "test-only"));
+    globalThis.fetch = (url, init) => {
+      calls.push(String(url));
+      const body = JSON.parse(String(init?.body));
+      assertEquals(
+        body.messages[1].content.includes("¿Cómo mejoro mi visión?"),
+        true,
+      );
+      return Promise.resolve(
+        calls.length === 1
+          ? new Response(null, {
+            status: 429,
+            headers: { "Retry-After": "60" },
+          })
+          : Response.json({
+            choices: [{
+              message: {
+                content: "Practica colocar visión antes de disputar.",
+              },
+            }],
+          }),
+      );
+    };
+    const response = await request();
+    assertEquals(response.status, 200);
+    assertEquals(
+      (await response.json()).messages[0].text,
+      "Practica colocar visión antes de disputar.",
+    );
+    assertEquals(calls.length, 2);
+    assertEquals(calls[0].includes("api.groq.com"), true);
+    assertEquals(calls[1].includes("googleapis.com"), true);
+    globalThis.fetch = (url) => {
+      assertEquals(String(url).includes("googleapis.com"), true);
+      return Promise.resolve(
+        new Response(null, { status: 429, headers: { "Retry-After": "10" } }),
+      );
+    };
+    const unavailable = await request();
+    assertEquals(unavailable.status, 429);
+    assertEquals(unavailable.headers.get("Retry-After"), "10");
+    const body = await unavailable.json();
+    assertEquals(body.code, "rate_limit");
+    assertEquals(body.messages, undefined);
+  } finally {
+    globalThis.fetch = originalFetch;
+    names.forEach((name, i) => {
+      if (saved[i] === undefined) Deno.env.delete(name);
+      else Deno.env.set(name, saved[i]!);
+    });
+  }
 });

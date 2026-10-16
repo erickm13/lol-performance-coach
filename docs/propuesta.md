@@ -32,7 +32,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 
 1. Integrar la obtención de datos de partidas y perfil mediante la API oficial de Riot Games, respetando límites de tasa y buenas prácticas.
 2. Definir e implementar un modelo de métricas de rendimiento (por rol y por fase de juego, dentro del alcance definido).
-3. Construir un motor de detección de debilidades recurrentes basado en reglas, y un componente de generación de recomendaciones explicadas mediante un modelo de lenguaje (LLM servido por Groq), ancladas a las métricas calculadas.
+3. Construir un motor de detección de debilidades recurrentes basado en reglas, y un componente de generación de recomendaciones explicadas mediante modelos de lenguaje (LLM servidos por Groq y Gemini), ancladas a las métricas calculadas.
 4. Desarrollar un frontend de dashboard con historial, tendencias y plan semanal de entrenamiento.
 5. Desplegar la solución en un entorno cloud con autenticación, persistencia, registros (logs) y documentación de arquitectura.
 6. Evaluar la utilidad del sistema mediante pruebas técnicas y un protocolo de validación con usuarios piloto (muestra reducida).
@@ -44,7 +44,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 - Registro e inicio de sesión, y vinculación de cuenta de juego según los mecanismos permitidos por Riot.
 - Ingesta de N partidas recientes de **League of Legends** (ventana configurable).
 - Cálculo de métricas y almacenamiento histórico.
-- Detección de debilidades mediante un **motor de reglas**, y generación del plan de entrenamiento con **explicaciones generadas por un LLM (Groq, modelo `gpt-oss-20b`)**, citando siempre las métricas que las sustentan.
+- Detección de debilidades mediante un **motor de reglas**, y generación del plan de entrenamiento con **explicaciones generadas por LLM de Groq + Gemini Flash**, citando siempre las métricas que las sustentan.
 - Dashboard web responsive.
 - API backend, base de datos, trabajos de ingesta/análisis, contenedores y CI básico.
 - Documento técnico: arquitectura, riesgos, manual de uso y evidencias de pruebas.
@@ -74,7 +74,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 1. El usuario se autentica y vincula su cuenta de League of Legends.
 2. El sistema descarga y normaliza las partidas recientes.
 3. Un motor de análisis calcula indicadores clave de desempeño (KPI) y detecta patrones mediante reglas (muertes tempranas, CS bajo, visión, consistencia, entre otros).
-4. Se genera un plan semanal (focos de mejora, drills y campeones a priorizar o limitar). El LLM (Groq) recibe las métricas y debilidades detectadas de forma estructurada y redacta la explicación en lenguaje natural, citando siempre el dato que la sustenta — el modelo explica, no decide qué está mal.
+4. Se genera un plan semanal (focos de mejora, drills y campeones a priorizar o limitar). El LLM (Groq para plan/chat, Gemini Flash para mapa, con respaldo cruzado ante cuota) recibe las métricas y debilidades detectadas de forma estructurada y redacta la explicación en lenguaje natural, citando siempre el dato que la sustenta — el modelo explica, no decide qué está mal.
 5. El usuario registra el cumplimiento; el sistema reevalúa en la siguiente ventana de partidas.
 
 ## 8. Arquitectura lógica propuesta
@@ -83,7 +83,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 - **Backend API:** REST en TypeScript sobre **Deno**.
 - **Workers:** cola de trabajos (Redis) para ingesta y cálculo de métricas.
 - **Datos:** PostgreSQL (usuarios, partidas, métricas, planes) y caché en Redis.
-- **IA (controlada):** LLM servido por Groq (modelo `openai/gpt-oss-20b`) para la explicación del plan, con prompts restringidos y grounding obligatorio en las métricas calculadas — sin margen para afirmar causas no verificables. Si el LLM falla, el sistema entrega el plan en modo solo-reglas.
+- **IA (controlada):** Groq (`openai/gpt-oss-20b`) para chat y explicación del plan, Gemini Flash para el mapa (modelo configurable por `GEMINI_MODEL`), con respaldo cruzado ante cuota/429, con prompts restringidos y grounding obligatorio en las métricas calculadas — sin margen para afirmar causas no verificables. Si el LLM falla, el sistema entrega el plan en modo solo-reglas.
 - **Nube:** contenedores Docker, reverse proxy, variables de entorno y CI (GitHub Actions).
 - **Observabilidad:** logs estructurados básicos de trabajos y errores de la API de Riot.
 
@@ -96,6 +96,8 @@ El detalle del modelo de datos, diagrama de arquitectura y endpoints está en [a
 | Límites de tasa y cambios de la API de Riot | Alto | Caché, backoff, ventanas de ingesta configurables |
 | Términos de servicio y políticas de desarrollador | Alto | Cumplir políticas oficiales; evitar scraping indebido |
 | Parches que invalidan heurísticas del meta | Medio | Versionar las reglas por parche; alcance acotado |
+| Cuotas de los proveedores LLM | Alto | Groq y Gemini se respaldan ante 429; respetar `Retry-After`, consultar límites reales en AI Studio/consola de Groq y conservar reglas/avance ante fallo |
+| Privacidad con Gemini gratuito | Alto | La app envía datos de partidas y nombres de invocadores; Google puede usar prompts y respuestas para mejorar sus productos. Revisar [términos y excepciones regionales](https://ai.google.dev/gemini-api/terms#unpaid-services), informar al usuario y valorar el servicio de pago para datos privados |
 | Alucinaciones del LLM | Medio | Grounding obligatorio en métricas; modo solo-reglas como respaldo si el LLM falla |
 | Sesgo de muestra de partidas | Medio | Mínimo de partidas por análisis e intervalos de confianza simples |
 | Inflación del alcance | Alto | MVP acotado por rol/campeón; backlog priorizado; multi-juego y motor ML propio quedan explícitamente fuera de esta entrega |
