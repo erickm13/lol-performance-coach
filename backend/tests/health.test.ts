@@ -1,6 +1,8 @@
 import "./test_setup.ts";
 import { assertEquals } from "jsr:@std/assert@^1.0.0";
 import { app } from "../src/app.ts";
+import { db } from "../src/db/client.ts";
+import { signSessionToken } from "../src/auth/jwt.ts";
 
 Deno.test("GET /health responde 200 y confirma la conexión a la base de datos", async () => {
   const res = await app.request("/health");
@@ -22,7 +24,7 @@ Deno.test("GET /health incluye cabeceras CORS para que el frontend pueda consumi
   );
 });
 
-Deno.test("un error inesperado (JSON malformado) responde con el shape JSON { error } del onError global", async () => {
+Deno.test("JSON malformado en registro es un error de entrada 400 con JSON { error }", async () => {
   const res = await app.request("/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -30,6 +32,23 @@ Deno.test("un error inesperado (JSON malformado) responde con el shape JSON { er
   });
   const body = await res.json();
 
-  assertEquals(res.status, 500);
+  assertEquals(res.status, 400);
   assertEquals(typeof body.error, "string");
+});
+
+Deno.test("un fallo inesperado conserva el JSON 500 del onError global sin exponer detalles", async () => {
+  const original = db.select;
+  const token = await signSessionToken(crypto.randomUUID());
+  db.select = () => {
+    throw new Error("detalle interno que no debe filtrarse");
+  };
+  try {
+    const res = await app.request("/settings/profile", {
+      headers: { Cookie: `session=${token}` },
+    });
+    assertEquals(res.status, 500);
+    assertEquals(await res.json(), { error: "Error interno del servidor" });
+  } finally {
+    db.select = original;
+  }
 });

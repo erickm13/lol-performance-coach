@@ -3,12 +3,15 @@ import { describe, expect, it, vi } from "vitest";
 import { AiChatProvider, useAiChat } from "../app/components/AiChatContext";
 import { AiChatFab, AiChatWidget } from "../app/components/AiChatWidget";
 
+const MATCH_ID = "32f180c1-701c-4000-8000-000000000001";
+const completeText = (text: string) => (_: string, node: Element | null) => node?.textContent === text && !Array.from(node.children).some((child) => child.textContent === text);
+
 const greeting = "Hola, contame qué querés mejorar.";
 const reply = (text: string) => ({ ok: true, json: async () => ({ messages: [{ role: "bot", text }] }) });
 
 function MatchButton() {
   const { openChat } = useAiChat();
-  return <button onClick={() => openChat("match", { champion: "Gwen", win: true, kills: 5, deaths: 2, assists: 8 })}>Analizar Gwen</button>;
+  return <button onClick={() => openChat("match", { id: MATCH_ID, champion: "Gwen", win: true, kills: 5, deaths: 2, assists: 8 })}>Analizar Gwen</button>;
 }
 
 function renderChat() {
@@ -32,12 +35,12 @@ describe("chat del coach", () => {
     expect(screen.queryByText("Una pregunta. Un paso adelante.")).not.toBeInTheDocument();
     fireEvent.change(composer, { target: { value: "Quiero mejorar el farmeo" } });
     fireEvent.keyDown(composer, { key: "Enter" });
-    await screen.findByText("Trabajemos tu farmeo.");
+    await screen.findByText(completeText("Trabajemos tu farmeo."));
     fireEvent.change(composer, { target: { value: "Mi siguiente pregunta" } });
     fireEvent.click(screen.getByRole("button", { name: "Minimizar chat" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Abrir chat con tu coach" }));
-    expect(screen.getByText("Trabajemos tu farmeo.")).toBeInTheDocument();
+    expect(screen.getByText(completeText("Trabajemos tu farmeo."))).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(name!);
     expect(screen.getByText("TÚ")).toBeInTheDocument();
     expect(screen.getByRole("textbox")).toHaveValue("Mi siguiente pregunta");
@@ -94,12 +97,13 @@ describe("chat del coach", () => {
     await screen.findByText("Veamos tu partida con Gwen.");
     expect(screen.getByText("Analizando Gwen")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "¿Qué debería practicar después?" }));
-    await screen.findByText("Podés practicar el farmeo.");
-    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toMatchObject({ context: "match", match: { champion: "Gwen", win: true } });
+    await screen.findByText(completeText("Podés practicar el farmeo."));
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toMatchObject({ context: "match", matchId: MATCH_ID, history: [{ role: "bot", text: "Veamos tu partida con Gwen." }] });
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).not.toHaveProperty("match");
     fireEvent.click(screen.getByRole("button", { name: "Nueva conversación" }));
     await screen.findByText(greeting);
     expect(screen.queryByText("Analizando Gwen")).not.toBeInTheDocument();
-    expect(screen.queryByText("Podés practicar el farmeo.")).not.toBeInTheDocument();
+    expect(screen.queryByText(completeText("Podés practicar el farmeo."))).not.toBeInTheDocument();
     expect(JSON.parse(fetchMock.mock.calls[2][1].body).context).toBe("general");
   });
 

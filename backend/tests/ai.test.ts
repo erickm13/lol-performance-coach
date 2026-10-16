@@ -44,7 +44,7 @@ Deno.test("POST /ai/chat devuelve el saludo genérico por defecto", async () => 
 
 /**
  * Corre `fn` garantizando que GROQ_API_KEY NO esté seteada, para ejercitar el
- * mensaje de fallback sin tocar la red real. `Deno.env` es global al proceso
+ * error de configuración recuperable sin tocar la red real. `Deno.env` es global al proceso
  * de test y compartido con los demás archivos.
  */
 async function withoutGroqKey<T>(fn: () => T | Promise<T>): Promise<T> {
@@ -57,7 +57,7 @@ async function withoutGroqKey<T>(fn: () => T | Promise<T>): Promise<T> {
   }
 }
 
-Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible (contexto de partida)", async () => {
+Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no está disponible (contexto de partida)", async () => {
   const cookie = await createSessionCookie();
 
   const res = await withoutGroqKey(() =>
@@ -71,13 +71,14 @@ Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible 
     })
   );
 
-  assertEquals(res.status, 200);
+  assertEquals(res.status, 503);
   const body = await res.json();
-  assertEquals(body.messages.length, 1);
-  assertEquals(body.messages[0].role, "bot");
+  assertEquals(body.code, "configuration");
+  assertEquals(typeof body.error, "string");
+  assertEquals(body.messages, undefined);
 });
 
-Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible (pregunta de seguimiento sobre una partida)", async () => {
+Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no está disponible (pregunta de seguimiento sobre una partida)", async () => {
   const cookie = await createSessionCookie();
 
   const res = await withoutGroqKey(() =>
@@ -99,25 +100,30 @@ Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible 
     })
   );
 
-  assertEquals(res.status, 200);
+  assertEquals(res.status, 503);
   const body = await res.json();
-  assertEquals(body.messages.length, 1);
-  assertEquals(body.messages[0].role, "bot");
+  assertEquals(body.code, "configuration");
+  assertEquals(typeof body.error, "string");
+  assertEquals(body.messages, undefined);
 });
 
-Deno.test("POST /ai/chat cae al mensaje de fallback si Groq no está disponible (mensaje libre)", async () => {
+Deno.test("POST /ai/chat cae al error de configuración recuperable si Groq no está disponible (mensaje libre)", async () => {
   const cookie = await createSessionCookie();
 
   const res = await withoutGroqKey(() =>
     app.request("/ai/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: cookie },
-      body: JSON.stringify({ context: "general", message: "¿Cómo mejoro mi visión?" }),
+      body: JSON.stringify({
+        context: "general",
+        message: "¿Cómo mejoro mi visión?",
+      }),
     })
   );
 
-  assertEquals(res.status, 200);
+  assertEquals(res.status, 503);
   const body = await res.json();
-  assertEquals(body.messages.length, 1);
-  assertEquals(body.messages[0].role, "bot");
+  assertEquals(body.code, "configuration");
+  assertEquals(typeof body.error, "string");
+  assertEquals(body.messages, undefined);
 });

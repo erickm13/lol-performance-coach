@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { WeaknessesList } from "../app/components/WeaknessesList";
 
@@ -41,10 +41,10 @@ describe("WeaknessesList", () => {
 
     render(<WeaknessesList />);
     await waitFor(() =>
-      expect(screen.getByText(/tu cs\/min promedio es 3.5/i)).toBeInTheDocument()
+      expect(screen.getByText((_, node) => node?.tagName === "P" && node.textContent === "Tu CS/min promedio es 3.5.")).toBeInTheDocument()
     );
     // La severidad "high" se muestra como prioridad "Alta".
-    expect(screen.getByText(/prioridad alta/i)).toBeInTheDocument();
+    expect(within(screen.getByRole("article")).getByText(/prioridad alta/i)).toBeInTheDocument();
   });
 
   it("muestra un mensaje cuando no hay debilidades detectadas", async () => {

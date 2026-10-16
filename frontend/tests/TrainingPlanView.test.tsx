@@ -63,12 +63,38 @@ describe("TrainingHub (Entrenamiento)", () => {
     );
   });
 
+  it("genera y muestra el plan al pulsar el botón", async () => {
+    mockFetch({ plan: null, items: [] });
+    const originalMock = vi.mocked(fetch).getMockImplementation()!;
+    vi.mocked(fetch).mockImplementation((url, init) => {
+      if (String(url).endsWith("/riot/training-plan") && init?.method === "POST") {
+        return Promise.resolve({ ok: true, json: async () => PLAN_WITH_DRILL } as Response);
+      }
+      return originalMock(url, init);
+    });
+    render(<TrainingPlanView />);
+    fireEvent.click(await screen.findByRole("button", { name: /generar mi plan semanal/i }));
+    expect(await screen.findByRole("heading", { name: /tus ejercicios de esta semana/i })).toBeInTheDocument();
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining("/riot/training-plan"), expect.objectContaining({ method: "POST" }));
+  });
+
+  it("restaura el cumplimiento guardado y permite consultar los completados", async () => {
+    mockFetch({ ...PLAN_WITH_DRILL, items: PLAN_WITH_DRILL.items.map((item) => ({ ...item, completed: true })) });
+    render(<TrainingPlanView />);
+    expect(await screen.findByRole("heading", { name: /has completado tus ejercicios/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /marcar como completado/i })).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: /todos/i }));
+    expect(screen.getAllByRole("button", { name: /completado:/i })).toHaveLength(2);
+    screen.getAllByRole("button", { name: /completado:/i }).forEach((button) => expect(button).toBeDisabled());
+    expect(fetch).not.toHaveBeenCalledWith(expect.stringContaining("/progress"), expect.anything());
+  });
+
   it("muestra el plan semanal con sus ejercicios", async () => {
     mockFetch(PLAN_WITH_DRILL);
 
     render(<TrainingPlanView />);
     await waitFor(() =>
-      expect(screen.getByText(/tu plan semanal/i)).toBeInTheDocument()
+      expect(screen.getByRole("heading", { name: /tus ejercicios de esta semana/i })).toBeInTheDocument()
     );
     expect(
       screen.getAllByRole("button", { name: /marcar como completado/i }).length,
