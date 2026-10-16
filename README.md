@@ -22,6 +22,8 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
+Configura las claves del coach en `.env`: `GROQ_API_KEY` (chat/plan) y, opcionalmente, `GEMINI_API_KEY` (mapa). `GEMINI_MODEL` selecciona el modelo Flash. Ante cuota se usa el otro proveedor; con una sola clave funciona ese proveedor para todo. Consulta [configuración y privacidad](docs/arquitectura.md#proveedores-del-coach-y-privacidad).
+
 - Frontend: http://localhost:3000
 - Backend: http://localhost:8000/health
 
@@ -52,4 +54,10 @@ npm run dev
 ```bash
 cd backend && deno task test
 cd frontend && npm test
+```
+
+Para reproducir todos los pasos de CI del backend con PostgreSQL desechable (sin usar la base de partidas):
+
+```bash
+bash backend/scripts/check-ci.sh
 ```

@@ -3,7 +3,7 @@ import { Hono } from "jsr:@hono/hono@^4.6.0";
 import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
 import { and, count, desc, eq, inArray, sql } from "npm:drizzle-orm@^0.36.0";
 import { verifySessionToken } from "../auth/jwt.ts";
-import { GroqError } from "../analysis/groq.ts";
+import { LlmError } from "../analysis/llm.ts";
 import { db } from "../db/client.ts";
 import {
   matches,
@@ -445,9 +445,9 @@ matchRoutes.post("/matches/:id/insights", async (c) => {
       "No se pudieron generar los consejos del mapa:",
       String(error),
     );
-    const code = error instanceof GroqError ? error.code : "upstream";
+    const code = error instanceof LlmError ? error.code : "upstream";
     if (code === "rate_limit") {
-      const retryAfterSeconds = error instanceof GroqError
+      const retryAfterSeconds = error instanceof LlmError
         ? error.retryAfterSeconds ?? 60
         : 60;
       mapRateLimitUntil = Math.max(

@@ -2,7 +2,7 @@ import type {
   RiotMatchParticipant,
   RiotMatchTimeline,
 } from "../riot/client.ts";
-import { generateExplanation, GroqError } from "./groq.ts";
+import { generateExplanation, LlmError } from "./llm.ts";
 
 import { buildMomentContext, type MomentContext } from "./matchContext.ts";
 
@@ -146,7 +146,7 @@ export async function explainMapMoments(input: {
   );
   const moments = numbered.filter((event) => requested.has(event.eventIndex));
   if (moments.length !== requested.size) {
-    throw new GroqError("El lote contiene índices de eventos inválidos");
+    throw new LlmError("El lote contiene índices de eventos inválidos");
   }
   if (!moments.length) return mergeMapInsights(null, null, input.events.length);
   const objectSchema = (properties: Record<string, unknown>) => ({
@@ -204,6 +204,7 @@ ${
     }`,
     fetch,
     {
+      preferredProvider: "gemini",
       jsonSchema: { name: "match_map_review", schema },
       timeoutMs: 45_000,
       maxCompletionTokens: Math.min(4096, 768 + moments.length * 768),
@@ -216,10 +217,10 @@ ${
       text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""),
     );
   } catch {
-    throw new GroqError("El análisis del mapa no devolvió JSON válido");
+    throw new LlmError("El análisis del mapa no devolvió JSON válido");
   }
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new GroqError(
+    throw new LlmError(
       "El análisis del mapa no contiene evaluaciones válidas",
     );
   }
@@ -239,11 +240,11 @@ ${
   for (const event of moments) {
     const value = response[`event_${event.eventIndex}`];
     if (!value || typeof value !== "object" || Array.isArray(value)) {
-      throw new GroqError("El coach no evaluó todos los eventos del lote");
+      throw new LlmError("El coach no evaluó todos los eventos del lote");
     }
     const review = value as Record<string, unknown>;
     if (!textIsValid(review.title) || !textIsValid(review.explanation)) {
-      throw new GroqError("La evaluación de un evento está incompleta");
+      throw new LlmError("La evaluación de un evento está incompleta");
     }
     const title = boundedText(review.title, 65);
     const explanation = boundedText(review.explanation, 520);
@@ -254,7 +255,7 @@ ${
         !textIsValid(review.alternativeTitle) || !textIsValid(review.advice) ||
         !["retreat", "vision", "group"].includes(String(review.action))
       ) {
-        throw new GroqError("Falta la alternativa para un error señalado");
+        throw new LlmError("Falta la alternativa para un error señalado");
       }
       suggestions.push({
         eventIndex: event.eventIndex,
@@ -271,7 +272,7 @@ ${
       const target = review.assessment === "good" ? goodPlays : observations;
       target.push({ eventIndex: event.eventIndex, title, explanation });
     } else {
-      throw new GroqError(
+      throw new LlmError(
         "La evaluación del evento tiene una categoría inválida",
       );
     }

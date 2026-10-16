@@ -10,7 +10,7 @@ import {
 import { RULES_VERSION, saveWeaknesses } from "./weaknesses.ts";
 import { compactCoachContext } from "../coaching/context.ts";
 import { getChampionStats } from "../riot/ingest.ts";
-import { generateExplanation, GroqError } from "./groq.ts";
+import { generateExplanation, LlmError } from "./llm.ts";
 
 const SEVERITY_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 };
 
@@ -236,7 +236,7 @@ export async function generateTrainingPlan(
       explanations.push(await explain(prompt));
     }
   } catch (err) {
-    if (!(err instanceof GroqError)) throw err;
+    if (!(err instanceof LlmError)) throw err;
     generatedBy = "rules";
     explanations = drafts.map((d) => d.description);
   }

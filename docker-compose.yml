@@ -28,7 +28,9 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       RESEND_API_KEY: ${RESEND_API_KEY}
       RIOT_API_KEY: ${RIOT_API_KEY}
-      GROQ_API_KEY: ${GROQ_API_KEY}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.8-flash}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
       DENO_ENV: ${DENO_ENV:-development}
     ports:

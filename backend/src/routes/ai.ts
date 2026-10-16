@@ -1,7 +1,7 @@
 import { Context, Hono } from "jsr:@hono/hono@^4.6.0";
 import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
 import { verifySessionToken } from "../auth/jwt.ts";
-import { generateExplanation, GroqError } from "../analysis/groq.ts";
+import { generateExplanation, LlmError } from "../analysis/llm.ts";
 import { playerCoachingContext } from "../coaching/context.ts";
 import { accountHelpReply } from "../coaching/accountHelp.ts";
 const SESSION_COOKIE = "session";
@@ -93,7 +93,7 @@ PREGUNTA ACTUAL: ${
     });
     return c.json({ messages: [{ role: "bot", text }] });
   } catch (error) {
-    if (!(error instanceof GroqError)) throw error;
+    if (!(error instanceof LlmError)) throw error;
     if (error.retryAfterSeconds) {
       c.header("Retry-After", String(error.retryAfterSeconds));
     }

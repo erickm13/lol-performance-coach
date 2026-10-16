@@ -10,7 +10,8 @@ docker run --rm -d --name "$container" \
   -e POSTGRES_DB=lol_ci -p 127.0.0.1::5432 postgres:16-alpine >/dev/null
 ready=false
 for attempt in {1..30}; do
-  if docker exec "$container" pg_isready -U lol_ci -d lol_ci >/dev/null 2>&1; then ready=true; break; fi
+  # The image's temporary init server accepts Unix sockets before TCP is ready.
+  if docker exec "$container" pg_isready -h 127.0.0.1 -U lol_ci -d lol_ci >/dev/null 2>&1; then ready=true; break; fi
   sleep 1
 done
 if [ "$ready" != true ]; then echo "PostgreSQL de pruebas no inició." >&2; exit 1; fi

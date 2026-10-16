@@ -4,6 +4,17 @@ Este documento recoge la evidencia de que el sistema está cubierto por pruebas
 automatizadas y que todas pasan. La suite se ejecuta en cada *push* y *pull
 request* mediante integración continua (GitHub Actions).
 
+## Verificación actual: Gemini + Groq (2026-10-15)
+
+- Corrección previa publicada en `ff0431e`: [CI backend y frontend verde](https://github.com/erickm13/lol-performance-coach/actions/runs/38853503068).
+- Integración validada localmente: **110 pruebas backend + 44 frontend = 154, sin fallos**. Frontend: lint y build de 96 páginas correctos; backend: lint, tipos, generación de esquema, migraciones y suite completa con PostgreSQL desechable mediante `bash backend/scripts/check-ci.sh`.
+- `llm.test.ts`: 14 pruebas sin red para contrato Gemini (Authorization, JSON Schema estricto, razonamiento y límite de salida), errores, orden y respaldo en ambos sentidos, un solo proveedor, ausencia de claves, cuotas simultáneas, espera compartida y recuperación. Incluye el mapa real con eventos sintéticos, rechazo de un lote incompleto y respaldo en Groq.
+- Chat y generación del plan incluyen pruebas de integración con respuestas HTTP simuladas: Groq → Gemini ante 429; si ambos agotan cuota, chat mantiene su 429 y el plan conserva sus ítems en modo solo-reglas. Las pruebas de configuración desactivan ambas claves para evitar llamadas externas.
+- **Prueba real sintética de Gemini satisfactoria:** `gemini-3.8-flash`, endpoint compatible con OpenAI, Bearer, `response_format: json_schema` con `strict: true`, `reasoning_effort: low` y límite `max_tokens`. Se validó el objeto JSON esperado sin enviar datos de jugadores ni guardar la clave o la respuesta del proveedor.
+- Estas pruebas no sustituyen la revisión de partidas reales, el acompañante de Windows ni la validación visual del navegador.
+
+## Referencia histórica anterior
+
 - **Commit evaluado:** `60689b9` (rama `main`).
 - **Resultado:** **119 pruebas, 0 fallos** (93 backend + 26 frontend).
 - **Ejecución de CI (verde):** https://github.com/erickm13/lol-performance-coach/actions/runs/38645499380

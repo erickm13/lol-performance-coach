@@ -383,3 +383,41 @@ Deno.test("markItemProgress inserta un registro de progreso", async () => {
     .where(eq(trainingPlanItems.id, itemId));
   assertEquals(stored.length, 1);
 });
+
+Deno.test("Plan integrado prefiere Groq, respalda en Gemini y conserva explicaciones y reglas", async () => {
+  const account = await createTestRiotAccount();
+  await insertWeakness(account, "vision", "high");
+  const names = ["GROQ_API_KEY", "GEMINI_API_KEY"];
+  const saved = names.map((name) => Deno.env.get(name));
+  const originalFetch = globalThis.fetch;
+  const calls: string[] = [];
+  try {
+    names.forEach((name) => Deno.env.set(name, "test-only"));
+    globalThis.fetch = (url) => {
+      calls.push(String(url));
+      return Promise.resolve(calls.length === 1
+        ? new Response(null, { status: 429, headers: { "Retry-After": "60" } })
+        : Response.json({ choices: [{ message: { content: "Explicación de respaldo." } }] }));
+    };
+    const result = await generateTrainingPlan(account);
+    assertEquals(result.plan?.generatedBy, "llm");
+    assertEquals(result.items.length, 2);
+    assertEquals(result.items.every((item) => item.llmExplanation === "Explicación de respaldo."), true);
+    assertEquals(calls.length, 3);
+    assertEquals(calls[0].includes("api.groq.com"), true);
+    assertEquals(calls.slice(1).every((url) => url.includes("googleapis.com")), true);
+    globalThis.fetch = () => Promise.resolve(new Response(null, { status: 429 }));
+    const secondAccount = await createTestRiotAccount();
+    await insertWeakness(secondAccount, "vision", "high");
+    const rules = await generateTrainingPlan(secondAccount);
+    assertEquals(rules.plan?.generatedBy, "rules");
+    assertEquals(rules.items.length, 2);
+    assertEquals(rules.items.every((item) => item.llmExplanation === item.description), true);
+  } finally {
+    globalThis.fetch = originalFetch;
+    names.forEach((name, i) => {
+      if (saved[i] === undefined) Deno.env.delete(name);
+      else Deno.env.set(name, saved[i]!);
+    });
+  }
+});
