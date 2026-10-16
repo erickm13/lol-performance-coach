@@ -44,7 +44,7 @@ export function useMatchInsights(
           );
           if (controller.signal.aborted) return;
           if (
-            data.version !== 4 || !data.progress ||
+            !Number.isInteger(data.version) || data.version < 4 || !data.progress ||
             !Array.isArray(data.observations)
           ) {
             throw new Error(
@@ -69,7 +69,8 @@ export function useMatchInsights(
           partial?: MapInsights;
         };
         if (
-          failure.partial?.version === 4 && failure.partial.progress &&
+          failure.partial && Number.isInteger(failure.partial.version) &&
+          failure.partial.version >= 4 && failure.partial.progress &&
           Array.isArray(failure.partial.observations)
         ) {
           setInsights(failure.partial);

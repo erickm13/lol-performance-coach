@@ -22,7 +22,7 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-Configura las claves del coach en `.env`: `GROQ_API_KEY` (chat/plan) y, opcionalmente, `GEMINI_API_KEY` (mapa). `GEMINI_MODEL` selecciona el modelo Flash. Ante cuota se usa el otro proveedor; con una sola clave funciona ese proveedor para todo. Consulta [configuración y privacidad](docs/arquitectura.md#proveedores-del-coach-y-privacidad).
+Configura las claves del coach en `.env`: `GROQ_API_KEY` (chat/plan) y, opcionalmente, `GEMINI_API_KEY` (mapa). `GEMINI_MODEL` selecciona el modelo Flash. Ante cuota o fallos transitorios se usa el otro proveedor; con una sola clave funciona ese proveedor para todo. Consulta [configuración y privacidad](docs/arquitectura.md#proveedores-del-coach-y-privacidad).
 
 - Frontend: http://localhost:3000
 - Backend: http://localhost:8000/health

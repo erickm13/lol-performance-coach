@@ -83,7 +83,7 @@ Diseñar, implementar y evaluar una plataforma web que analice el historial de p
 - **Backend API:** REST en TypeScript sobre **Deno**.
 - **Workers:** cola de trabajos (Redis) para ingesta y cálculo de métricas.
 - **Datos:** PostgreSQL (usuarios, partidas, métricas, planes) y caché en Redis.
-- **IA (controlada):** Groq (`openai/gpt-oss-20b`) para chat y explicación del plan, Gemini Flash para el mapa (modelo configurable por `GEMINI_MODEL`), con respaldo cruzado ante cuota/429, con prompts restringidos y grounding obligatorio en las métricas calculadas — sin margen para afirmar causas no verificables. Si el LLM falla, el sistema entrega el plan en modo solo-reglas.
+- **IA (controlada):** Groq (`openai/gpt-oss-20b`) para chat y explicación del plan, Gemini Flash para el mapa (modelo configurable por `GEMINI_MODEL`), con respaldo cruzado ante cuota/429 o fallos transitorios, con prompts restringidos y grounding obligatorio en las métricas calculadas — sin margen para afirmar causas no verificables. Si el LLM falla, el sistema entrega el plan en modo solo-reglas.
 - **Nube:** contenedores Docker, reverse proxy, variables de entorno y CI (GitHub Actions).
 - **Observabilidad:** logs estructurados básicos de trabajos y errores de la API de Riot.
 
@@ -96,7 +96,7 @@ El detalle del modelo de datos, diagrama de arquitectura y endpoints está en [a
 | Límites de tasa y cambios de la API de Riot | Alto | Caché, backoff, ventanas de ingesta configurables |
 | Términos de servicio y políticas de desarrollador | Alto | Cumplir políticas oficiales; evitar scraping indebido |
 | Parches que invalidan heurísticas del meta | Medio | Versionar las reglas por parche; alcance acotado |
-| Cuotas de los proveedores LLM | Alto | Groq y Gemini se respaldan ante 429; respetar `Retry-After`, consultar límites reales en AI Studio/consola de Groq y conservar reglas/avance ante fallo |
+| Cuotas de los proveedores LLM | Alto | Groq y Gemini se respaldan ante 429, 5xx, red o timeout; respetar `Retry-After`, consultar límites reales en AI Studio/consola de Groq y conservar reglas/avance ante fallo |
 | Privacidad con Gemini gratuito | Alto | La app envía datos de partidas y nombres de invocadores; Google puede usar prompts y respuestas para mejorar sus productos. Revisar [términos y excepciones regionales](https://ai.google.dev/gemini-api/terms#unpaid-services), informar al usuario y valorar el servicio de pago para datos privados |
 | Alucinaciones del LLM | Medio | Grounding obligatorio en métricas; modo solo-reglas como respaldo si el LLM falla |
 | Sesgo de muestra de partidas | Medio | Mínimo de partidas por análisis e intervalos de confianza simples |

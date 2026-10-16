@@ -329,9 +329,9 @@ Deno.test("Ambas cuotas: espera mínima compartida, sin llamadas durante Retry-A
   });
 });
 
-Deno.test("Fallo sin cuota no dispara respaldo; fallo del respaldo conserva clasificación", async () => {
+Deno.test("Errores permanentes no disparan respaldo; fallo del respaldo conserva clasificación", async () => {
   await withKeys(BOTH, async () => {
-    for (const status of [401, 503]) {
+    for (const status of [401, 400]) {
       let calls = 0;
       const error = await assertRejects(
         () =>
@@ -428,5 +428,54 @@ Deno.test("Mapa integrado prefiere Gemini, rechaza lotes incompletos y respalda 
     } finally {
       globalThis.fetch = originalFetch;
     }
+  });
+});
+
+for (const preferred of ["gemini", "groq"] as const) {
+  Deno.test(`Respaldo ${preferred}: 503, red y timeout permiten continuar con el otro proveedor`, async () => {
+    await withKeys(BOTH, async () => {
+      const failures: (() => Promise<Response>)[] = [
+        () => Promise.resolve(new Response(null, { status: 503 })),
+        () => Promise.resolve(new Response(null, { status: 500 })),
+        () => Promise.resolve(new Response(null, { status: 408 })),
+        () => Promise.reject(new TypeError("network unavailable")),
+        () => Promise.reject(new DOMException("timeout", "TimeoutError")),
+      ];
+      for (const failure of failures) {
+        const calls: string[] = [];
+        const result = await createExplanationGenerator()("datos", (url) => {
+          calls.push(String(url));
+          return calls.length === 1
+            ? failure()
+            : Promise.resolve(success("respaldo disponible"));
+        }, { preferredProvider: preferred });
+        assertEquals(result, "respaldo disponible");
+        assertEquals(calls.length, 2);
+        assertStringIncludes(
+          calls[0],
+          preferred === "gemini" ? "googleapis.com" : "api.groq.com",
+        );
+        assertStringIncludes(
+          calls[1],
+          preferred === "gemini" ? "api.groq.com" : "googleapis.com",
+        );
+      }
+    });
+  });
+}
+Deno.test("503 en ambos proveedores mantiene error recuperable sin llamadas recursivas", async () => {
+  await withKeys(BOTH, async () => {
+    let calls = 0;
+    const error = await assertRejects(
+      () =>
+        createExplanationGenerator()("datos", () => {
+          calls++;
+          return Promise.resolve(new Response(null, { status: 503 }));
+        }),
+      LlmError,
+    );
+    assertEquals(calls, 2);
+    assertEquals(error.code, "upstream");
+    assertEquals(error.status, 503);
   });
 });

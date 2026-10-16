@@ -13,6 +13,7 @@ export class LlmError extends Error {
     options?: ErrorOptions,
     public readonly code: LlmErrorCode = "invalid_response",
     public readonly retryAfterSeconds?: number,
+    public readonly status?: number,
   ) {
     super(message, options);
     this.name = "LlmError";
@@ -116,6 +117,7 @@ export async function generateCompletion(
         res.status === 429
           ? Number.isFinite(seconds) ? Math.max(1, Math.ceil(seconds)) : 60
           : undefined,
+        res.status,
       );
     }
 

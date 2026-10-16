@@ -33,14 +33,22 @@ export function createExplanationGenerator(now: () => number = Date.now) {
       );
     }
 
+    let transientFailure: LlmError | undefined;
     for (const provider of configured) {
       if ((rateLimitUntil.get(provider) ?? 0) > now()) continue;
       try {
         return await clients[provider](prompt, fetchFn, options);
       } catch (error) {
-        // Other failures retain their classification and the caller's existing recovery.
-        if (!(error instanceof LlmError) || error.code !== "rate_limit") {
-          throw error;
+        if (!(error instanceof LlmError)) throw error;
+        if (error.code !== "rate_limit") {
+          const transient = error.code === "timeout" ||
+            (error.code === "upstream" &&
+              (error.status === undefined || error.status === 408 ||
+                error.status >= 500));
+          // Invalid keys, malformed requests and invalid output still fail immediately.
+          if (!transient) throw error;
+          transientFailure = error;
+          continue;
         }
         rateLimitUntil.set(
           provider,
@@ -51,6 +59,9 @@ export function createExplanationGenerator(now: () => number = Date.now) {
         );
       }
     }
+
+    // A temporary service failure keeps its classification if the backup also fails.
+    if (transientFailure) throw transientFailure;
 
     // Resume as soon as any configured provider is available again.
     const earliest = Math.min(
