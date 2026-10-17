@@ -5,7 +5,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { createInterface } from "node:readline/promises";
 import { setTimeout as delay } from "node:timers/promises";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 
 const run = promisify(execFile);
 const roles = {
@@ -49,6 +49,7 @@ function lcu(auth, path) {
     "/lol-gameflow/v1/session",
     "/lol-champ-select/v1/session",
     "/lol-champ-select/v1/pickable-champion-ids",
+    "/lol-summoner/v1/current-summoner",
   ];
   if (!allowed.includes(path)) throw new Error("Lectura local no permitida.");
   return new Promise((resolve, reject) => {
@@ -102,15 +103,39 @@ function lcu(auth, path) {
 }
 let draftId = null;
 let previousPhase = null;
+let accountFingerprint = null;
+let accountFingerprintCheckedAt = 0;
 const empty = (phase) => ({ version: 1, phase });
+async function readAccountFingerprint(auth) {
+  if (Date.now() - accountFingerprintCheckedAt < 30000) {
+    return accountFingerprint;
+  }
+  accountFingerprintCheckedAt = Date.now();
+  try {
+    const current = await lcu(auth, "/lol-summoner/v1/current-summoner");
+    const puuid = typeof current?.puuid === "string" ? current.puuid : "";
+    accountFingerprint = puuid
+      ? createHash("sha256").update(puuid, "utf8").digest("hex")
+      : null;
+  } catch {
+    accountFingerprint = null;
+  }
+  return accountFingerprint;
+}
 async function snapshot() {
   let auth;
   try {
     auth = await discover();
   } catch {
+    accountFingerprint = null;
+    accountFingerprintCheckedAt = 0;
     return empty("ClientUnavailable");
   }
-  if (!auth) return empty("ClientClosed");
+  if (!auth) {
+    accountFingerprint = null;
+    accountFingerprintCheckedAt = 0;
+    return empty("ClientClosed");
+  }
   try {
     const phase = await lcu(auth, "/lol-gameflow/v1/gameflow-phase");
     const known = [
@@ -128,6 +153,8 @@ async function snapshot() {
     if (phase !== "ChampSelect") {
       previousPhase = phase;
       draftId = null;
+      accountFingerprint = null;
+      accountFingerprintCheckedAt = 0;
       return empty(known.includes(phase) ? phase : "Unsupported");
     }
     const session = await lcu(auth, "/lol-champ-select/v1/session");
@@ -166,15 +193,25 @@ async function snapshot() {
           // Opponent hovers are never sent, even if some client version exposes them.
           championId: opponents && !lockedIn ? 0 : positive(slot.championId),
           intentId: opponents ? 0 : positive(slot.championPickIntent),
-          role: opponents
+          // Some LCU versions expose the enemy's assigned position too. Keep
+          // it only for locked picks; the server uses it to find a same-lane
+          // matchup and otherwise falls back to the champion's general build.
+          role: opponents && !lockedIn
             ? null
             : roles[String(slot.assignedPosition).toLowerCase()] ?? null,
           lockedIn,
         };
       });
+    const teammatePuuids = [...new Set(
+      session.myTeam
+        .filter((slot) => slot.cellId !== session.localPlayerCellId)
+        .map((slot) => typeof slot.puuid === "string" ? slot.puuid : "")
+        .filter((puuid) => /^[A-Za-z0-9_-]{32,128}$/.test(puuid)),
+    )].slice(0, 4);
     return {
       version: 1,
       phase: "ChampSelect",
+      accountFingerprint: await readAccountFingerprint(auth),
       draftId,
       localCellId: session.localPlayerCellId,
       mapId: positive(
@@ -186,6 +223,7 @@ async function snapshot() {
         gameflow?.gameData?.queue?.gameMode ?? gameflow?.map?.gameMode ?? "",
       ),
       myTeam: team(session.myTeam),
+      teammatePuuids,
       // Only queues with a publicly visible enemy draft. No blind-pick reveal.
       theirTeam: [400, 420, 440].includes(gameflow?.gameData?.queue?.id)
         ? team(session.theirTeam, true)
@@ -204,6 +242,8 @@ async function snapshot() {
     credentials = null;
     previousPhase = null;
     draftId = null;
+    accountFingerprint = null;
+    accountFingerprintCheckedAt = 0;
     return empty("ClientUnavailable");
   }
 }

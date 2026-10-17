@@ -69,7 +69,7 @@ const teammateRankCache = new Map<
 >();
 const teammateRankRequests = new Map<string, Promise<string | null>>();
 
-async function getCachedTeammateSoloTier(puuid: string): Promise<string | null> {
+export async function getCachedTeammateSoloTier(puuid: string): Promise<string | null> {
   const cached = teammateRankCache.get(puuid);
   if (cached && cached.expiresAt > Date.now()) return cached.soloTier;
 

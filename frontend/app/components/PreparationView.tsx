@@ -6,173 +6,151 @@ import { useLiveDraft } from "../lib/useLiveDraft";
 import { liveDraftInput } from "../lib/liveDraft";
 import { LiveDraftPanel } from "./LiveDraftPanel";
 import { apiRequest, useResource } from "../lib/useResource";
-import {
-  type ChampionSummary,
-  dataDragonDescriptionText,
-} from "../lib/dataDragon";
+import { type ChampionSummary } from "../lib/dataDragon";
 import { type ProfileResponse, ROLES } from "../lib/player";
 import {
   type DraftInput,
+  type PreparationAnalytics,
   type PreparationGuide,
-  type PreparationItem,
-  type PreparationRune,
-  type PreparationSpell,
 } from "../lib/preparation";
 import { ScrollRevealRoot } from "./ScrollRevealRoot";
 import { ScreenState } from "./ScreenState";
-import { AcademyText } from "./AcademyText";
-import { CountUp } from "./CountUp";
-import { Tooltip } from "./Tooltip";
 const CDN = "https://ddragon.leagueoflegends.com/cdn";
-function CatalogText({ html }: { html: string }) {
-  const [text, setText] = useState("");
-  useEffect(() => {
-    setText(dataDragonDescriptionText(html));
-  }, [html]);
-  return (
-    <span className="catalog-text">
-      {text || "Consulta el efecto en el cliente antes de elegirlo."}
-    </span>
-  );
-}
-function Rune({ rune }: { rune: PreparationRune }) {
-  return (
-    <Tooltip
-      label={rune.name}
-      content={
-        <>
-          <strong className="tooltip-title">{rune.name}</strong>
-          <p className="tooltip-copy">
-            <CatalogText html={rune.longDesc || rune.shortDesc} />
-          </p>
-        </>
-      }
-    >
-      <Image
-        unoptimized
-        width={44}
-        height={44}
-        src={`${CDN}/img/${rune.icon}`}
-        alt=""
-      />
-      <span>{rune.name}</span>
-    </Tooltip>
-  );
-}
-function Spell(
-  { spell, version }: { spell: PreparationSpell; version: string },
-) {
-  return (
-    <div className="preparation-spell">
-      <Tooltip
-        label={spell.name}
-        content={
-          <>
-            <strong className="tooltip-title">{spell.name}</strong>
-            <p className="tooltip-copy">
-              <CatalogText html={spell.description} />
-            </p>
-          </>
-        }
-      >
-        <Image
-          unoptimized
-          width={38}
-          height={38}
-          src={`${CDN}/${version}/img/spell/${spell.image.full}`}
-          alt=""
-        />
-        <span>{spell.name}</span>
-      </Tooltip>
-      {spell.reason && <p className="page-sub">{spell.reason}</p>}
+function LoLalyticsBuild({ guide, mode, stale }: {
+  guide: PreparationGuide;
+  mode: "manual" | "live";
+  stale: boolean;
+}) {
+  const data = guide.analytics;
+  const role = ROLES.find((item) => item.id === guide.input.role)?.name ?? guide.input.role;
+  const laneParam = guide.input.role === "UTILITY" ? "support" : guide.input.role.toLowerCase();
+  const rate = (value: number | null) => value === null ? "—" : `${value.toFixed(2)}%`;
+  const count = (value: number | null) => value === null ? "—" : value.toLocaleString("es-GT");
+  const itemCard = (item: PreparationAnalytics["startingItems"][number], index: number) => (
+    <div className="lolytics-item" key={`${item.id}-${index}`} title={item.name}>
+      <Image unoptimized width={44} height={44} src={`https://cdn5.lolalytics.com/item64/${item.id}.webp`} alt={item.name} />
+      <strong>{item.name}</strong>
+      {item.winRate !== null && <span className="lolytics-winrate">{rate(item.winRate)}</span>}
+      {item.games !== null && <small>{count(item.games)} partidas</small>}
     </div>
   );
-}
-function ShoppingItems(
-  { title, caption, items, version }: {
-    title: string;
-    caption: string;
-    items: PreparationItem[];
-    version: string;
-  },
-) {
+  const abilityRows = ["Q", "W", "E", "R"] as const;
+  const selectedPrimaryRunes = new Set(guide.runes.primary.map((rune) => rune.id));
+  const selectedSecondaryRunes = new Set(guide.runes.secondary.map((rune) => rune.id));
+  const runeIcon = (rune: PreparationGuide["runes"]["primary"][number], selected: boolean, key: string, statMod = false) => (
+    <Image
+      unoptimized
+      key={key}
+      width={36}
+      height={36}
+      className={selected ? "is-selected" : "is-muted"}
+      title={`${rune.name}${selected ? " · seleccionada" : ""}`}
+      src={statMod ? rune.sourceIcon ?? `${CDN}/img/${rune.icon}` : `${CDN}/img/${rune.icon}`}
+      alt={rune.name}
+      aria-label={`${rune.name}${selected ? ", seleccionada" : ", no seleccionada"}`}
+    />
+  );
+
+  if (!data) {
+    return (
+      <section className="lolytics-build lolytics-unavailable" aria-live="polite">
+        <header><span>LoLalytics · {guide.chosen.name}</span><span>Parche {guide.version}</span></header>
+        <h2>No pudimos cargar la build de esta línea</h2>
+        <p>La guía muestra datos de LoLalytics para campeón y línea. No se reemplaza por las plantillas anteriores cuando la fuente no está disponible.</p>
+        {stale && <p role="status">La selección cambió; estos datos corresponden al campeón anterior.</p>}
+        <a href={`https://lolalytics.com/lol/${guide.chosen.id.toLowerCase()}/build/?lane=${laneParam}&tier=${guide.rankFilter}&region=lan`} target="_blank" rel="noreferrer">Abrir la página de LoLalytics ({guide.rankLabel}) →</a>
+      </section>
+    );
+  }
+
   return (
-    <section className="section-surface" data-reveal="up">
-      <header className="champ-stats-head">
-        <h3>{title}</h3>
-        <span>{caption}</span>
-      </header>
-      <div className="section-body shopping-grid">
-        {items.length
-          ? items.map((item) => (
-            <article className="shopping-item" key={item.id}>
-              <div className="shopping-item-head">
-                <Tooltip
-                  label={item.name}
-                  content={
-                    <>
-                      <strong className="tooltip-title">{item.name}</strong>
-                      <p className="tooltip-copy">
-                        <CatalogText html={item.description} />
-                      </p>
-                      <p>{item.gold} de oro · parche {version}</p>
-                    </>
-                  }
-                >
-                  <Image
-                    unoptimized
-                    width={44}
-                    height={44}
-                    src={`${CDN}/${version}/img/item/${item.id}.png`}
-                    alt=""
-                  />
-                </Tooltip>
-                <div>
-                  <h4>{item.name}</h4>
-                  <span className="text-gold">
-                    <CountUp
-                      value={item.gold}
-                      startOnView
-                      useGrouping
-                      delayMs={0}
-                    />{" "}
-                    de oro
-                  </span>
-                </div>
-              </div>
-              <p>
-                <AcademyText text={item.reason} />
-              </p>
-              {item.components.length > 0 && (
-                <details>
-                  <summary>Componentes para tu vuelta a base</summary>
-                  <ul>
-                    {item.components.map((component, index) => (
-                      <li key={`${component.id}-${index}`}>
-                        <Image
-                          unoptimized
-                          width={24}
-                          height={24}
-                          src={`${CDN}/${version}/img/item/${component.id}.png`}
-                          alt=""
-                        />
-                        <span>{component.name}</span>
-                        <span>{component.gold} oro</span>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              )}
-            </article>
-          ))
-          : (
-            <p className="page-sub">
-              No hay opciones disponibles con estos datos. Puedes ajustar la
-              selección de campeones.
-            </p>
-          )}
-      </div>
-    </section>
+    <div className="lolytics-page" aria-live={mode === "manual" ? "polite" : undefined}>
+      <div className="lolytics-breadcrumb">LoL Tier List / {guide.chosen.name}{data.matchup ? ` vs ${data.matchup.opponent}` : ""} Build</div>
+      {mode === "live" && <p className="lolytics-live-status" role="status">{stale ? "Selección actualizándose…" : "Build ligada a la selección en vivo"}</p>}
+      <section className="lolytics-hero">
+        <div className="lolytics-portrait-wrap">
+          <Image unoptimized width={152} height={152} src={`${CDN}/${guide.version}/img/champion/${guide.chosen.id}.png`} alt={guide.chosen.name} />
+          <span>{data.summary.tier ?? "—"}</span>
+        </div>
+        <div className="lolytics-intro">
+          <h1>{guide.chosen.name} Build, Runas y Habilidades para {role}{data.matchup ? ` contra ${data.matchup.opponent}` : ""}</h1>
+          <div className="lolytics-priority-mini" aria-label="Prioridad de habilidades">
+            {data.skillPriority.sequence.map((key, index) => {
+              const skill = guide.skills.find((item) => item.key === key);
+              return <span key={`${key}-${index}`}>{skill && <Image unoptimized width={34} height={34} src={`${CDN}/${guide.version}/img/spell/${skill.image.full}`} alt={skill.name} />}<b>{key}</b>{index < data.skillPriority.sequence.length - 1 && <i>›</i>}</span>;
+            })}
+          </div>
+          <p>
+            {guide.chosen.name} {role.toLowerCase()} · parche {data.patch ?? guide.version} · tasa de victoria {rate(data.summary.winRate)}
+            {data.summary.rank !== null && data.summary.totalChampions !== null ? ` · puesto ${data.summary.rank} de ${data.summary.totalChampions}` : ""}
+            {data.summary.tier ? ` · rango ${data.summary.tier}` : ""}.
+          </p>
+        </div>
+      </section>
+
+      <section className="lolytics-metrics" aria-label="Estadísticas del campeón y línea">
+        {(data.matchup ? [
+          [rate(data.summary.winRate), `Win Rate vs ${data.matchup.opponent}`],
+          [count(data.summary.games), "Games"],
+        ] : [
+          [rate(data.summary.winRate), "Win Rate"],
+          [rate(data.summary.winRateDelta), "WR Delta"],
+          [rate(data.summary.gameAverageWinRate), "Game Avg WR"],
+          [rate(data.summary.pickRate), "Pick Rate"],
+          [data.summary.tier ?? "—", "Tier"],
+          [data.summary.rank !== null && data.summary.totalChampions !== null ? `${data.summary.rank} / ${data.summary.totalChampions}` : "—", "Rank"],
+          [rate(data.summary.banRate), "Ban Rate"],
+          [count(data.summary.games), "Games"],
+        ]).map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}
+      </section>
+
+      <div className="lolytics-build-switch"><span className="is-active">{data.matchup ? `Enfrentamiento contra ${data.matchup.opponent}` : "Build principal"}</span><span>Rango {guide.rankLabel}{guide.rankBoosted ? " · rango de aliados" : ""} · LAN · {data.patch ?? guide.version}</span></div>
+
+      <section id="lolytics-build" className="lolytics-main-grid">
+        <article className="lolytics-block lolytics-priority-block">
+          <h2>Skill Priority <small>· {rate(data.skillPriority.winRate)} · {count(data.skillPriority.games)} partidas</small></h2>
+          <div className="lolytics-priority-large">
+            {data.skillPriority.sequence.map((key, index) => {
+              const skill = guide.skills.find((item) => item.key === key);
+              return <span key={`${key}-${index}`}>{skill && <Image unoptimized width={42} height={42} src={`${CDN}/${guide.version}/img/spell/${skill.image.full}`} alt={skill.name} />}<b>{key}</b>{index < data.skillPriority.sequence.length - 1 && <i>›</i>}</span>;
+            })}
+          </div>
+          <h3>Summoner Spells</h3>
+          <div className="lolytics-spells">
+            {data.summonerSpells.map((spell) => <span key={spell.id} title={spell.name}><Image unoptimized width={42} height={42} src={`https://cdn5.lolalytics.com/spell64/${spell.id}.webp`} alt={spell.name} /><b>{spell.name}</b></span>)}
+          </div>
+          <p className="lolytics-footnote">{rate(data.summonerSpells[0]?.winRate ?? null)} Win Rate · {count(data.summonerSpells[0]?.games ?? null)} partidas</p>
+        </article>
+
+        <article id="lolytics-skills" className="lolytics-block lolytics-order-block">
+          <h2>Skill Order <small>· {rate(data.skillOrder.winRate)} · {count(data.skillOrder.games)} partidas</small></h2>
+          <div className="lolytics-skill-scroll"><table><thead><tr><th></th>{data.skillOrder.sequence.map((_, index) => <th key={index}>{index + 1}</th>)}</tr></thead><tbody>
+            {abilityRows.map((key) => {
+              const skill = guide.skills.find((item) => item.key === key);
+              return <tr key={key}><th>{skill && <Image unoptimized width={26} height={26} src={`${CDN}/${guide.version}/img/spell/${skill.image.full}`} alt={skill.name} />}<b>{key}</b></th>{data.skillOrder.sequence.map((chosen, index) => <td className={chosen === key ? "is-active" : ""} key={index}>{chosen === key ? index + 1 : ""}</td>)}</tr>;
+            })}
+          </tbody></table></div>
+        </article>
+
+        <article className="lolytics-block lolytics-runes-block">
+          <h2>Runas</h2>
+          <div className="lolytics-rune-columns">
+            <div className="lolytics-rune-tree"><h3>{guide.runes.primaryTree?.name ?? "Rama principal"}</h3><div className="lolytics-rune-rows">{guide.runes.primarySlots.map((slot, row) => <div className="lolytics-rune-row" key={`primary-${row}`} style={{ gridTemplateColumns: `repeat(${slot.length}, 36px)` }}>{slot.map((rune) => runeIcon(rune, selectedPrimaryRunes.has(rune.id), `primary-${rune.id}`))}</div>)}</div></div>
+            <div className="lolytics-rune-tree"><h3>{guide.runes.secondaryTree?.name ?? "Secundaria"}</h3><div className="lolytics-rune-rows">{guide.runes.secondarySlots.map((slot, row) => <div className="lolytics-rune-row" key={`secondary-${row}`} style={{ gridTemplateColumns: `repeat(${slot.length}, 36px)` }}>{slot.map((rune) => runeIcon(rune, selectedSecondaryRunes.has(rune.id), `secondary-${rune.id}`))}</div>)}</div></div>
+          </div>
+          <h3>Stat Mods</h3>
+          <div className="lolytics-stat-grid">{guide.runes.statModOptions.map((rune, index) => runeIcon(rune, guide.runes.statModSelection[index] ?? false, `stat-${index}`, true))}</div>
+          <p className="lolytics-footnote">{rate(guide.runes.winRate)} Win Rate · {count(guide.runes.sampleGames)} partidas</p>
+        </article>
+      </section>
+
+      <section id="lolytics-items" className="lolytics-items-grid">
+        <article className="lolytics-block"><h2>Starting Items</h2><div className="lolytics-items-row">{data.startingItems.map(itemCard)}</div></article>
+        <article className="lolytics-block"><h2>Core Build <small>· {rate(data.coreBuild.winRate)} · {count(data.coreBuild.games)} partidas</small></h2><div className="lolytics-items-row lolytics-core-items">{data.coreItems.map((item, index) => <span className="lolytics-core-step" key={item.id}>{itemCard(item, index)}{index < data.coreItems.length - 1 && <b>›</b>}</span>)}</div></article>
+        {data.situationalItems.map((slot) => <article className="lolytics-block" key={slot.slot}><h2>Item {slot.slot}</h2><div className="lolytics-items-row">{slot.options.map((item, index) => <span className="lolytics-item-option" key={`${item.id}-${index}`}>{index > 0 && <b>OR</b>}{itemCard(item, index)}</span>)}</div></article>)}
+      </section>
+      {guide.warnings.length > 0 && <div className="lolytics-warnings">{guide.warnings.map((warning) => <p key={warning}>{warning}</p>)}</div>}
+    </div>
   );
 }
 export function PreparationView() {
@@ -218,8 +196,8 @@ export function PreparationView() {
       search.trim().toLowerCase(),
     )
   );
-  const stale = guide && JSON.stringify(guide.input) !== JSON.stringify(draft);
-  const prepare = useCallback(async (input: DraftInput, scroll = true) => {
+  const stale = Boolean(guide && JSON.stringify(guide.input) !== JSON.stringify(draft));
+  const prepare = useCallback(async (input: DraftInput, scroll = true, liveDraftId?: string) => {
     request.current?.abort();
     const controller = new AbortController();
     request.current = controller;
@@ -228,7 +206,7 @@ export function PreparationView() {
     try {
       const data = await apiRequest<PreparationGuide>("/preparation/guide", {
         method: "POST",
-        body: JSON.stringify(input),
+        body: JSON.stringify(liveDraftId ? { ...input, liveDraftId } : input),
         signal: controller.signal,
       });
       if (!controller.signal.aborted) {
@@ -260,6 +238,9 @@ export function PreparationView() {
   }, []);
   const liveModel = liveDraftInput(live.state.snapshot, champions, liveRole);
   const liveSignature = JSON.stringify(liveModel.input);
+  const enemyRoleSignature = JSON.stringify(
+    live.state.snapshot?.theirTeam.map((slot) => [slot.championId, slot.role, slot.lockedIn]) ?? [],
+  );
   const livePhase = live.state.snapshot?.phase;
   const liveId = live.state.snapshot?.draftId ?? null;
   useEffect(() => {
@@ -280,14 +261,14 @@ export function PreparationView() {
     setDraft(input);
     setError(null);
     const timer = setTimeout(() => {
-      void prepare(input, false);
+      void prepare(input, false, liveId ?? undefined);
     }, 600);
     return () => {
       clearTimeout(timer);
       request.current?.abort();
       request.current = null;
     };
-  }, [mode, liveSignature, liveId, livePhase, live.state.connected, prepare]);
+  }, [mode, liveSignature, enemyRoleSignature, liveId, livePhase, live.state.connected, prepare]);
   function switchMode(next: "live" | "manual") {
     if (next === mode) return;
     request.current?.abort();
@@ -392,8 +373,9 @@ export function PreparationView() {
         <div>
           <h2>Prepara tu próxima partida</h2>
           <p className="page-sub">
-            Conecta el cliente de LoL: tu guía se prepara con los campeones que
-            van eligiendo ambos equipos.
+            {mode === "live"
+              ? "Conecta el cliente de LoL: tu guía se prepara con los campeones que van eligiendo ambos equipos."
+              : "Simula una selección de ambos equipos para revisar la guía antes de entrar a una partida."}
           </p>
         </div>
         <Link href="/dashboard/perfil" className="rune-link">
@@ -542,221 +524,7 @@ export function PreparationView() {
           className="preparation-results screen-stack"
           aria-live={mode === "manual" ? "polite" : undefined}
         >
-          <section
-            className="preparation-verdict section-body"
-            data-reveal="up"
-          >
-            {mode === "live" && (
-              <p className="preparation-live-provenance" role="status">
-                {live.state.connected && livePhase === "ChampSelect"
-                  ? "Guía de tu selección · actualización automática"
-                  : "Última guía generada · la selección ya no está en vivo"}
-              </p>
-            )}
-            <div className="preparation-chosen">
-              <Image
-                unoptimized
-                width={64}
-                height={64}
-                src={`${CDN}/${guide.version}/img/champion/${guide.chosen.id}.png`}
-                alt=""
-              />
-              <div>
-                <span className="teaser-label">
-                  {guide.autoSelected
-                    ? "Opción propuesta para tu línea"
-                    : "Tu campeón seleccionado"}
-                </span>
-                <h3>{guide.chosen.name}</h3>
-              </div>
-            </div>
-            <p>{guide.method}</p>
-            {guide.composition.map((line) => (
-              <p className="page-sub" key={line}>{line}</p>
-            ))}
-            {stale && (
-              <p className="preparation-notice" role="status">
-                {mode === "live"
-                  ? "La selección cambió. Actualizando la guía; las opciones mostradas aún corresponden a la selección anterior."
-                  : "Cambiaste la selección. Esta guía corresponde a la anterior; pulsa «Preparar mi guía» para actualizarla."}
-              </p>
-            )}
-            {guide.warnings.map((warning) => (
-              <p key={warning} className="preparation-notice">{warning}</p>
-            ))}
-          </section>
-          <section className="section-surface" data-reveal="up">
-            <header className="champ-stats-head">
-              <h3>Opciones para tu línea</h3>
-              <span>Prioriza lo que sabes jugar</span>
-            </header>
-            <div className="section-body recommendation-grid">
-              {guide.recommendations.map(({ champion, reasons }) => (
-                <article key={champion.id}>
-                  <Image
-                    unoptimized
-                    width={48}
-                    height={48}
-                    src={`${CDN}/${guide.version}/img/champion/${champion.id}.png`}
-                    alt=""
-                  />
-                  <h4>{champion.name}</h4>
-                  <ul>
-                    {reasons.map((reason) => <li key={reason}>{reason}</li>)}
-                  </ul>
-                  {mode === "live"
-                    ? (
-                      <p className="page-sub">
-                        Elígelo en el cliente para actualizar tu guía.
-                      </p>
-                    )
-                    : (
-                      <button
-                        type="button"
-                        className="rune-link"
-                        disabled={loading ||
-                          occupied.has(champion.id) &&
-                            champion.id !== draft.champion}
-                        onClick={() => {
-                          const next = { ...draft, champion: champion.id };
-                          patch({ champion: champion.id });
-                          void prepare(next);
-                        }}
-                      >
-                        Preparar con {champion.name} →
-                      </button>
-                    )}
-                </article>
-              ))}
-            </div>
-          </section>
-          <div className="preparation-loadout">
-            <section className="section-surface" data-reveal="up">
-              <header className="champ-stats-head">
-                <h3>Runas como punto de partida</h3>
-                <span>Revisa también los fragmentos en el cliente</span>
-              </header>
-              <div className="section-body">
-                <div className="preparation-rune-trees">
-                  <div>
-                    <h4>
-                      {guide.runes.primaryTree?.name ??
-                        "Rama principal pendiente"}
-                    </h4>
-                    <div className="preparation-runes">
-                      {guide.runes.primary.map((rune) => (
-                        <Rune key={rune.id} rune={rune} />
-                      ))}
-                    </div>
-                    {guide.runes.primary.length < 4 && (
-                      <p className="preparation-notice">
-                        Completa las runas que cambiaron en este parche.
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <h4>
-                      {guide.runes.secondaryTree?.name ??
-                        "Rama secundaria pendiente"}
-                    </h4>
-                    <div className="preparation-runes">
-                      {guide.runes.secondary.map((rune) => (
-                        <Rune key={rune.id} rune={rune} />
-                      ))}
-                    </div>
-                    {guide.runes.secondary.length < 2 && (
-                      <p className="preparation-notice">
-                        Revisa las dos elecciones secundarias en el cliente.
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <p className="page-sub">
-                  <AcademyText text={guide.runes.reason} />
-                </p>
-              </div>
-            </section>
-            <section className="section-surface" data-reveal="up">
-              <header className="champ-stats-head">
-                <h3>Hechizos de invocador</h3>
-              </header>
-              <div className="section-body">
-                <div className="preparation-spells">
-                  {guide.spells.map((spell) => (
-                    <Spell
-                      key={spell.key}
-                      spell={spell}
-                      version={guide.version}
-                    />
-                  ))}
-                </div>
-                <details>
-                  <summary>Alternativas según tu plan de línea</summary>
-                  <p className="page-sub">
-                    Compara sus efectos y acuerda la elección con tu equipo.
-                    Comprueba el nivel requerido en el cliente.
-                  </p>
-                  <div className="preparation-spells">
-                    {guide.alternatives.map((spell) => (
-                      <Spell
-                        key={spell.key}
-                        spell={spell}
-                        version={guide.version}
-                      />
-                    ))}
-                  </div>
-                </details>
-              </div>
-            </section>
-          </div>
-          <ShoppingItems
-            title="Compra inicial"
-            caption={guide.input.role === "JUNGLE"
-              ? "Elige una mascota"
-              : "Respeta tu oro de salida"}
-            items={guide.starter}
-            version={guide.version}
-          />
-          <ShoppingItems
-            title="Ruta de objetos"
-            caption="Una secuencia base que puedes adaptar"
-            items={guide.core}
-            version={guide.version}
-          />
-          <ShoppingItems
-            title="Botas"
-            caption="Elige un solo par"
-            items={guide.boots}
-            version={guide.version}
-          />
-          <ShoppingItems
-            title="Opciones situacionales"
-            caption="Sustituyen compras según la amenaza"
-            items={guide.situational}
-            version={guide.version}
-          />
-          <section className="section-surface" data-reveal="up">
-            <header className="champ-stats-head">
-              <h3>Tu ruta de compras</h3>
-              <Link href="/dashboard/academia/compras" className="rune-link">
-                Entender la itemización →
-              </Link>
-            </header>
-            <div className="section-body">
-              <ol className="academy-steps">
-                {guide.purchasePlan.map((step) => (
-                  <li key={step}>
-                    <AcademyText text={step} />
-                  </li>
-                ))}
-              </ol>
-              <p className="page-sub">
-                Precios completos y descripciones del parche{" "}
-                {guide.version}. Revisa el coste restante de los componentes que
-                ya tienes en el cliente.
-              </p>
-            </div>
-          </section>
+          <LoLalyticsBuild guide={guide} mode={mode} stale={stale} />
         </div>
       )}
     </ScrollRevealRoot>

@@ -158,6 +158,8 @@ export async function getMatchById(
 export type RiotTimelineEvent = {
   type: string;
   timestamp: number;
+  levelUpType?: string;
+  skillSlot?: number;
   creatorId?: number;
   participantId?: number;
   killerTeamId?: number;

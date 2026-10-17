@@ -16,8 +16,10 @@ export type LiveDraftSnapshot = {
   gameMode: string;
   myTeam: DraftSlot[];
   theirTeam: DraftSlot[];
+  teammateTiers: string[];
   bans: number[];
   availableChampionIds: number[] | null;
+  accountStatus?: "match" | "mismatch" | "unlinked" | "unverified";
 };
 export type LiveDraftStatus = {
   paired: boolean;

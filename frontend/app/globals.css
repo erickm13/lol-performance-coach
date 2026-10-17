@@ -3725,6 +3725,62 @@ body {
 .shopping-item details li { display: flex; align-items: center; gap: 10px; font-size: 12px; }
 .shopping-item details li > span:last-child { margin-left: auto; color: var(--gold); white-space: nowrap; }
 .catalog-text { white-space: pre-line; }
+.preparation-build-hero { position: relative; overflow: hidden; padding: 30px; background: linear-gradient(110deg,rgb(7 16 23 / 92%),rgb(13 27 34 / 82%)); }
+.preparation-build-hero::after { content: ""; position: absolute; inset: 0 0 0 auto; width: 42%; pointer-events: none; background: radial-gradient(ellipse at 80% 45%,rgb(62 214 196 / 10%),transparent 72%); }
+.preparation-build-hero > * { position: relative; z-index: 1; }
+.preparation-build-hero .preparation-chosen { margin-bottom: 18px; }
+.preparation-build-hero .preparation-chosen img { width: 92px; height: 92px; object-fit: cover; border-radius: 50%; border-color: rgb(108 143 161 / 38%); box-shadow: 0 0 0 5px rgb(108 143 161 / 8%); }
+.preparation-hero-kicker { color: var(--teal); letter-spacing: .08em; text-transform: uppercase; font-size: 11px; }
+.preparation-build-hero .preparation-chosen h3 { font-size: clamp(26px,3vw,36px); }
+.preparation-role-label { display: inline-flex; margin-top: 6px; padding: 4px 10px; border: 1px solid rgb(62 214 196 / 32%); color: var(--teal); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+.preparation-build-hero > p:not(.preparation-live-provenance):not(.preparation-notice) { max-width: 85ch; color: var(--parchment); font-size: 14px; line-height: 1.75; }
+.preparation-composition { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 12px; }
+.preparation-composition .page-sub { margin: 0; font-size: 12px; }
+.preparation-metrics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border: 1px solid var(--panel-line); background: rgb(5 10 14 / 65%); }
+.preparation-metrics > div { display: grid; align-content: center; justify-items: center; gap: 5px; min-height: 74px; padding: 12px; text-align: center; }
+.preparation-metrics > div + div { border-left: 1px solid var(--panel-line); }
+.preparation-metrics strong { font: 600 18px/1.2 var(--font-display); color: var(--parchment); }
+.preparation-metrics span { font-size: 11px; color: var(--mist); }
+.preparation-build-nav { display: flex; overflow-x: auto; border-bottom: 1px solid var(--teal); scrollbar-width: thin; }
+.preparation-build-nav a { flex: 1 0 auto; padding: 15px 20px; color: var(--parchment); text-align: center; font-size: 14px; font-weight: 600; transition: background 160ms ease,color 160ms ease; }
+.preparation-build-nav a:hover,.preparation-build-nav a:focus-visible { color: var(--teal); background: rgb(62 214 196 / 8%); outline-color: var(--teal); }
+.preparation-build-section { scroll-margin-top: 24px; }
+.preparation-skill-priority { margin-bottom: 8px; color: var(--parchment); font-size: 14px; font-weight: 600; }
+.preparation-skill-source { margin-bottom: 18px; font-size: 12px; }
+.preparation-skill-scroll { width: 100%; overflow-x: auto; scrollbar-width: thin; }
+.preparation-skill-table { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 2px; table-layout: fixed; font-size: 11px; text-align: center; }
+.preparation-skill-table th { color: var(--mist); font-weight: 500; }
+.preparation-skill-table thead th { height: 30px; background: rgb(19 37 46 / 76%); }
+.preparation-skill-table thead th:first-child { width: 150px; }
+.preparation-skill-table tbody th { width: 150px; background: rgb(19 37 46 / 76%); }
+.preparation-skill-table td { height: 38px; border: 1px solid rgb(108 143 161 / 28%); background: rgb(3 9 13 / 60%); color: transparent; }
+.preparation-skill-table td.is-skilled { border-color: rgb(62 214 196 / 60%); background: rgb(62 214 196 / 17%); color: var(--teal); font-size: 15px; }
+.preparation-skill-identity { display: flex; align-items: center; justify-content: flex-start; gap: 9px; padding: 4px 10px; color: var(--parchment); }
+.preparation-skill-identity img { border: 1px solid var(--panel-line); border-radius: 3px; }
+.preparation-items-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; scroll-margin-top: 24px; }
+.preparation-item-section { min-width: 0; }
+.preparation-item-section .champ-stats-head { display: block; min-height: 76px; }
+.preparation-item-section .champ-stats-head > span { display: block; margin-top: 5px; }
+.preparation-item-section .section-body { padding: 16px; }
+.preparation-item-section .shopping-grid { grid-template-columns: 1fr; gap: 18px; }
+.preparation-item-section .shopping-item-head { align-items: flex-start; }
+.preparation-item-section .shopping-item-head h4 { line-height: 1.45; }
+.preparation-item-section .shopping-item details summary { color: var(--teal); font-size: 12px; cursor: pointer; }
+.preparation-item-section .shopping-item details ul { margin-top: 12px; }
+@media (max-width: 1150px) { .preparation-items-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 700px) {
+  .preparation-build-hero { padding: 22px 18px; }
+  .preparation-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .preparation-metrics > div:nth-child(3) { border-left: 0; border-top: 1px solid var(--panel-line); }
+  .preparation-metrics > div:nth-child(4) { border-top: 1px solid var(--panel-line); }
+  .preparation-build-nav a { padding: 13px 14px; font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .preparation-items-grid { grid-template-columns: 1fr; }
+  .preparation-item-section .champ-stats-head { min-height: 0; }
+  .preparation-build-hero .preparation-chosen img { width: 72px; height: 72px; }
+  .preparation-build-hero .preparation-chosen h3 { font-size: 25px; }
+}
 @media (max-width: 1050px) {
   .preparation-loadout { grid-template-columns: 1fr; }
   .draft-grid { grid-template-columns: 1fr 1fr; }
@@ -3757,8 +3813,183 @@ body {
 .glossary-grid strong { font-size: 15px; font-weight: 600; color: var(--teal); }
 .glossary-grid span { font-size: 13px; line-height: 1.75; color: var(--mist); }
 .glossary-grid > a:hover strong { color: var(--parchment); }
+
+/* Compact live-draft build panel, arranged like the reference build block. */
+.preparation-build-panel { padding: 18px; overflow: hidden; background: linear-gradient(135deg,rgb(3 9 13 / 94%),rgb(15 25 31 / 91%)); }
+.preparation-build-columns { display: grid; grid-template-columns: minmax(170px,.9fr) minmax(380px,1.65fr) minmax(300px,1.35fr); gap: 18px; align-items: start; }
+.preparation-build-left { display: grid; gap: 18px; min-width: 0; }
+.preparation-build-mini-section { min-width: 0; text-align: center; }
+.preparation-build-mini-section h3,.preparation-build-subhead h3,.preparation-rune-block h3 { margin: 0 0 9px; color: var(--parchment); font-size: 14px; font-weight: 600; }
+.preparation-priority-icons { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.preparation-priority-step { display: inline-flex; align-items: center; gap: 6px; }
+.preparation-priority-step .tooltip-trigger { position: relative; display: inline-flex; }
+.preparation-priority-step img { width: 40px; height: 40px; border: 1px solid var(--panel-line); border-radius: 4px; }
+.preparation-priority-key { position: absolute; right: 2px; bottom: 1px; padding: 0 3px; background: rgb(0 0 0 / 78%); color: white; font-size: 10px; }
+.preparation-priority-arrow { color: var(--parchment); font-size: 24px; line-height: 1; }
+.preparation-mini-caption { margin: 6px 0 0; color: var(--mist); font-size: 11px; line-height: 1.5; }
+.preparation-compact-spells,.preparation-starting-items { display: flex; align-items: flex-start; justify-content: center; gap: 10px; }
+.preparation-compact-spells .tooltip-trigger,.preparation-starting-items .tooltip-trigger { display: grid; justify-items: center; gap: 4px; max-width: 82px; color: var(--parchment); font-size: 10px; line-height: 1.3; text-align: center; }
+.preparation-compact-spells img,.preparation-starting-items img { width: 38px; height: 38px; border: 1px solid var(--panel-line); border-radius: 4px; }
+.preparation-build-alternatives { text-align: center; }
+.preparation-options-details > summary { padding: 16px 20px; color: var(--teal); cursor: pointer; font-size: 13px; }
+.preparation-options-details[open] > summary { border-bottom: 1px solid var(--panel-line); }
+.preparation-options-details > .champ-stats-head { margin-bottom: 0; }
+.preparation-options-details > .section-body { padding: 22px; }
+.preparation-build-alternatives > summary { margin: 0 !important; font-size: 11px !important; }
+.preparation-build-alternatives .preparation-build-mini-section { margin-top: 8px; }
+.preparation-build-subhead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 10px; margin-bottom: 7px; text-align: center; }
+.preparation-build-subhead h3 { margin: 0; }
+.preparation-build-subhead > span { color: var(--mist); font-size: 10px; }
+.preparation-skill-source { margin: 5px 0 0; font-size: 10px; line-height: 1.45; text-align: center; }
+.preparation-skill-scroll { overscroll-behavior-x: contain; }
+.preparation-skill-table { min-width: 500px; border-spacing: 2px; font-size: 10px; }
+.preparation-skill-table thead th { height: 25px; }
+.preparation-skill-table thead th:first-child,.preparation-skill-table tbody th { width: 50px; }
+.preparation-skill-table td { height: 34px; }
+.preparation-skill-table td.is-skilled { font-size: 12px; font-weight: 700; }
+.preparation-skill-identity { justify-content: center; gap: 2px; padding: 2px; }
+.preparation-skill-identity .tooltip-trigger { display: flex; }
+.preparation-skill-identity img { width: 25px; height: 25px; }
+.preparation-skill-identity > span:last-child { display: none; }
+.preparation-build-runes { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,.85fr) minmax(68px,.65fr); gap: 10px; min-width: 0; }
+.preparation-rune-block { min-width: 0; text-align: center; }
+.preparation-rune-block h3 { margin-bottom: 3px; }
+.preparation-rune-tree-name { display: block; overflow: hidden; margin-bottom: 5px; color: var(--mist); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.preparation-rune-icons { display: grid; gap: 3px; justify-content: center; }
+.preparation-primary-runes { grid-template-columns: repeat(4,36px); }
+.preparation-secondary-runes { grid-template-columns: repeat(2,36px); }
+.preparation-rune-icons .tooltip-trigger { display: grid; width: 36px; height: 36px; place-items: center; }
+.preparation-rune-icons img { width: 32px; height: 32px; object-fit: contain; }
+.preparation-rune-icons .tooltip-trigger > span { display: none; }
+.preparation-stat-mods p { margin: 6px 0 0; color: var(--mist); font-size: 10px; line-height: 1.45; }
+.preparation-rune-reason { grid-column: 1 / -1; margin: 0; font-size: 10px; line-height: 1.5; }
+.preparation-rune-source { grid-column: 1 / -1; margin: 0; font-size: 10px; }
+.preparation-items-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.preparation-items-grid .preparation-item-section { background: linear-gradient(145deg,rgb(6 13 18 / 92%),rgb(17 27 32 / 88%)); }
+@media (max-width: 1150px) {
+  .preparation-build-columns { grid-template-columns: minmax(150px,.75fr) minmax(350px,1.25fr); }
+  .preparation-build-runes { grid-column: 1 / -1; grid-template-columns: minmax(0,1.2fr) minmax(0,.8fr) minmax(110px,.7fr); }
+}
+@media (max-width: 760px) {
+  .preparation-build-panel { padding: 14px 10px; }
+  .preparation-build-columns { grid-template-columns: minmax(0,1fr); }
+  .preparation-build-runes { grid-column: auto; grid-template-columns: minmax(0,1fr) minmax(0,.8fr); }
+  .preparation-stat-mods { grid-column: 1 / -1; }
+  .preparation-items-grid { grid-template-columns: minmax(0,1fr); }
+}
 @media (max-width: 1050px) { .glossary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 600px) { .glossary-grid { grid-template-columns: 1fr; } }
+
+/* Source-backed champion build view, arranged like a compact stats page. */
+body:has(.lolytics-page) { background-image: none; }
+.lolytics-page { overflow: hidden; border: 0; background: transparent; color: #f0f0f0; --build-card-bg: rgb(21 35 48 / 27%); --build-card-line: rgb(108 143 161 / 23%); }
+.lolytics-breadcrumb { height: 34px; padding: 7px 18px; background: transparent; font-size: 12px; }
+.lolytics-live-status { margin: 0; padding: 8px 18px; border-bottom: 1px solid var(--panel-line); color: var(--teal); font-size: 12px; }
+.lolytics-hero { display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 22px; align-items: center; padding: 24px 26px 18px; background: transparent; }
+.lolytics-portrait-wrap { position: relative; display: grid; justify-content: center; }
+.lolytics-portrait-wrap img { width: 150px; height: 150px; border: 2px solid #829094; border-radius: 50%; object-fit: cover; }
+.lolytics-portrait-wrap > span { position: absolute; right: 45px; bottom: -6px; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid #555; border-radius: 50%; background: #050607; font-size: 20px; font-weight: 700; }
+.lolytics-intro { min-width: 0; }
+.lolytics-intro h1 { margin: 0 0 10px; font-size: clamp(20px,2vw,26px); line-height: 1.25; }
+.lolytics-intro > p { max-width: 1000px; margin: 10px 0 6px; font-size: 15px; font-weight: 600; line-height: 1.55; }
+.lolytics-intro > a { color: #36c5f0; font-size: 13px; font-weight: 600; }
+.lolytics-priority-mini { display: flex; align-items: center; gap: 8px; }
+.lolytics-priority-mini > span { position: relative; display: inline-flex; align-items: center; }
+.lolytics-priority-mini img { width: 34px; height: 34px; border: 1px solid #333; border-radius: 3px; }
+.lolytics-priority-mini b { position: absolute; right: 1px; bottom: 0; padding: 0 3px; background: #000; font-size: 10px; }
+.lolytics-priority-mini i { margin-left: 8px; color: #ddd; font-size: 22px; font-style: normal; }
+.lolytics-metrics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: 0 24px 12px; gap: 10px; background: transparent; }
+.lolytics-metrics > div { display: grid; min-height: 68px; align-content: center; justify-items: center; gap: 3px; border: 1px solid var(--build-card-line); border-radius: 9px; background: var(--build-card-bg); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+.lolytics-metrics strong { font-size: 18px; }
+.lolytics-metrics span { color: #b7b7b7; font-size: 12px; }
+.lolytics-tabs { display: flex; align-items: center; gap: 20px; margin: 14px 24px 0; border-bottom: 2px solid #29b6df; }
+.lolytics-tabs a { padding: 10px 4px 11px; color: #f1f1f1; font-weight: 600; }
+.lolytics-tabs a.is-active { color: #27c8f3; border-bottom: 3px solid #29b6df; margin-bottom: -2px; }
+.lolytics-build-switch { display: flex; justify-content: space-between; margin: 16px 24px 8px; border: 1px solid var(--build-card-line); border-radius: 8px; background: var(--build-card-bg); color: #e9f4f6; font-size: 12px; overflow: hidden; }
+.lolytics-build-switch > span { padding: 10px 14px; }
+.lolytics-build-switch .is-active { flex: 1; background: rgb(62 214 196 / 10%); color: var(--teal); text-align: center; font-weight: 600; }
+.lolytics-main-grid { display: grid; grid-template-columns: minmax(200px,.8fr) minmax(390px,1.3fr) minmax(390px,1.2fr); gap: 12px; margin: 0 24px 14px; border: 0; background: transparent; }
+.lolytics-block { min-width: 0; padding: 18px 14px; border: 1px solid var(--build-card-line); border-radius: 10px; background: var(--build-card-bg); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); text-align: center; }
+.lolytics-block h2 { margin: 0 0 12px; font-size: 15px; font-weight: 600; }
+.lolytics-block h2 small { color: #48d991; font-size: 10px; font-weight: 500; }
+.lolytics-block h3 { margin: 14px 0 8px; font-size: 12px; }
+.lolytics-priority-large,.lolytics-spells { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.lolytics-priority-large > span { position: relative; display: inline-flex; align-items: center; gap: 5px; }
+.lolytics-priority-large img { width: 42px; height: 42px; border: 1px solid #333; border-radius: 3px; }
+.lolytics-priority-large b { position: absolute; right: 0; bottom: 0; padding: 0 3px; background: #000; font-size: 10px; }
+.lolytics-priority-large i { color: #eee; font-size: 24px; font-style: normal; }
+.lolytics-spells > span { display: grid; justify-items: center; gap: 3px; color: #c9c9c9; font-size: 9px; }
+.lolytics-spells img { border: 1px solid #555; border-radius: 3px; }
+.lolytics-footnote { margin: 5px 0 0; color: #50df93; font-size: 11px; }
+.lolytics-skill-scroll { overflow-x: auto; }
+.lolytics-skill-scroll table { width: 100%; min-width: 380px; border-collapse: separate; border-spacing: 1px; table-layout: fixed; }
+.lolytics-skill-scroll thead th { height: 24px; background: #111b20; color: #e1e1e1; font-size: 10px; font-weight: 500; }
+.lolytics-skill-scroll thead th:first-child { width: 34px; }
+.lolytics-skill-scroll tbody th { width: 34px; background: #111b20; }
+.lolytics-skill-scroll tbody th img { width: 25px; height: 25px; vertical-align: middle; }
+.lolytics-skill-scroll tbody th b { position: relative; margin-left: -8px; padding: 0 2px; background: #000; font-size: 9px; }
+.lolytics-skill-scroll td { height: 28px; border: 1px solid #265263; background: #030607; color: transparent; }
+.lolytics-skill-scroll td.is-active { background: #367f91; color: #fff; font-size: 11px; }
+.lolytics-rune-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.lolytics-rune-columns h3 { margin: 0 0 7px; color: #dedede; font-size: 11px; }
+.lolytics-rune-rows { display: grid; justify-content: center; gap: 3px; }
+.lolytics-rune-row { display: grid; grid-template-columns: repeat(3,36px); gap: 4px; }
+.lolytics-rune-row img,.lolytics-stat-grid img { width: 34px; height: 34px; object-fit: contain; transition: filter 120ms ease, opacity 120ms ease; }
+.lolytics-rune-row img.is-selected,.lolytics-stat-grid img.is-selected { opacity: 1; filter: none; }
+.lolytics-rune-row img.is-muted,.lolytics-stat-grid img.is-muted { opacity: .32; filter: grayscale(1); }
+.lolytics-runes-block > h3 { margin: 14px 0 6px; }
+.lolytics-stat-grid { display: grid; grid-template-columns: repeat(3,34px); justify-content: center; gap: 3px; }
+.lolytics-stat-grid img { border-radius: 50%; background: #070809; }
+.lolytics-items-grid { display: grid; grid-template-columns: minmax(130px,.8fr) minmax(230px,1.25fr) repeat(3,minmax(145px,1fr)); gap: 12px; margin: 0 24px 12px; border: 0; background: transparent; }
+.lolytics-items-grid .lolytics-block { padding: 12px 8px; }
+.lolytics-items-row { display: flex; min-height: 110px; flex-wrap: wrap; align-items: flex-start; justify-content: center; gap: 8px; }
+.lolytics-item { display: grid; width: 72px; justify-items: center; gap: 4px; color: #eee; font-size: 9px; line-height: 1.25; }
+.lolytics-item img { width: 38px; height: 38px; border: 1px solid var(--build-card-line); border-radius: 6px; }
+.lolytics-item strong { display: -webkit-box; overflow: hidden; min-height: 23px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: 9px; font-weight: 500; }
+.lolytics-item small { color: #adb3b7; font-size: 9px; }
+.lolytics-winrate { color: #42dc8a; font-size: 10px; font-weight: 600; }
+.lolytics-core-items { align-items: center; flex-wrap: nowrap; gap: 0; }
+.lolytics-core-step { display: inline-flex; align-items: center; gap: 4px; }
+.lolytics-core-step > b { color: #eee; font-size: 23px; font-weight: 400; }
+.lolytics-item-option { display: inline-flex; align-items: flex-start; gap: 3px; }
+.lolytics-item-option > b { padding-top: 12px; color: #eee; font-size: 8px; }
+.lolytics-disclaimer,.lolytics-warnings { margin: 10px 24px 18px; color: #939da3; font-size: 11px; line-height: 1.5; }
+.lolytics-warnings { color: #ecad48; }
+.lolytics-unavailable { margin: 20px 0; padding: 20px; border-top: 2px solid #3dcdbc; background: #11181d; }
+.lolytics-unavailable header { display: flex; justify-content: space-between; color: #9aa7ae; font-size: 12px; }
+.lolytics-unavailable h2 { margin: 18px 0 8px; font-size: 20px; }
+.lolytics-unavailable p { color: #a8b0b4; }
+.lolytics-unavailable a { color: #20c7ea; }
+@media (max-width: 1250px) {
+  .lolytics-hero { grid-template-columns: 220px minmax(0,1fr); }
+  .lolytics-metrics { padding-left: 24px; }
+  .lolytics-main-grid { grid-template-columns: minmax(160px,.75fr) minmax(350px,1.5fr); }
+  .lolytics-runes-block { grid-column: 1 / -1; }
+  .lolytics-items-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  .lolytics-hero { grid-template-columns: 1fr; gap: 14px; padding: 18px 14px; }
+  .lolytics-portrait-wrap img { width: 110px; height: 110px; }
+  .lolytics-portrait-wrap > span { right: calc(50% - 60px); width: 34px; height: 34px; font-size: 16px; }
+  .lolytics-intro { text-align: center; }
+  .lolytics-intro h1 { font-size: 19px; }
+  .lolytics-priority-mini { justify-content: center; }
+  .lolytics-intro > p { font-size: 13px; }
+  .lolytics-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); padding: 0 10px 10px; }
+  .lolytics-tabs { gap: 10px; margin: 10px 10px 0; overflow-x: auto; }
+  .lolytics-tabs a { flex: 0 0 auto; font-size: 12px; }
+  .lolytics-build-switch { margin: 12px 10px 7px; }
+  .lolytics-main-grid { grid-template-columns: 1fr; margin: 0 10px 10px; }
+  .lolytics-runes-block { grid-column: auto; }
+  .lolytics-items-grid { grid-template-columns: repeat(2,minmax(0,1fr)); margin: 0 10px 10px; }
+  .lolytics-disclaimer,.lolytics-warnings { margin-right: 10px; margin-left: 10px; }
+}
+@media (max-width: 460px) {
+  .lolytics-items-grid { grid-template-columns: 1fr; }
+  .lolytics-items-grid .lolytics-block { min-height: 130px; }
+  .lolytics-core-items { flex-wrap: wrap; }
+  .lolytics-priority-large img { width: 36px; height: 36px; }
+}
 
 /* Academy resource cards: mount only the video selected by the player. */
 .academy-resource { padding: 0; gap: 0; overflow: hidden; min-width: 0; background: rgb(10 14 18 / 38%); transition: border-color 180ms ease, box-shadow 180ms ease; }
