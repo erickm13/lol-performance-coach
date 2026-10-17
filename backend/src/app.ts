@@ -11,7 +11,7 @@ import { preparationRoutes } from "./routes/preparation.ts";
 import { liveDraftRoutes } from "./routes/liveDraft.ts";
 import { playerRoutes } from "./routes/player.ts";
 import { aiRoutes } from "./routes/ai.ts";
-import { sendVerificationEmail, sendPasswordResetEmail } from "./email/resend.ts";
+import { sendVerificationEmail, sendPasswordResetEmail } from "./email/mailer.ts";
 
 export const app = new Hono();
 
