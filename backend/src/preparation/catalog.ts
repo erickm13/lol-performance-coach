@@ -48,9 +48,16 @@ export type PreparationCatalog = {
   runes: RuneTree[];
   spells: CatalogSpell[];
 };
+export type ChampionAbility = {
+  key: "Q" | "W" | "E" | "R";
+  name: string;
+  description: string;
+  image: { full: string };
+};
 const BASE = "https://ddragon.leagueoflegends.com";
 let cached: { at: number; data: PreparationCatalog } | null = null;
 let pending: Promise<PreparationCatalog> | null = null;
+const abilityCache = new Map<string, Promise<ChampionAbility[]>>();
 async function json<T>(url: string): Promise<T> {
   const response = await fetch(url, { signal: AbortSignal.timeout(12000) });
   if (!response.ok) throw new Error("No se pudo obtener el catálogo de Riot.");
@@ -98,6 +105,37 @@ export function preparationCatalog(): Promise<PreparationCatalog> {
     pending = null;
   });
   return pending;
+}
+export function championAbilities(
+  version: string,
+  championId: string,
+): Promise<ChampionAbility[]> {
+  const cacheKey = `${version}:${championId}`;
+  const previous = abilityCache.get(cacheKey);
+  if (previous) return previous;
+
+  const request = json<{
+    data: Record<string, { spells: Omit<ChampionAbility, "key">[] }>;
+  }>(`${BASE}/cdn/${version}/data/es_MX/champion/${championId}.json`)
+    .then((response) => {
+      const champion = Object.values(response.data ?? {})[0];
+      if (!champion || !Array.isArray(champion.spells)) {
+        throw new Error("Las habilidades no están disponibles en Data Dragon.");
+      }
+      const keys = ["Q", "W", "E", "R"] as const;
+      return champion.spells.slice(0, 4).map((spell, index) => ({
+        key: keys[index],
+        name: spell.name,
+        description: spell.description,
+        image: spell.image,
+      }));
+    })
+    .catch((error) => {
+      abilityCache.delete(cacheKey);
+      throw error;
+    });
+  abilityCache.set(cacheKey, request);
+  return request;
 }
 export function purchasableItem(item: CatalogItem) {
   return item.maps?.["11"] === true && item.gold?.purchasable === true &&

@@ -3,7 +3,8 @@ import { getCookie } from "jsr:@hono/hono@^4.6.0/cookie";
 import { and, eq, gt } from "npm:drizzle-orm@^0.36.0";
 import { verifySessionToken } from "../auth/jwt.ts";
 import { db } from "../db/client.ts";
-import { liveDraftConnections } from "../db/schema.ts";
+import { liveDraftConnections, riotAccounts } from "../db/schema.ts";
+import { getCachedTeammateSoloTier } from "../riot/ingest.ts";
 import {
   bridgeTokenHash,
   type LiveDraftSnapshot,
@@ -42,25 +43,60 @@ liveDraftRoutes.post("/snapshot", async (c) => {
     return c.json({ error: "Selección demasiado grande." }, 413);
   }
   let snapshot: LiveDraftSnapshot;
+  let accountFingerprint: string | null = null;
+  let teammatePuuids: string[] = [];
   try {
-    snapshot = parseLiveDraft(JSON.parse(text));
+    const body = JSON.parse(text) as Record<string, unknown>;
+    snapshot = parseLiveDraft(body);
+    teammatePuuids = Array.isArray(body.teammatePuuids)
+      ? [...new Set(body.teammatePuuids.filter((puuid): puuid is string =>
+        typeof puuid === "string" && /^[A-Za-z0-9_-]{32,128}$/.test(puuid)
+      ))].slice(0, 4)
+      : [];
+    accountFingerprint = typeof body.accountFingerprint === "string" &&
+        /^[a-f0-9]{64}$/i.test(body.accountFingerprint)
+      ? body.accountFingerprint.toLowerCase()
+      : null;
   } catch {
     return c.json({
       error:
         "La selección recibida no es compatible. Actualiza el acompañante.",
     }, 400);
   }
-  const updated = await db.update(liveDraftConnections).set({
-    snapshot,
-    receivedAt: new Date(),
-  }).where(and(
+  const conditions = and(
     eq(liveDraftConnections.tokenHash, tokenHash),
     gt(liveDraftConnections.expiresAt, new Date()),
-  )).returning({ userId: liveDraftConnections.userId });
-  return updated.length ? c.json({ received: true }) : c.json({
+  );
+  const [connection] = await db.select({ userId: liveDraftConnections.userId })
+    .from(liveDraftConnections).where(conditions).limit(1);
+  if (!connection) return c.json({
     error:
       "La conexión expiró o fue revocada. Genera un nuevo código en la web.",
   }, 401);
+
+  const [account] = await db.select({ puuid: riotAccounts.puuid }).from(
+    riotAccounts,
+  ).where(eq(riotAccounts.userId, connection.userId)).limit(1);
+  const accountStatus = !accountFingerprint
+    ? "unverified"
+    : !account
+    ? "unlinked"
+    : accountFingerprint === await bridgeTokenHash(account.puuid)
+    ? "match"
+    : "mismatch";
+  const teammateTiers = accountStatus === "match" && account
+    ? (await Promise.all(teammatePuuids
+      .filter((puuid) => puuid !== account.puuid)
+      .map((puuid) => getCachedTeammateSoloTier(puuid)))).filter(
+        (tier): tier is string => !!tier,
+      )
+    : [];
+  const verifiedSnapshot = { ...snapshot, teammateTiers, accountStatus };
+  await db.update(liveDraftConnections).set({
+    snapshot: verifiedSnapshot,
+    receivedAt: new Date(),
+  }).where(conditions);
+  return c.json({ received: true });
 });
 liveDraftRoutes.use("*", async (c, next) => {
   const token = getCookie(c, "session");

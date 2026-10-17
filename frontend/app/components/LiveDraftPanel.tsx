@@ -43,6 +43,9 @@ export function LiveDraftPanel(
     [copied, setCopied] = useState(false);
   const snapshot = state.snapshot;
   const active = state.connected && snapshot?.phase === "ChampSelect";
+  const localSlot = snapshot?.myTeam.find((entry) =>
+    entry.cellId === snapshot.localCellId
+  );
   const status = !state.paired
     ? "Conecta tu cliente"
     : !state.connected
@@ -257,6 +260,30 @@ export function LiveDraftPanel(
         {active && snapshot
           ? (
             <>
+              {snapshot.accountStatus === "match" && (
+                <p className="live-draft-note" role="status">
+                  La cuenta del cliente coincide con la cuenta Riot vinculada.
+                </p>
+              )}
+              {snapshot.accountStatus === "mismatch" && (
+                <p className="preparation-notice" role="status">
+                  La cuenta del cliente no coincide con la cuenta Riot vinculada.
+                  La guía sigue funcionando, pero tus estadísticas personales
+                  pueden ser de otra cuenta.
+                </p>
+              )}
+              {snapshot.accountStatus === "unlinked" && (
+                <p className="page-sub" role="status">
+                  No tienes una cuenta Riot vinculada. La guía usa el draft,
+                  pero no puede personalizarse con tu historial.
+                </p>
+              )}
+              {snapshot.accountStatus === "unverified" && (
+                <p className="page-sub" role="status">
+                  No se pudo verificar la cuenta del cliente. La guía seguirá
+                  usando las selecciones visibles.
+                </p>
+              )}
               <div className="live-draft-teams">
                 <section>
                   <h4>
@@ -308,9 +335,7 @@ export function LiveDraftPanel(
                   })}
                 </div>
               )}
-              {!snapshot.myTeam.find((entry) =>
-                entry.cellId === snapshot.localCellId
-              )?.role && (
+              {!localSlot?.role && (
                 <label className="field-label live-role-choice">
                   Tu línea (el cliente no la asignó)<select
                     className="rune-field"
@@ -323,6 +348,13 @@ export function LiveDraftPanel(
                     ))}
                   </select>
                 </label>
+              )}
+              {localSlot?.role && (
+                <p className="page-sub" role="status">
+                  Línea asignada por LoL: {ROLES.find((item) =>
+                    item.id === localSlot.role
+                  )?.name ?? localSlot.role}.
+                </p>
               )}
               <p className="live-draft-note" role="status">{reason}</p>
               {![400, 420, 440].includes(snapshot.queueId ?? -1) && (

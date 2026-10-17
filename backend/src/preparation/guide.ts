@@ -133,6 +133,7 @@ const ROLE_POOL: Record<string, string[]> = {
     "Graves",
     "Nidalee",
     "Ekko",
+    "Briar",
   ],
   MIDDLE: [
     "Annie",
@@ -308,6 +309,13 @@ export function buildPreparation(
   );
   const frontline = enemies.filter((champion) =>
     champion.tags.includes("Tank")
+  );
+  const cleanseThreatIds = new Set([
+    "Amumu", "Annie", "Ashe", "Leona", "Lissandra", "Lux", "Morgana",
+    "Nautilus", "Rell", "Thresh",
+  ]);
+  const controlThreats = enemies.filter((champion) =>
+    cleanseThreatIds.has(champion.id)
   );
   const recommendations = catalog.champions.filter((champion) =>
     !occupied.has(champion.id) && (!available || available.has(champion.id)) &&
@@ -583,6 +591,11 @@ export function buildPreparation(
     },
   };
   const template = { ...templates[style], ids: [...templates[style].ids] };
+  const multipleDivers = divers.length >= 2;
+  if (!support && !jungle && multipleDivers) {
+    template.secondary = 8400;
+    template.secondaryIds = [8473, 8453];
+  }
   if ((support || jungle) && style === "tank") {
     template.ids[0] = 8439;
     template.ids[1] = 8463;
@@ -630,6 +643,8 @@ export function buildPreparation(
       ? "11"
       : support
       ? "3"
+      : input.role === "BOTTOM" && controlThreats.length >= 2
+      ? "1"
       : ["TOP", "MIDDLE"].includes(input.role)
       ? "12"
       : "7",
@@ -641,6 +656,8 @@ export function buildPreparation(
         ...spell,
         reason: key === "11"
           ? "Herramienta de jungla; comprueba sus reglas y mejoras en el cliente."
+          : key === "1"
+          ? "Purificación puede ayudar contra ciertos efectos de control del equipo rival. Comprueba en el cliente qué efectos elimina."
           : key === "4"
           ? "Movilidad para reposicionarte o responder a una amenaza."
           : key === "12"
@@ -652,8 +669,18 @@ export function buildPreparation(
       : [];
   });
   const alternatives = catalog.spells.filter((spell) =>
-    ["14", "3", "6", "21"].includes(spell.key) && !spellKeys.includes(spell.key)
-  );
+    ["1", "7", "14", "3", "6", "21"].includes(spell.key) &&
+    !spellKeys.includes(spell.key)
+  ).map((spell) => ({
+    ...spell,
+    reason: spell.key === "1" && controlThreats.length
+      ? `Considérala ante el control de ${controlThreats.map((champion) => champion.name).join(", ")}; verifica qué efectos elimina.`
+      : spell.key === "3" && divers.length
+      ? `Puede ayudar contra las entradas de ${divers.map((champion) => champion.name).join(", ")}.`
+      : spell.key === "7"
+      ? "Opción de supervivencia para intercambios y peleas cercanas."
+      : "Alternativa situacional; compara su efecto con la amenaza del draft.",
+  }));
   return {
     version: catalog.version,
     input,
@@ -661,7 +688,7 @@ export function buildPreparation(
     autoSelected: !input.champion,
     recommendations,
     method:
-      "Guía por reglas y función, con preferencias y campeones seleccionados. No usa tasas de victoria ni predice quién ganará. Data Dragon aporta el catálogo, no recomendaciones de meta.",
+      "Campeón, hechizos y ruta de objetos: reglas revisadas y preferencias del jugador. Runas: página de estadísticas del campeón y línea cuando la fuente está disponible. Las tasas describen la muestra de esa página y no predicen quién ganará; Data Dragon aporta el catálogo.",
     composition: [
       allies.length
         ? `Aliados elegidos: ${
@@ -688,9 +715,9 @@ export function buildPreparation(
         ? { name: secondaryTree.name, icon: secondaryTree.icon }
         : null,
       secondary,
-      reason: `Punto de partida para ${
-        labels[style]
-      }. Comprueba que puedes activar la clave con tu patrón de intercambio. Ajusta las runas y los fragmentos a tu campeón y al enfrentamiento en el cliente.`,
+      reason: multipleDivers
+        ? `Plantilla para ${labels[style]} con runas secundarias defensivas frente a ${divers.map((champion) => champion.name).join(", ")}. Ajusta los fragmentos a tu campeón y confirma la elección en el cliente.`
+        : `Punto de partida para ${labels[style]}. Comprueba que puedes activar la clave con tu patrón de intercambio. Ajusta las runas y los fragmentos a tu campeón y al enfrentamiento en el cliente.`,
     },
     spells,
     alternatives,

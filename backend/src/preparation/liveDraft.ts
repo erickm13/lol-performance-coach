@@ -31,6 +31,7 @@ export type LiveDraftSnapshot = {
   gameMode: string;
   myTeam: DraftSlot[];
   theirTeam: DraftSlot[];
+  teammateTiers: string[];
   bans: number[];
   availableChampionIds: number[] | null;
 };
@@ -76,6 +77,7 @@ export function parseLiveDraft(value: unknown): LiveDraftSnapshot {
       gameMode: "",
       myTeam: [],
       theirTeam: [],
+      teammateTiers: [],
       bans: [],
       availableChampionIds: null,
     };
@@ -123,6 +125,7 @@ export function parseLiveDraft(value: unknown): LiveDraftSnapshot {
       : "",
     myTeam,
     theirTeam: team(input.theirTeam, true),
+    teammateTiers: [],
     bans: ids(input.bans, 20),
     availableChampionIds: input.availableChampionIds == null
       ? null

@@ -21,6 +21,7 @@ export type PreparationRune = {
   icon: string;
   shortDesc: string;
   longDesc: string;
+  sourceIcon?: string;
 };
 export type PreparationSpell = {
   key: string;
@@ -29,13 +30,56 @@ export type PreparationSpell = {
   image: { full: string };
   reason?: string;
 };
+export type PreparationSkillKey = "Q" | "W" | "E" | "R";
+export type PreparationSkill = {
+  key: PreparationSkillKey;
+  name: string;
+  description: string;
+  image: { full: string };
+};
+export type PreparationSkillOrder = {
+  sequence: PreparationSkillKey[];
+  sampleGames: number;
+  matchingGames: number;
+  patch: string;
+  source: "app-ranked-sample";
+} | null;
+export type PreparationAnalytics = {
+  champion: string;
+  role: string;
+  matchup: { opponent: string; role: string } | null;
+  patch: string | null;
+  url: string;
+  summary: {
+    winRate: number | null;
+    winRateDelta: number | null;
+    gameAverageWinRate: number | null;
+    pickRate: number | null;
+    banRate: number | null;
+    games: number | null;
+    rank: number | null;
+    totalChampions: number | null;
+    tier: string | null;
+  };
+  skillPriority: { sequence: string[]; winRate: number | null; games: number | null };
+  skillOrder: { sequence: (string | null)[]; winRate: number | null; games: number | null };
+  summonerSpells: { id: string; name: string; winRate: number | null; games: number | null }[];
+  startingItems: { id: string; name: string; winRate: number | null; games: number | null }[];
+  coreItems: { id: string; name: string; winRate: number | null; games: number | null }[];
+  coreBuild: { winRate: number | null; games: number | null };
+  situationalItems: { slot: number; options: { id: string; name: string; winRate: number | null; games: number | null }[] }[];
+};
 export type PreparationGuide = {
   version: string;
+  rankFilter: string;
+  rankLabel: string;
+  rankBoosted: boolean;
   input: DraftInput;
   chosen: ChampionSummary;
   autoSelected: boolean;
   recommendations: { champion: ChampionSummary; reasons: string[] }[];
   method: string;
+  analytics: PreparationAnalytics | null;
   composition: string[];
   starter: PreparationItem[];
   core: PreparationItem[];
@@ -44,12 +88,24 @@ export type PreparationGuide = {
   runes: {
     primaryTree: { name: string; icon: string } | null;
     primary: PreparationRune[];
+    primarySlots: PreparationRune[][];
     secondaryTree: { name: string; icon: string } | null;
     secondary: PreparationRune[];
+    secondarySlots: PreparationRune[][];
+    statMods: PreparationRune[];
+    statModOptions: PreparationRune[];
+    statModSelection: boolean[];
+    source: "lolalytics" | null;
+    sourceUrl: string | null;
+    patch: string | null;
+    sampleGames: number | null;
+    winRate: number | null;
     reason: string;
   };
   spells: PreparationSpell[];
   alternatives: PreparationSpell[];
+  skills: PreparationSkill[];
+  skillOrder: PreparationSkillOrder;
   purchasePlan: string[];
   warnings: string[];
 };
