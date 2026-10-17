@@ -19,7 +19,7 @@ Además necesitas estas credenciales externas:
 | `GROQ_API_KEY` | Consola de Groq (https://console.groq.com) | Opcional; preferido para chat y explicación del plan |
 | `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/api-keys) | Opcional; preferido para el análisis del mapa |
 | `GEMINI_MODEL` | Modelo habilitado en AI Studio; predeterminado `gemini-3.8-flash` | Opcional |
-| `RESEND_API_KEY` | Resend (https://resend.com) | Sí, para enviar correos de verificación/reset |
+| `SMTP_USER` / `SMTP_PASS` | Cuenta de Gmail y su contraseña de aplicación (https://myaccount.google.com/apppasswords) | Sí, para enviar correos de verificación/reset. Opcionales: `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` |
 | `JWT_SECRET` | Cadena aleatoria larga que generas tú | Sí, firma las sesiones |
 
 > Con una sola clave se usa ese proveedor para todo. Con ambas, mapa prefiere Gemini y chat/plan prefieren Groq; ante cuota o fallos transitorios del servicio se intenta el otro. Sin claves o si el LLM falla, el plan **igual se genera** en modo solo-reglas.
@@ -35,7 +35,7 @@ cp .env.example .env
 ```
 
 Edita `.env` y completa las claves vacías (`GROQ_API_KEY`, `RIOT_API_KEY`,
-`JWT_SECRET`, `RESEND_API_KEY`); añade `GEMINI_API_KEY` para habilitar Gemini. Crea una clave nueva en AI Studio y guárdala únicamente en `.env`, sin pegarla en chats ni documentación. Tras cambiar claves o modelo, ejecuta `docker compose up -d --build backend`. Las demás variables ya traen valores válidos
+`JWT_SECRET`, `SMTP_USER`, `SMTP_PASS`); añade `GEMINI_API_KEY` para habilitar Gemini. Crea una clave nueva en AI Studio y guárdala únicamente en `.env`, sin pegarla en chats ni documentación. Tras cambiar claves o modelo, ejecuta `docker compose up -d --build backend`. Las demás variables ya traen valores válidos
 para desarrollo local.
 
 ## 3. Levantar el proyecto con Docker (recomendado)
@@ -127,7 +127,7 @@ Las partidas antiguas se enriquecen al abrir su detalle, sin borrar ni volver a 
 | Síntoma | Causa probable | Qué hacer |
 |---|---|---|
 | `/health` devuelve `db: disconnected` | Postgres no está listo | Espera unos segundos o revisa `docker compose logs postgres` |
-| No llegan los correos | Falta o es inválida `RESEND_API_KEY` | Revisa la clave en `.env` |
+| No llegan los correos | Faltan o son inválidas `SMTP_USER`/`SMTP_PASS` | Revisa la contraseña de aplicación en `.env` y los logs del backend |
 | El plan no trae explicación en texto | Ningún proveedor disponible/configurado o fallo del LLM | El plan funciona igual en modo solo-reglas; revisa la clave para recuperar la explicación |
 | La ingesta falla | `RIOT_API_KEY` vencida (las de desarrollo caducan cada 24 h) o Riot ID inválido | Renueva la clave en el portal de Riot |
 
