@@ -11,6 +11,12 @@ import { parsePreferences, ProfileValidationError } from "../player/profile.ts";
 import { hashPassword, verifyPassword } from "../auth/password.ts";
 import { signSessionToken, verifySessionToken } from "../auth/jwt.ts";
 import { createAuthToken, consumeAuthToken } from "../auth/tokens.ts";
+import {
+  domainAcceptsMail,
+  emailDomain,
+  type MxResolver,
+  normalizeEmail,
+} from "../auth/email.ts";
 
 const SESSION_COOKIE = "session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 2;
@@ -18,6 +24,8 @@ const SESSION_MAX_AGE_SECONDS = 60 * 60 * 2;
 export type AuthEmailDeps = {
   sendVerificationEmail: (to: string, token: string) => Promise<void>;
   sendPasswordResetEmail: (to: string, token: string) => Promise<void>;
+  /** Injected in tests; defaults to a real MX lookup. */
+  resolveMx?: MxResolver;
 };
 
 function isProduction(): boolean {
@@ -30,20 +38,32 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
   auth.post("/register", async (c) => {
     const input = await c.req.json().catch(() => null);
     if (!input || typeof input !== "object" || Array.isArray(input)) return c.json({ error: "Los datos de registro no son válidos." }, 400);
-    const { email, password, playerProfile } = input as {
+    const { email: rawEmail, password, playerProfile } = input as {
       email?: string;
       password?: string;
       playerProfile?: unknown;
     };
 
-    if (
-      typeof email !== "string" ||
-      !email.includes("@") ||
-      typeof password !== "string" ||
-      password.length < 8
-    ) {
+    const email = typeof rawEmail === "string" ? normalizeEmail(rawEmail) : "";
+    const domain = emailDomain(email);
+    if (!domain) {
       return c.json(
-        { error: "Email inválido o contraseña muy corta (mínimo 8 caracteres)" },
+        { error: "Ese correo no es válido. Revisa que esté bien escrito." },
+        400,
+      );
+    }
+    if (typeof password !== "string" || password.length < 8) {
+      return c.json(
+        { error: "La contraseña debe tener al menos 8 caracteres." },
+        400,
+      );
+    }
+    if (!(await domainAcceptsMail(domain, deps.resolveMx))) {
+      return c.json(
+        {
+          error:
+            `El dominio «${domain}» no puede recibir correos. Revisa que esté bien escrito.`,
+        },
         400,
       );
     }
@@ -81,14 +101,15 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
   });
 
   auth.post("/login", async (c) => {
-    const { email, password } = (await c.req.json()) as {
+    const { email: rawEmail, password } = (await c.req.json()) as {
       email?: string;
       password?: string;
     };
 
-    if (typeof email !== "string" || typeof password !== "string") {
+    if (typeof rawEmail !== "string" || typeof password !== "string") {
       return c.json({ error: "Email y contraseña son requeridos" }, 400);
     }
+    const email = normalizeEmail(rawEmail);
 
     const [user] = await db
       .select()
@@ -162,8 +183,9 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
   });
 
   auth.post("/forgot-password", async (c) => {
-    const { email } = (await c.req.json()) as { email?: string };
-    if (typeof email === "string") {
+    const { email: rawEmail } = (await c.req.json()) as { email?: string };
+    if (typeof rawEmail === "string") {
+      const email = normalizeEmail(rawEmail);
       const [user] = await db
         .select()
         .from(users)

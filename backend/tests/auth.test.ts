@@ -3,9 +3,13 @@ import { assertEquals, assertExists } from "jsr:@std/assert@^1.0.0";
 import { sign } from "jsr:@hono/hono@^4.6.0/jwt";
 import { createAuthRoutes } from "../src/routes/auth.ts";
 
-function createTestApp() {
+// Test addresses use example.com, whose real null MX accepts no mail.
+const acceptsMail = () => Promise.resolve([{ exchange: "mx.example.com." }]);
+
+function createTestApp(resolveMx = acceptsMail) {
   const sentEmails: { to: string; token: string; kind: "verify" | "reset" }[] = [];
   const app = createAuthRoutes({
+    resolveMx,
     sendVerificationEmail: (to, token) => {
       sentEmails.push({ to, token, kind: "verify" });
       return Promise.resolve();
@@ -210,6 +214,7 @@ Deno.test("POST /forgot-password responde 200 aunque el email no exista", async 
 Deno.test("POST /register responde 201 y crea el usuario aunque el envío del email de verificación falle", async () => {
   const email = uniqueEmail();
   const app = createAuthRoutes({
+    resolveMx: acceptsMail,
     sendVerificationEmail: () => {
       throw new Error("network down");
     },
@@ -230,6 +235,7 @@ Deno.test("POST /register responde 201 y crea el usuario aunque el envío del em
 Deno.test("POST /forgot-password responde 200 para un email existente aunque el envío del email falle", async () => {
   const email = uniqueEmail();
   const app = createAuthRoutes({
+    resolveMx: acceptsMail,
     sendVerificationEmail: () => Promise.resolve(),
     sendPasswordResetEmail: () => {
       throw new Error("network down");
@@ -259,4 +265,58 @@ Deno.test("POST /reset-password con token inválido responde 400", async () => {
     body: JSON.stringify({ token: "not-a-real-token", newPassword: "newpassword123" }),
   });
   assertEquals(res.status, 400);
+});
+
+function register(app: ReturnType<typeof createAuthRoutes>, email: string) {
+  return app.request("/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password: "password123" }),
+  });
+}
+
+Deno.test("POST /register rechaza correos con formato inválido", async () => {
+  const { app, sentEmails } = createTestApp();
+  for (const email of ["sin-arroba.com", "a@b", "a b@example.com", "a@-x.com"]) {
+    const res = await register(app, email);
+    assertEquals(res.status, 400, email);
+  }
+  assertEquals(sentEmails.length, 0);
+});
+
+Deno.test("POST /register rechaza dominios que no reciben correo", async () => {
+  const noRecords = () => Promise.reject(new Deno.errors.NotFound("no records"));
+  const nullMx = () => Promise.resolve([{ exchange: "." }]);
+  for (const resolveMx of [noRecords, nullMx]) {
+    const { app, sentEmails } = createTestApp(resolveMx);
+    const res = await register(app, uniqueEmail());
+    assertEquals(res.status, 400);
+    assertEquals((await res.json()).error.includes("no puede recibir correos"), true);
+    assertEquals(sentEmails.length, 0);
+  }
+});
+
+Deno.test("POST /register no bloquea el registro si falla el DNS", async () => {
+  const { app } = createTestApp(() => Promise.reject(new Error("timeout")));
+  const res = await register(app, uniqueEmail());
+  assertEquals(res.status, 201);
+});
+
+Deno.test("el correo se normaliza: registro y login ignoran espacios y mayúsculas", async () => {
+  const { app, sentEmails } = createTestApp();
+  const email = uniqueEmail();
+  const res = await register(app, `  ${email.toUpperCase()} `);
+  assertEquals(res.status, 201);
+  assertEquals((await res.json()).email, email);
+  assertEquals(sentEmails[0].to, email);
+
+  const duplicate = await register(app, email);
+  assertEquals(duplicate.status, 409);
+
+  const login = await app.request("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email.toUpperCase(), password: "password123" }),
+  });
+  assertEquals(login.status, 200);
 });
