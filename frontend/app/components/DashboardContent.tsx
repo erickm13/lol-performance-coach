@@ -6,14 +6,17 @@ import { getBackendUrl } from "../lib/api";
 import { RiotAccountCard } from "./RiotAccountCard";
 import { DashboardTeasers } from "./DashboardTeasers";
 import { ChatScope } from "./ChatScope";
-
-type Me = { id: string; email: string; emailVerified: boolean };
+import { useSessionUser, type SessionUser } from "../lib/session";
 
 export function DashboardContent() {
   const router = useRouter();
-  const [me, setMe] = useState<Me | null>(null);
+  const sessionUser = useSessionUser();
+  const [fetchedUser, setMe] = useState<SessionUser | null>(null);
+  const me = sessionUser ?? fetchedUser;
 
   useEffect(() => {
+    // Inside AppShell the session is already loaded; only fetch it standalone.
+    if (sessionUser) return;
     fetch(`${getBackendUrl()}/auth/me`, { credentials: "include" })
       .then((res) => {
         if (!res.ok) {
@@ -28,7 +31,7 @@ export function DashboardContent() {
       .catch(() => {
         router.push("/login");
       });
-  }, [router]);
+  }, [router, sessionUser]);
 
   if (!me) return <p className="text-mist">Cargando...</p>;
 

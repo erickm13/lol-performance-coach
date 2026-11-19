@@ -6,12 +6,11 @@ import { ChatScope } from "./ChatScope";
 import { useResource } from "../lib/useResource";
 import { ProfileReminder } from "./ProfileReminder";
 import { ScreenState } from "./ScreenState";
+import { SessionContext, type SessionUser } from "../lib/session";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  const session = useResource<
-    { id: string; email: string; emailVerified: boolean }
-  >("/auth/me");
+  const session = useResource<SessionUser>("/auth/me");
   return (
     <div className="shell">
       {open && <Sidebar onNavigate={() => setOpen(false)} />}
@@ -29,7 +28,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {session.error}
               </ScreenState>
             )
-            : <ChatScope><ProfileReminder />{children}</ChatScope>}
+            : (
+              <SessionContext.Provider value={session.data}>
+                <ChatScope><ProfileReminder />{children}</ChatScope>
+              </SessionContext.Provider>
+            )}
         </div>
       </main>
     </div>

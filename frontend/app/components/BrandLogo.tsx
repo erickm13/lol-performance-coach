@@ -44,6 +44,7 @@ export function BrandLogo({ variant, mobileVariant }: BrandLogoProps) {
         height={logo.height}
         sizes={variant === "symbol" ? "82px" : "270px"}
         alt=""
+        priority
       />
       {mobileLogo && mobileVariant && (
         <Image
@@ -53,6 +54,7 @@ export function BrandLogo({ variant, mobileVariant }: BrandLogoProps) {
           height={mobileLogo.height}
           sizes={mobileVariant === "symbol" ? "82px" : "270px"}
           alt=""
+          priority
         />
       )}
     </span>

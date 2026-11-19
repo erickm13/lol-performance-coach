@@ -1,4 +1,4 @@
-export const DEFAULT_DDRAGON_VERSION = "16.20.1";
+export const DEFAULT_DDRAGON_VERSION = "16.23.1";
 
 export type ItemDetails = {
   name: string;

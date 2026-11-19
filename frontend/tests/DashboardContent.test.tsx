@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { DashboardContent } from "../app/components/DashboardContent";
+import { SessionContext } from "../app/lib/session";
 
 const pushMock = vi.fn();
 // Return a stable object reference (like Next.js's real useRouter() does)
@@ -55,6 +56,39 @@ describe("DashboardContent", () => {
         screen.getByRole("heading", { name: /vincular tu cuenta de riot/i }),
       ).toBeInTheDocument(),
     );
+  });
+
+  it("usa la sesión de AppShell sin volver a pedir /auth/me", async () => {
+    const json = (value: unknown) =>
+      Promise.resolve({ ok: true, json: () => Promise.resolve(value) });
+    const fetchMock = vi.fn((url: string) => {
+      if (url.endsWith("versions.json")) return json(["16.20.1"]);
+      if (url.includes("/riot/account")) {
+        return json({
+          account: null,
+          matches: [],
+          championStats: [],
+          recentTeammates: [],
+          lastSyncedAt: null,
+        });
+      }
+      return json({ linked: false, weaknesses: [], items: [] });
+    });
+    vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
+
+    render(
+      <SessionContext.Provider
+        value={{ id: "1", email: "a@b.com", emailVerified: true }}
+      >
+        <DashboardContent />
+      </SessionContext.Provider>,
+    );
+    expect(
+      await screen.findByRole("heading", { name: /vincular tu cuenta de riot/i }),
+    ).toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.some(([url]) => String(url).includes("/auth/me")),
+    ).toBe(false);
   });
 
   it("redirige a /login si no hay sesión activa", async () => {
