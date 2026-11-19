@@ -1,0 +1,30 @@
+{
+  "status": "complete",
+  "error": null,
+  "provider": "ollama",
+  "format": "csv",
+  "requestedModel": "gemma4:e4b",
+  "returnedModel": "gemma4:e4b",
+  "request": {
+    "stream": false,
+    "temperature": 0,
+    "outputLimit": 4096,
+    "outputLimitParameter": "num_predict"
+  },
+  "requestElapsedWallMs": 46325,
+  "inputTokens": 848,
+  "outputTokens": 2587,
+  "usage": null,
+  "finishReason": "stop",
+  "truncated": false,
+  "ollama": {
+    "total_duration": 46250422181,
+    "load_duration": 2919476,
+    "prompt_eval_count": 848,
+    "prompt_eval_duration": 939002000,
+    "eval_count": 2587,
+    "eval_duration": 44033615000
+  },
+  "inputSha256": "c7aadf5e46347498a6fd1be24b8c13e4e4b66417e41f06d7ef87f73a126cc56e",
+  "dataSha256": "399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb"
+}

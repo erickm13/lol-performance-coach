@@ -1,0 +1,34 @@
+{
+  "status": "complete",
+  "error": null,
+  "provider": "groq",
+  "format": "csv",
+  "requestedModel": "openai/gpt-oss-20b",
+  "returnedModel": "openai/gpt-oss-20b",
+  "request": {
+    "stream": false,
+    "temperature": 0,
+    "outputLimit": 4096,
+    "outputLimitParameter": "max_completion_tokens"
+  },
+  "requestElapsedWallMs": 3998,
+  "inputTokens": 815,
+  "outputTokens": 2786,
+  "usage": {
+    "queue_time": 0.174253952,
+    "prompt_tokens": 815,
+    "prompt_time": 0.04748224,
+    "completion_tokens": 2786,
+    "completion_time": 2.917140669,
+    "total_tokens": 3601,
+    "total_time": 2.964622909,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1998
+    }
+  },
+  "finishReason": "stop",
+  "truncated": false,
+  "ollama": null,
+  "inputSha256": "c7aadf5e46347498a6fd1be24b8c13e4e4b66417e41f06d7ef87f73a126cc56e",
+  "dataSha256": "399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb"
+}

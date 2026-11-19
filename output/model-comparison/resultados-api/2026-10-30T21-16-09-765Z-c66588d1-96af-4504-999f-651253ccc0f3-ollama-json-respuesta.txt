@@ -1,0 +1,38 @@
+**Resumen Numérico Fijo**
+
+*   **N de partidas:** 10
+*   **Victorias:** 5/10 (50.00%)
+*   **Medias Aritméticas:**
+    *   CS_min: 5.31
+    *   Vision_min: 0.51
+    *   KP_pct: 48.10
+    *   KDA por partida: 3.09
+*   **Muertes antes del minuto 10:** 1.50 (N conocido: 8)
+
+***
+
+**Prioridades de Práctica**
+
+**1. Maximizar el impacto en combate (KDA)**
+El rendimiento en combate es altamente variable. Las partidas con KDA superior a 4.00 demuestran una alta eficiencia en la obtención de bajas y asistencias.
+*   **Resumen Numérico:** KDA promedio de 4.33 (N=2).
+*   **Partidas de Respaldo:** M03 (7.00), M05 (4.33), M09 (4.33).
+*   **Ejercicio Práctico:** Enfocarse en la toma de decisiones en peleas de equipo, buscando maximizar la participación en bajas (Kills + Assists) mientras se minimizan las muertes, especialmente en situaciones donde el equipo está en ventaja.
+
+**2. Mejorar la consistencia en el farmeo (CS/min)**
+Existe una diferencia notable entre las partidas con un farmeo superior al promedio (5.31) y aquellas con un farmeo bajo. Las partidas con CS_min de 6.0 o más indican una ejecución de farmeo superior.
+*   **Resumen Numérico:** CS_min promedio de 6.40 (N=1).
+*   **Partidas de Respaldo:** M03 (6.4), M05 (6.8), M08 (6.2).
+*   **Ejercicio Práctico:** Practicar la gestión de oleadas y la priorización de objetivos de farmeo en las primeras etapas del juego, asegurando que el CS_min se mantenga consistentemente por encima de 6.0.
+
+**3. Reducir la vulnerabilidad temprana**
+Las partidas con 0 o 1 muerte antes del minuto 10 muestran una mayor capacidad para sobrevivir y acumular ventaja temprana, lo cual se correlaciona con un mejor rendimiento general.
+*   **Resumen Numérico:** Muertes antes del minuto 10 promedio de 1.00 (N=3).
+*   **Partidas de Respaldo:** M05 (0), M01 (1), M04 (1).
+*   **Ejercicio Práctico:** Priorizar la seguridad en la fase de líneas, utilizando la visión y el posicionamiento para evitar enfrentamientos desfavorables en los primeros 10 minutos, incluso si esto significa sacrificar un poco de farmeo.
+
+***
+
+**Nota sobre Datos Faltantes y Límites**
+
+Los datos de `muertes_antes_10` están incompletos (2 partidas tienen valores nulos), lo que limita la capacidad de establecer una tendencia completa sobre la vulnerabilidad temprana. Además, el análisis se limita a métricas individuales (KDA, CS_min) y no permite inferir la calidad de la ejecución de objetivos o la sinergia del equipo.

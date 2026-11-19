@@ -1,0 +1,121 @@
+{
+  "task_id": "public-research",
+  "problem_id": "diff-public-evidence",
+  "checked_date": "2026-10-30",
+  "source_boundary": "First-party product pages, official Riot and Met museum materials, and primary research.",
+  "status_vocabulary": {
+    "documented": "Stated in cited product material; not independently tested.",
+    "documented_general_only": "A current product page makes a general claim, but does not establish the exact League of Legends workflow.",
+    "documented_availability_uncertain": "Product materials document the feature, but current availability signals conflict.",
+    "not_verified_in_consulted_sources": "No supporting page was verified; this is not a claim that the feature is absent.",
+    "not_reported_in_brief": "The supplied Diff brief does not describe this feature; do not infer it.",
+    "prototype_per_brief": "Reported in the supplied Diff product brief; not independently verified as production behavior.",
+    "not_implemented_per_brief": "The supplied brief explicitly says the item is not implemented."
+  },
+  "sources": [
+    {"id":"met_uruk_tablet","title":"Proto-Cuneiform tablet with seal impressions: administrative account of barley distribution","url":"https://www.metmuseum.org/art/collection/search/329081","access_date":"2026-10-30"},
+    {"id":"loc_muybridge","title":"Animal locomotion: An electro-photographic investigation of consecutive phases of animal movements","url":"https://www.loc.gov/item/31004968/","access_date":"2026-10-30"},
+    {"id":"ericsson_1993","title":"The role of deliberate practice in the acquisition of expert performance","url":"https://doi.org/10.1037/0033-295X.100.3.363","access_date":"2026-10-30"},
+    {"id":"macnamara_2014","title":"Deliberate Practice and Performance in Music, Games, Sports, Education, and Professions: A Meta-Analysis","url":"https://www.psychologicalscience.org/journals/psychological-science/0956797614535810/","access_date":"2026-10-30"},
+    {"id":"riot_fact_sheet","title":"Riot Games 2024 fact sheet","url":"https://www.riotgames.com/darkroom/original/68b33bf46dda70555c4dec34f6f736e9%3Aea81fb8a0be5cda5bec43af0f43694e2/2024-riot-fact-sheet.pdf","access_date":"2026-10-30"},
+    {"id":"riot_replays","title":"2017 Season Update: Replays and Practice","url":"https://na.leagueoflegends.com/en/featured/preseason-2017/replays-and-practice","access_date":"2026-10-30"},
+    {"id":"riot_lol_docs","title":"Riot Developer Portal: League of Legends documentation","url":"https://developer.riotgames.com/docs/lol","access_date":"2026-10-30"},
+    {"id":"riot_api_ref","title":"Riot Developer Portal API reference","url":"https://developer.riotgames.com/apis#match-v5","access_date":"2026-10-30"},
+    {"id":"riot_how_to_play","title":"League of Legends How to Play","url":"https://www.leagueoflegends.com/en-us/how-to-play/","access_date":"2026-10-30"},
+    {"id":"riot_stealth_update","title":"2017 Season Update: Assassins","url":"https://oce.leagueoflegends.com/en/featured/preseason-2017/assassins","access_date":"2026-10-30"},
+    {"id":"opgg_match","title":"Viewing detailed match data","url":"https://help.op.gg/hc/en-us/articles/31091817743129-Viewing-detailed-match-data","access_date":"2026-10-30"},
+    {"id":"opgg_app","title":"Getting Started with the OP.GG App","url":"https://help.op.gg/hc/en-us/articles/48467238743961-Getting-Started-with-the-OP.GG-App","access_date":"2026-10-30"},
+    {"id":"mobalytics_gpi","title":"Gamer Performance Index Explained","url":"https://mobalytics.gg/gpi/","access_date":"2026-10-30"},
+    {"id":"mobalytics_app","title":"The Ultimate Mobalytics Guide for League of Legends","url":"https://mobalytics.gg/lol/guides/mobalytics-beginners-guide","access_date":"2026-10-30"},
+    {"id":"mobalytics_guides","title":"League of Legends Guides","url":"https://mobalytics.gg/lol/guides","access_date":"2026-10-30"},
+    {"id":"mobalytics_challenges_page","title":"GPI / Challenges product page","url":"https://mobalytics.gg/lol/lp/gpi","access_date":"2026-10-30"},
+    {"id":"mobalytics_challenges_blog","title":"Dev Blog: Mobalytics Challenges, A New Way To Improve Your League Skills","url":"https://mobalytics.gg/blog/dev-blog-mobalytics-challenges/","access_date":"2026-10-30"},
+    {"id":"blitz_home","title":"Blitz.gg homepage","url":"https://blitz.gg/","access_date":"2026-10-30"},
+    {"id":"blitz_lol","title":"Blitz League of Legends page; no readable feature text returned","url":"https://blitz.gg/lol","access_date":"2026-10-30"},
+    {"id":"blitz_legacy_ads","title":"Legacy Blitz landing page; indexed capture is stale","url":"https://ads.blitz.gg/","access_date":"2026-10-30"}
+  ],
+  "historical_milestones": [
+    {"date":"ca. 3100-2900 BCE","claim":"The Met catalogs a proto-cuneiform clay tablet, probably from Uruk, as an administrative account of barley distribution.","interpretation_limit":"Recordkeeping analogy only; not ancient data science, performance coaching, or direct lineage to Diff.","source_ids":["met_uruk_tablet"]},
+    {"date":"1887","claim":"Muybridge published sequential photographs documenting human and animal locomotion.","interpretation_limit":"Movement made visually inspectable; not digital sports coaching.","source_ids":["loc_muybridge"]},
+    {"date":"1993","claim":"Ericsson, Krampe, and Tesch-Römer proposed a deliberate-practice framework involving structured improvement activity and feedback/results.","interpretation_limit":"Research rationale only; does not prove Diff works. Later meta-analysis finds effects vary by domain.","source_ids":["ericsson_1993","macnamara_2014"]},
+    {"date":"2009","claim":"Riot identifies League of Legends as its debut title released in 2009.","interpretation_limit":"Game launch date, not history of coaching products.","source_ids":["riot_fact_sheet"]},
+    {"date":"Preseason for season 2017; current docs","claim":"Riot's season-2017 update page describes replay review with an annotated event timeline; current developer documentation describes live-client data/events and replay controls.","interpretation_limit":"Treat 2017 as the season label; page title/path alone does not verify a calendar-year publication or feature launch date. Digital review capabilities do not prove that any third-party tool accesses all data or improves outcomes.","source_ids":["riot_replays","riot_lol_docs","riot_api_ref"]}
+  ],
+  "glossary_factcheck": {
+    "primary_beginner_source_id":"riot_how_to_play",
+    "supports":["standard five-versus-five team framing","enemy Nexus as the win objective","five recommended positions: top, jungle, mid, bot, support","high-level minion, gold, and experience context"],
+    "does_not_textually_define":["CS","CS per minute","wards","Control Wards"],
+    "pitfalls":[
+      "Keep CS total distinct from CS/min. Current Academy source aliases CS with cs/min and defines CS per minute; the document generator overrides CS as a total count.",
+      "Do not define a Control Ward as revealing all stealth or as literally permanent; describe its ward/trap vision and disabling behavior narrowly, not as revealing every invisible champion.",
+      "ADC is a community role label for a bot-lane carry, not a champion class; marksman champions and the bot-carry role are related but non-identical categories."
+    ],
+    "sources_used":["riot_how_to_play","riot_stealth_update"],
+    "source_limit":"Riot's stealth article is from the season-2017 update; use only for the conceptual distinction, not current item statistics or patch details."
+  },
+  "comparison_criteria": [
+    "personal_match_review",
+    "builds_and_meta",
+    "live_preparation_or_overlay",
+    "learning_content",
+    "practice_and_progress",
+    "map_or_timeline_review"
+  ],
+  "products": [
+    {
+      "name":"OP.GG",
+      "features":{
+        "personal_match_review":{"status":"documented","claim":"Match analysis, VODs, and player statistics are documented.","source_ids":["opgg_match"]},
+        "builds_and_meta":{"status":"documented","claim":"App help documents champion-analysis pick-rate setup and build information.","source_ids":["opgg_app"]},
+        "live_preparation_or_overlay":{"status":"documented","claim":"Overlay provides builds, opponent data, and spell timers.","source_ids":["opgg_app"]},
+        "learning_content":{"status":"not_verified_in_consulted_sources","claim":"No source claim; do not infer absence."},
+        "practice_and_progress":{"status":"not_verified_in_consulted_sources","claim":"No source claim; do not infer absence."},
+        "map_or_timeline_review":{"status":"documented","claim":"Match details include heatmap and gold, experience, and objective timelines.","source_ids":["opgg_match"]}
+      }
+    },
+    {
+      "name":"Mobalytics",
+      "features":{
+        "personal_match_review":{"status":"documented","claim":"GPI analyzes performance areas and identifies strengths and weaknesses.","source_ids":["mobalytics_gpi"]},
+        "builds_and_meta":{"status":"documented","claim":"App guide describes recommended builds based on win rate and popularity.","source_ids":["mobalytics_app"]},
+        "live_preparation_or_overlay":{"status":"documented","claim":"App guide documents pre-game companion and in-game overlay.","source_ids":["mobalytics_app"]},
+        "learning_content":{"status":"documented","claim":"League guide library is available.","source_ids":["mobalytics_guides"]},
+        "practice_and_progress":{"status":"documented_availability_uncertain","claim":"Official materials describe skill Challenges and multi-game goals, but current availability signals conflict: product page lists Challenges while the app guide retains upcoming language.","source_ids":["mobalytics_challenges_page","mobalytics_challenges_blog","mobalytics_app"]},
+        "map_or_timeline_review":{"status":"not_verified_in_consulted_sources","claim":"No map/timeline workflow verified; do not infer absence."}
+      }
+    },
+    {
+      "name":"Blitz",
+      "features":{
+        "personal_match_review":{"status":"documented_general_only","claim":"Current homepage broadly claims personalized stats; exact League post-match workflow was not verified.","source_ids":["blitz_home","blitz_lol"]},
+        "builds_and_meta":{"status":"documented_general_only","claim":"Current homepage broadly claims meta insights; exact League workflow was not verified.","source_ids":["blitz_home","blitz_lol"]},
+        "live_preparation_or_overlay":{"status":"documented_general_only","claim":"Current homepage broadly claims overlays and lists League as supported; exact League workflow was not verified.","source_ids":["blitz_home","blitz_lol"]},
+        "learning_content":{"status":"not_verified_in_consulted_sources","claim":"No current League learning library verified."},
+        "practice_and_progress":{"status":"not_verified_in_consulted_sources","claim":"No current League multi-game practice plan or progress system verified."},
+        "map_or_timeline_review":{"status":"not_verified_in_consulted_sources","claim":"No current League map/timeline workflow verified."}
+      },
+      "freshness_note":"The legacy ads.blitz.gg capture is indexed as 5.6 years old and says Blitz Pro is coming soon; excluded as current feature evidence. The current /lol page returned no readable feature text."
+    },
+    {
+      "name":"Diff",
+      "features":{
+        "personal_match_review":{"status":"prototype_per_brief","claim":"Imports recent 10 matches; prototype status only."},
+        "builds_and_meta":{"status":"not_reported_in_brief","claim":"Do not invent a build/meta feature."},
+        "live_preparation_or_overlay":{"status":"prototype_per_brief","claim":"Preparation and ranking are described in the brief."},
+        "learning_content":{"status":"prototype_per_brief","claim":"Academy and internal role-practice references are described in the brief."},
+        "practice_and_progress":{"status":"prototype_per_brief","claim":"Rule-selected weekly plan, LLM explanation, and progress checklist are described in the brief."},
+        "map_or_timeline_review":{"status":"prototype_per_brief","claim":"AI-assisted map/timeline review is described in the brief."}
+      },
+      "implementation_limits":{
+        "per_role_isolated_10_match_blocks":"not_implemented_per_brief",
+        "bedrock":"not_implemented_per_brief"
+      }
+    }
+  ],
+  "positioning_guardrails": [
+    "Do not claim Diff is the first personal LoL coach or that competitors offer only raw statistics.",
+    "A supportable product hypothesis is connecting recent-match review with a Spanish-language practice workflow; uniqueness is unverified.",
+    "Do not claim rank or win-rate improvement without evaluation evidence.",
+    "Treat product page statements as documentation, not independent feature tests."
+  ]
+}

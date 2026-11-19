@@ -263,7 +263,7 @@ async function main() {
     output: process.stdout,
   });
   console.log(
-    "LoL Performance Coach · Conexión de selección de campeones\nLee la selección visible. No elige campeones ni cambia runas o archivos del juego.",
+    "Diff · Conexión de selección de campeones\nLee la selección visible. No elige campeones ni cambia runas o archivos del juego.",
   );
   let base, token;
   try {

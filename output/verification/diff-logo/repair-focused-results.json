@@ -1,0 +1,776 @@
+{
+  "outcome": "PASS",
+  "browser": "Chromium headless / Playwright 1.64.1",
+  "viewports": 3,
+  "cssRule": "At max-width 760px: Sidebar responsive wordmark switches to 36px symbol; TopBar symbol is 36px; .dashboard-topbar.menu-open hides .topbar-links. Desktop retains TopBar link group.",
+  "results": [
+    {
+      "viewport": "390",
+      "responsive": true,
+      "open": {
+        "sidebarProductLinks": [
+          [
+            "Dashboard",
+            "/dashboard"
+          ],
+          [
+            "Entrenamiento",
+            "/dashboard/entrenamiento"
+          ],
+          [
+            "Debilidades",
+            "/dashboard/debilidades"
+          ],
+          [
+            "Historial",
+            "/dashboard/historial"
+          ],
+          [
+            "Academia",
+            "/dashboard/academia"
+          ],
+          [
+            "Ranking",
+            "/dashboard/ranking"
+          ],
+          [
+            "Preparar partida",
+            "/dashboard/preparar"
+          ]
+        ],
+        "sidebarProfileSettingsLogout": 3,
+        "topbarDisplay": "none",
+        "logos": [
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol brand-logo-image--mobile",
+            "source": "symbol"
+          },
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol",
+            "source": "symbol"
+          }
+        ],
+        "sidebarActionHitTests": [
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "x": 95.5,
+            "y": 87,
+            "left": 16,
+            "top": 64,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "x": 95.5,
+            "y": 139,
+            "left": 16,
+            "top": 116,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "x": 95.5,
+            "y": 191,
+            "left": 16,
+            "top": 168,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "x": 95.5,
+            "y": 243,
+            "left": 16,
+            "top": 220,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "x": 95.5,
+            "y": 295,
+            "left": 16,
+            "top": 272,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "x": 95.5,
+            "y": 347,
+            "left": 16,
+            "top": 324,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "x": 95.5,
+            "y": 399,
+            "left": 16,
+            "top": 376,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Mi perfil de jugador",
+            "x": 114.5,
+            "y": 470.796875,
+            "left": 16,
+            "top": 447,
+            "width": 197,
+            "height": 47.59375,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Configuración de cuenta",
+            "x": 114.5,
+            "y": 528.390625,
+            "left": 16,
+            "top": 504.59375,
+            "width": 197,
+            "height": 47.59375,
+            "hit": true
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Cerrar sesión",
+            "x": 114.5,
+            "y": 573.4375,
+            "left": 16,
+            "top": 562.1875,
+            "width": 197,
+            "height": 22.5,
+            "hit": true
+          }
+        ],
+        "launcherOverlap": {
+          "overlay": {
+            "l": 190,
+            "t": 770,
+            "r": 374,
+            "b": 828,
+            "w": 184,
+            "h": 58
+          },
+          "overlaps": []
+        },
+        "horizontal": {
+          "viewport": 390,
+          "document": 390
+        }
+      },
+      "closed": {
+        "sidebarRemoved": true,
+        "topbarDisplay": "flex",
+        "logos": [
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol",
+            "source": "symbol"
+          }
+        ],
+        "horizontal": {
+          "viewport": 390,
+          "document": 390
+        }
+      },
+      "api": [
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        }
+      ],
+      "externalRequests": 4,
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    {
+      "viewport": "320",
+      "responsive": true,
+      "open": {
+        "sidebarProductLinks": [
+          [
+            "Dashboard",
+            "/dashboard"
+          ],
+          [
+            "Entrenamiento",
+            "/dashboard/entrenamiento"
+          ],
+          [
+            "Debilidades",
+            "/dashboard/debilidades"
+          ],
+          [
+            "Historial",
+            "/dashboard/historial"
+          ],
+          [
+            "Academia",
+            "/dashboard/academia"
+          ],
+          [
+            "Ranking",
+            "/dashboard/ranking"
+          ],
+          [
+            "Preparar partida",
+            "/dashboard/preparar"
+          ]
+        ],
+        "sidebarProfileSettingsLogout": 3,
+        "topbarDisplay": "none",
+        "logos": [
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol brand-logo-image--mobile",
+            "source": "symbol"
+          },
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol",
+            "source": "symbol"
+          }
+        ],
+        "sidebarActionHitTests": [
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "x": 95.5,
+            "y": 87,
+            "left": 16,
+            "top": 64,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "x": 95.5,
+            "y": 139,
+            "left": 16,
+            "top": 116,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "x": 95.5,
+            "y": 191,
+            "left": 16,
+            "top": 168,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "x": 95.5,
+            "y": 243,
+            "left": 16,
+            "top": 220,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "x": 95.5,
+            "y": 295,
+            "left": 16,
+            "top": 272,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "x": 95.5,
+            "y": 347,
+            "left": 16,
+            "top": 324,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "x": 95.5,
+            "y": 399,
+            "left": 16,
+            "top": 376,
+            "width": 159,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Mi perfil de jugador",
+            "x": 114.5,
+            "y": 470.796875,
+            "left": 16,
+            "top": 447,
+            "width": 197,
+            "height": 47.59375,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Configuración de cuenta",
+            "x": 114.5,
+            "y": 528.390625,
+            "left": 16,
+            "top": 504.59375,
+            "width": 197,
+            "height": 47.59375,
+            "hit": true
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Cerrar sesión",
+            "x": 114.5,
+            "y": 573.4375,
+            "left": 16,
+            "top": 562.1875,
+            "width": 197,
+            "height": 22.5,
+            "hit": true
+          }
+        ],
+        "launcherOverlap": {
+          "overlay": {
+            "l": 104,
+            "t": 726,
+            "r": 304,
+            "b": 784,
+            "w": 200,
+            "h": 58
+          },
+          "overlaps": []
+        },
+        "horizontal": {
+          "viewport": 320,
+          "document": 320
+        }
+      },
+      "closed": {
+        "sidebarRemoved": true,
+        "topbarDisplay": "flex",
+        "logos": [
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol",
+            "source": "symbol"
+          }
+        ],
+        "horizontal": {
+          "viewport": 320,
+          "document": 320
+        }
+      },
+      "api": [
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        }
+      ],
+      "externalRequests": 4,
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    {
+      "viewport": "1440",
+      "responsive": false,
+      "open": {
+        "sidebarProductLinks": [
+          [
+            "Dashboard",
+            "/dashboard"
+          ],
+          [
+            "Entrenamiento",
+            "/dashboard/entrenamiento"
+          ],
+          [
+            "Debilidades",
+            "/dashboard/debilidades"
+          ],
+          [
+            "Historial",
+            "/dashboard/historial"
+          ],
+          [
+            "Academia",
+            "/dashboard/academia"
+          ],
+          [
+            "Ranking",
+            "/dashboard/ranking"
+          ],
+          [
+            "Preparar partida",
+            "/dashboard/preparar"
+          ]
+        ],
+        "sidebarProfileSettingsLogout": 3,
+        "topbarDisplay": "flex",
+        "logos": [
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+            "alt": "",
+            "w": 270,
+            "h": 135,
+            "cls": "brand-logo-image brand-logo-image--wordmark brand-logo-image--desktop",
+            "source": "wordmark"
+          },
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol",
+            "source": "symbol"
+          }
+        ],
+        "sidebarActionHitTests": [
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "x": 128.5,
+            "y": 176.3125,
+            "left": 20,
+            "top": 153.3125,
+            "width": 217,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "x": 128.5,
+            "y": 228.3125,
+            "left": 20,
+            "top": 205.3125,
+            "width": 217,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "x": 128.5,
+            "y": 280.3125,
+            "left": 20,
+            "top": 257.3125,
+            "width": 217,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "x": 128.5,
+            "y": 332.3125,
+            "left": 20,
+            "top": 309.3125,
+            "width": 217,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "x": 128.5,
+            "y": 384.3125,
+            "left": 20,
+            "top": 361.3125,
+            "width": 217,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "x": 128.5,
+            "y": 436.3125,
+            "left": 20,
+            "top": 413.3125,
+            "width": 217,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "x": 128.5,
+            "y": 488.3125,
+            "left": 20,
+            "top": 465.3125,
+            "width": 217,
+            "height": 46,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Mi perfil de jugador",
+            "x": 128.5,
+            "y": 858.109375,
+            "left": 20,
+            "top": 834.3125,
+            "width": 217,
+            "height": 47.59375,
+            "hit": true
+          },
+          {
+            "tag": "A",
+            "text": "Configuración de cuenta",
+            "x": 128.5,
+            "y": 915.703125,
+            "left": 20,
+            "top": 891.90625,
+            "width": 217,
+            "height": 47.59375,
+            "hit": true
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Cerrar sesión",
+            "x": 128.5,
+            "y": 960.75,
+            "left": 20,
+            "top": 949.5,
+            "width": 217,
+            "height": 22.5,
+            "hit": true
+          }
+        ],
+        "launcherOverlap": {
+          "overlay": {
+            "l": 1177,
+            "t": 907.5,
+            "r": 1412,
+            "b": 976,
+            "w": 235,
+            "h": 68.5
+          },
+          "overlaps": []
+        },
+        "horizontal": {
+          "viewport": 1440,
+          "document": 1440
+        }
+      },
+      "closed": {
+        "sidebarRemoved": true,
+        "topbarDisplay": "flex",
+        "logos": [
+          {
+            "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+            "alt": "",
+            "w": 82,
+            "h": 82,
+            "cls": "brand-logo-image brand-logo-image--symbol",
+            "source": "symbol"
+          }
+        ],
+        "horizontal": {
+          "viewport": 1440,
+          "document": 1440
+        }
+      },
+      "api": [
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        }
+      ],
+      "externalRequests": 4,
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": []
+    }
+  ]
+}

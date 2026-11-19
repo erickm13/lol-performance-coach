@@ -1,0 +1,30 @@
+El archivo contiene datos sintéticos para una demostración, no partidas de una persona real. Analiza estas 10 partidas del rol TOP usando solo los datos proporcionados. Responde en español y no inventes contexto, hechos ni causas.
+
+Definiciones: victoria es 1=ganada y 0=perdida; cs_min son súbditos por minuto; vision_min es puntuación de visión por minuto; kp_pct es porcentaje de 0 a 100; muertes_antes_10 es un conteo y null en JSON o NA en CSV significa desconocido. Calcula KDA por partida como (kills + assists) / max(deaths, 1); cuando informes un promedio de KDA, usa la media de las 10 partidas.
+
+Como referencias internas de práctica usa CS 6/min, visión 0.60/min, participación en kills 35% y 1 muerte antes del minuto 10. No son benchmarks oficiales de rango. No infieras participación en objetivos a partir de kp_pct ni calidad de wards a partir de vision_min.
+
+Empieza con un resumen numérico fijo: n de partidas, victorias (conteo/total y porcentaje), medias aritméticas de cs_min, vision_min, kp_pct y KDA por partida, y media de muertes_antes_10 junto con su n conocido. Redondea las medias a dos decimales. Son medias simples, no ponderadas por minutos; excluye null/NA del promedio de muertes tempranas, indica el n usado y no los trates como cero.
+
+Da como máximo 3 prioridades de práctica. Para cada una, incluye el resumen numérico con denominador, 2 o 3 IDs de partidas que respalden el patrón y un ejercicio práctico concreto. Termina con una nota breve sobre datos faltantes o límites. Si los datos no respaldan una prioridad, dilo.
+
+Diagrama casos de uso
+Identificar 2 de los procesos principales y para cada uno diagrama de secuencia.
+Diagramas de arquitectura
+modelo relacional
+
+Demostracion (slide)
+
+mejoras a futuro
+
+Concluciones
+
+
+Despues de objetivos
+
+Problema
+Estadisticas (ensayo)
+Estudio de factibilidad
+Marco teorico
+	Technologia
+	Conceptos.

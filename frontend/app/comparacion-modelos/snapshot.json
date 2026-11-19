@@ -1,0 +1,438 @@
+{
+  "source": {
+    "prompt": {
+      "path": "output/model-comparison/prompt-comun.txt",
+      "text": "El archivo contiene datos sintéticos para una demostración, no partidas de una persona real. Analiza estas 10 partidas del rol TOP usando solo los datos proporcionados. Responde en español y no inventes contexto, hechos ni causas.\n\nDefiniciones: victoria es 1=ganada y 0=perdida; cs_min son súbditos por minuto; vision_min es puntuación de visión por minuto; kp_pct es porcentaje de 0 a 100; muertes_antes_10 es un conteo y null en JSON o NA en CSV significa desconocido. Calcula KDA por partida como (kills + assists) / max(deaths, 1); cuando informes un promedio de KDA, usa la media de las 10 partidas.\n\nComo referencias internas de práctica usa CS 6/min, visión 0.60/min, participación en kills 35% y 1 muerte antes del minuto 10. No son benchmarks oficiales de rango. No infieras participación en objetivos a partir de kp_pct ni calidad de wards a partir de vision_min.\n\nEmpieza con un resumen numérico fijo: n de partidas, victorias (conteo/total y porcentaje), medias aritméticas de cs_min, vision_min, kp_pct y KDA por partida, y media de muertes_antes_10 junto con su n conocido. Redondea las medias a dos decimales. Son medias simples, no ponderadas por minutos; excluye null/NA del promedio de muertes tempranas, indica el n usado y no los trates como cero.\n\nDa como máximo 3 prioridades de práctica. Para cada una, incluye el resumen numérico con denominador, 2 o 3 IDs de partidas que respalden el patrón y un ejercicio práctico concreto. Termina con una nota breve sobre datos faltantes o límites. Si los datos no respaldan una prioridad, dilo.\n"
+    },
+    "inputs": {
+      "json": {
+        "path": "output/model-comparison/10-partidas.json",
+        "sha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf",
+        "text": "[\n  {\n    \"id\": \"M01\",\n    \"campeon\": \"Garen\",\n    \"rol\": \"TOP\",\n    \"minutos\": 28,\n    \"victoria\": 1,\n    \"kills\": 12,\n    \"deaths\": 3,\n    \"assists\": 4,\n    \"cs_min\": 5.4,\n    \"vision_min\": 0.42,\n    \"kp_pct\": 43,\n    \"muertes_antes_10\": 1,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M02\",\n    \"campeon\": \"Ornn\",\n    \"rol\": \"TOP\",\n    \"minutos\": 33,\n    \"victoria\": 0,\n    \"kills\": 1,\n    \"deaths\": 7,\n    \"assists\": 3,\n    \"cs_min\": 4.7,\n    \"vision_min\": 0.51,\n    \"kp_pct\": 50,\n    \"muertes_antes_10\": 2,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M03\",\n    \"campeon\": \"Camille\",\n    \"rol\": \"TOP\",\n    \"minutos\": 25,\n    \"victoria\": 1,\n    \"kills\": 9,\n    \"deaths\": 2,\n    \"assists\": 5,\n    \"cs_min\": 6.4,\n    \"vision_min\": 0.48,\n    \"kp_pct\": 40,\n    \"muertes_antes_10\": 2,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M04\",\n    \"campeon\": \"Jax\",\n    \"rol\": \"TOP\",\n    \"minutos\": 31,\n    \"victoria\": 0,\n    \"kills\": 3,\n    \"deaths\": 8,\n    \"assists\": 4,\n    \"cs_min\": 5.1,\n    \"vision_min\": 0.39,\n    \"kp_pct\": 39,\n    \"muertes_antes_10\": 1,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M05\",\n    \"campeon\": \"Renekton\",\n    \"rol\": \"TOP\",\n    \"minutos\": 22,\n    \"victoria\": 1,\n    \"kills\": 11,\n    \"deaths\": 3,\n    \"assists\": 2,\n    \"cs_min\": 6.8,\n    \"vision_min\": 0.55,\n    \"kp_pct\": 50,\n    \"muertes_antes_10\": 0,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M06\",\n    \"campeon\": \"Shen\",\n    \"rol\": \"TOP\",\n    \"minutos\": 35,\n    \"victoria\": 0,\n    \"kills\": 1,\n    \"deaths\": 6,\n    \"assists\": 12,\n    \"cs_min\": 4.3,\n    \"vision_min\": 0.58,\n    \"kp_pct\": 59,\n    \"muertes_antes_10\": null,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M07\",\n    \"campeon\": \"Aatrox\",\n    \"rol\": \"TOP\",\n    \"minutos\": 29,\n    \"victoria\": 1,\n    \"kills\": 8,\n    \"deaths\": 5,\n    \"assists\": 9,\n    \"cs_min\": 5.9,\n    \"vision_min\": 0.63,\n    \"kp_pct\": 65,\n    \"muertes_antes_10\": 2,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M08\",\n    \"campeon\": \"Gwen\",\n    \"rol\": \"TOP\",\n    \"minutos\": 38,\n    \"victoria\": 0,\n    \"kills\": 4,\n    \"deaths\": 9,\n    \"assists\": 4,\n    \"cs_min\": 6.2,\n    \"vision_min\": 0.44,\n    \"kp_pct\": 35,\n    \"muertes_antes_10\": 1,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M09\",\n    \"campeon\": \"Darius\",\n    \"rol\": \"TOP\",\n    \"minutos\": 26,\n    \"victoria\": 1,\n    \"kills\": 10,\n    \"deaths\": 3,\n    \"assists\": 3,\n    \"cs_min\": 5.5,\n    \"vision_min\": 0.57,\n    \"kp_pct\": 50,\n    \"muertes_antes_10\": 3,\n    \"cola\": 420\n  },\n  {\n    \"id\": \"M10\",\n    \"campeon\": \"Malphite\",\n    \"rol\": \"TOP\",\n    \"minutos\": 32,\n    \"victoria\": 0,\n    \"kills\": 2,\n    \"deaths\": 5,\n    \"assists\": 10,\n    \"cs_min\": 3.8,\n    \"vision_min\": 0.49,\n    \"kp_pct\": 60,\n    \"muertes_antes_10\": null,\n    \"cola\": 420\n  }\n]\n"
+      },
+      "csv": {
+        "path": "output/model-comparison/10-partidas.csv",
+        "sha256": "399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb",
+        "text": "id,campeon,rol,minutos,victoria,kills,deaths,assists,cs_min,vision_min,kp_pct,muertes_antes_10,cola\nM01,Garen,TOP,28,1,12,3,4,5.4,0.42,43,1,420\nM02,Ornn,TOP,33,0,1,7,3,4.7,0.51,50,2,420\nM03,Camille,TOP,25,1,9,2,5,6.4,0.48,40,2,420\nM04,Jax,TOP,31,0,3,8,4,5.1,0.39,39,1,420\nM05,Renekton,TOP,22,1,11,3,2,6.8,0.55,50,0,420\nM06,Shen,TOP,35,0,1,6,12,4.3,0.58,59,NA,420\nM07,Aatrox,TOP,29,1,8,5,9,5.9,0.63,65,2,420\nM08,Gwen,TOP,38,0,4,9,4,6.2,0.44,35,1,420\nM09,Darius,TOP,26,1,10,3,3,5.5,0.57,50,3,420\nM10,Malphite,TOP,32,0,2,5,10,3.8,0.49,60,NA,420\n"
+      }
+    },
+    "reference": "output/model-comparison/referencia-resultados.md"
+  },
+  "referenceMetrics": {
+    "csMin": 5.41,
+    "kpPct": 49.1,
+    "kdaPerMatch": 3.13,
+    "earlyDeathsMean": 1.5,
+    "earlyDeathsKnown": 8
+  },
+  "runs": [
+    {
+      "id": "groq-json",
+      "provider": "groq",
+      "format": "json",
+      "requestedModel": "openai/gpt-oss-20b",
+      "returnedModel": "openai/gpt-oss-20b",
+      "status": "complete",
+      "error": null,
+      "httpStatus": null,
+      "finishReason": "stop",
+      "truncated": false,
+      "request": {
+        "stream": false,
+        "temperature": 0,
+        "outputLimit": 4096,
+        "outputLimitParameter": "max_completion_tokens"
+      },
+      "requestElapsedWallMs": 4004,
+      "inputTokens": 1612,
+      "outputTokens": 2359,
+      "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+      "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf",
+      "metrics": {
+        "status": "complete",
+        "error": null,
+        "provider": "groq",
+        "format": "json",
+        "requestedModel": "openai/gpt-oss-20b",
+        "returnedModel": "openai/gpt-oss-20b",
+        "request": {
+          "stream": false,
+          "temperature": 0,
+          "outputLimit": 4096,
+          "outputLimitParameter": "max_completion_tokens"
+        },
+        "requestElapsedWallMs": 4004,
+        "inputTokens": 1612,
+        "outputTokens": 2359,
+        "usage": {
+          "queue_time": 0.174258991,
+          "prompt_tokens": 1612,
+          "prompt_time": 0.095230848,
+          "completion_tokens": 2359,
+          "completion_time": 2.594610091,
+          "total_tokens": 3971,
+          "total_time": 2.6898409389999998,
+          "completion_tokens_details": {
+            "reasoning_tokens": 1397
+          }
+        },
+        "finishReason": "stop",
+        "truncated": false,
+        "ollama": null,
+        "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+        "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf"
+      },
+      "sources": {
+        "metrics": "output/model-comparison/resultados-api/2026-10-30T20-59-13-836Z-931cf137-3d86-4d54-bba6-1f6129e9338d-groq-json-metricas.json",
+        "answer": "output/model-comparison/resultados-api/2026-10-30T20-59-13-836Z-931cf137-3d86-4d54-bba6-1f6129e9338d-groq-json-respuesta.txt"
+      },
+      "answer": "**Resumen numérico (10 partidas)**  \n\n| Métrica | Valor | Comentario |\n|---------|-------|------------|\n| Partidas | 10 | |\n| Victorias | 5 / 10 (50 %) | |\n| CS /min | 5.41 | |\n| Visión /min | 0.51 | |\n| Participación en kills % | 49.10 % | |\n| KDA por partida | 3.13 | |\n| Muertes antes del minuto 10 | 12 / 8 = 1.50 (n = 8) | 2 partidas con dato desconocido |\n\n---\n\n## 1. Mejorar la **producción de CS**  \n**Patrón observado**: 7 de 10 partidas tienen CS /min < 6, la referencia de práctica.  \n**Partidas de referencia**: **M10 (3.8 CS/min)**, **M06 (4.3 CS/min)**, **M02 (4.7 CS/min)**.  \n**Ejercicio práctico**:  \n- **Drills de last‑hit**: 15 min de práctica diaria con un bot a 1 min de la partida, enfocándose en conseguir 90 % de last‑hits.  \n- **Control de línea**: Durante las primeras 5 min, intenta mantener la línea a 30 puntos de tu campamento para maximizar la oportunidad de farmear.  \n- **Revisión de repeticiones**: Analiza las 3 partidas con CS < 5 CS/min y marca los momentos en que podrías haber last‑hitado sin perder la línea.\n\n---\n\n## 2. Incrementar la **visión** en el mapa  \n**Patrón observado**: 9 de 10 partidas tienen visión /min < 0.60, solo **M07** supera la referencia.  \n**Partidas de referencia**: **M01 (0.42 vision/min)**, **M04 (0.39 vision/min)**, **M08 (0.44 vision/min)**.  \n**Ejercicio práctico**:  \n- **Compra de wards**: Al inicio de la partida, coloca un ward en la entrada de la jungla enemiga y otro en la zona de la torre de la línea.  \n- **Uso de visión**: Cada vez que ganes una pelea, coloca un ward en la zona de la torre para asegurar visión de la jungla.  \n- **Revisión de métricas**: Al final de cada partida, revisa el número de wards colocados y la visión total del mapa; apunta a aumentar el valor en al menos 0.10 vision/min.\n\n---\n\n## 3. Reducir **muertes tempranas** y mejorar el **KDA**  \n**Patrón observado**: 3 partidas con muertes antes del minuto 10 > 1 (M02 = 2, M09 = 3, M07 = 2) y 3 partidas con KDA < 1 (M02, M04, M08).  \n**Partidas de referencia**: **M02 (KDA 0.57, 2 muertes)**, **M04 (KDA 0.88, 1 muerte)**, **M08 (KDA 0.89, 1 muerte)**.  \n**Ejercicio práctico**:  \n- **Map awareness**: Antes de cada pelea, revisa la posición de los junglas y los objetivos. Evita entrar en zonas donde el jungla enemigo pueda aparecer.  \n- **Timing de ganks**: Coordina con el jungla para que el gank llegue justo cuando el enemigo está a punto de morir o cuando su visión es baja.  \n- **Revisión de repeticiones**: Analiza las 3 partidas con KDA < 1 y marca los momentos en que podrías haber evitado la muerte o haber obtenido la kill.\n\n---\n\n### Notas finales  \n- **Datos faltantes**: `muertes_antes_10` es desconocido en M06 y M10; no se puede incluir en el promedio.  \n- **Limitaciones**: Los datos son sintéticos y no reflejan la variabilidad de un rango real; las referencias de práctica son internas y no oficiales.  \n- Si alguna prioridad no se respalda con datos (por ejemplo, participación en objetivos), se indica explícitamente. En este caso, todas las prioridades están respaldadas por al menos 2 partidas.",
+      "audit": {
+        "csMin": 5.41,
+        "kpPct": 49.1,
+        "kda": 3.13,
+        "earlyDeathsMean": 1.5,
+        "earlyDeathsKnown": 8,
+        "excerpts": {
+          "csMin": "| CS /min | 5.41 | |",
+          "kpPct": "| Participación en kills % | 49.10 % | |",
+          "kda": "| KDA por partida | 3.13 | |",
+          "earlyDeaths": "| Muertes antes del minuto 10 | 12 / 8 = 1.50 (n = 8) | 2 partidas con dato desconocido |"
+        }
+      }
+    },
+    {
+      "id": "groq-csv",
+      "provider": "groq",
+      "format": "csv",
+      "requestedModel": "openai/gpt-oss-20b",
+      "returnedModel": "openai/gpt-oss-20b",
+      "status": "complete",
+      "error": null,
+      "httpStatus": null,
+      "finishReason": "stop",
+      "truncated": false,
+      "request": {
+        "stream": false,
+        "temperature": 0,
+        "outputLimit": 4096,
+        "outputLimitParameter": "max_completion_tokens"
+      },
+      "requestElapsedWallMs": 3998,
+      "inputTokens": 815,
+      "outputTokens": 2786,
+      "inputSha256": "c7aadf5e46347498a6fd1be24b8c13e4e4b66417e41f06d7ef87f73a126cc56e",
+      "dataSha256": "399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb",
+      "metrics": {
+        "status": "complete",
+        "error": null,
+        "provider": "groq",
+        "format": "csv",
+        "requestedModel": "openai/gpt-oss-20b",
+        "returnedModel": "openai/gpt-oss-20b",
+        "request": {
+          "stream": false,
+          "temperature": 0,
+          "outputLimit": 4096,
+          "outputLimitParameter": "max_completion_tokens"
+        },
+        "requestElapsedWallMs": 3998,
+        "inputTokens": 815,
+        "outputTokens": 2786,
+        "usage": {
+          "queue_time": 0.174253952,
+          "prompt_tokens": 815,
+          "prompt_time": 0.04748224,
+          "completion_tokens": 2786,
+          "completion_time": 2.917140669,
+          "total_tokens": 3601,
+          "total_time": 2.964622909,
+          "completion_tokens_details": {
+            "reasoning_tokens": 1998
+          }
+        },
+        "finishReason": "stop",
+        "truncated": false,
+        "ollama": null,
+        "inputSha256": "c7aadf5e46347498a6fd1be24b8c13e4e4b66417e41f06d7ef87f73a126cc56e",
+        "dataSha256": "399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb"
+      },
+      "sources": {
+        "metrics": "output/model-comparison/resultados-api/2026-10-30T21-00-41-485Z-5cee4872-a1a3-46a9-9bf4-be63f7327bb5-groq-csv-metricas.json",
+        "answer": "output/model-comparison/resultados-api/2026-10-30T21-00-41-485Z-5cee4872-a1a3-46a9-9bf4-be63f7327bb5-groq-csv-respuesta.txt"
+      },
+      "answer": "**Resumen numérico (10 partidas)**  \n\n| Métrica | Valor | Denominador |\n|---------|-------|-------------|\n| Partidas | 10 | – |\n| Victorias | 5 | 10 (50 %) |\n| CS /min | 5.41 | 10 |\n| Vision /min | 0.51 | 10 |\n| Participación en kills (KP %) | 49.10 % | 10 |\n| KDA por partida | 3.13 | 10 |\n| Muertes antes del minuto 10 | 1.50 | 8 (con datos conocidos) |\n\n*(Todas las medias redondeadas a dos decimales. Los valores de “muertes antes del minuto 10” se promedian solo con los 8 registros conocidos; los NA de M06 y M10 se excluyen.)*\n\n---\n\n## 3 prioridades de práctica\n\n| Prioridad | Resumen numérico (denominador) | Partidas que respaldan el patrón | Ejercicio práctico concreto |\n|-----------|--------------------------------|----------------------------------|-----------------------------|\n| **1. Mejorar la visión** | Vision /min = 0.51 (10) < 0.60 (benchmark interno) | M01 (0.42 vision, KDA 5.33), M03 (0.48 vision, KDA 7.00) | Antes de los 10 minutos, colocar **2 wards** en la zona de la jungla (una en la entrada de la jungla y otra en la zona de la línea superior). Revisar el mapa cada 2 min para asegurarse de que la visión esté activa y no haya wards enemigos. |\n| **2. Mantener CS alto sin sacrificar kills** | CS /min = 5.41 (10) > 6 solo en 3 partidas; la partida con mejor combinación: M05 (CS 6.8, KDA 4.33, vision 0.55) | M05 (CS 6.8, KDA 4.33) | Practicar last‑hitting en la línea de la jungla con objetivo de **≥ 6.5 cs/min** mientras se mantiene la visión de la línea (colocar un ward en la zona de la jungla cada 3 min). Medir el CS cada 5 min y ajustar la velocidad de ataque si es necesario. |\n| **3. Reducir muertes tempranas** | Muertes antes del minuto 10 = 1.50 (8) > 1 (benchmark interno) | M02 (2), M03 (2), M07 (2), M09 (3) | Durante la fase de líneas, practicar **posicionamiento defensivo**: mantener la distancia de 3 celdas del enemigo, usar la visión de la jungla para detectar ganks y, si es posible, colocar un ward en la zona de la jungla antes de los 5 minutos. Registrar cada muerte temprana y analizar la causa (posición, falta de visión, etc.). |\n\n---\n\n### Nota sobre datos faltantes / límites\n\n- Los valores de **muertes antes del minuto 10** están incompletos (NA en M06 y M10), por lo que el promedio se calcula con 8 partidas.\n- No se infiere participación en objetivos ni calidad de wards a partir de `kp_pct` o `vision_min`; los análisis se basan únicamente en los datos numéricos proporcionados.\n- Los benchmarks internos (CS 6/min, visión 0.60/min, KP 35 %, 1 muerte antes del minuto 10) son de referencia de práctica y no oficiales.",
+      "audit": {
+        "csMin": 5.41,
+        "kpPct": 49.1,
+        "kda": 3.13,
+        "earlyDeathsMean": 1.5,
+        "earlyDeathsKnown": 8,
+        "excerpts": {
+          "csMin": "| CS /min | 5.41 | 10 |",
+          "kpPct": "| Participación en kills (KP %) | 49.10 % | 10 |",
+          "kda": "| KDA por partida | 3.13 | 10 |",
+          "earlyDeaths": "| Muertes antes del minuto 10 | 1.50 | 8 (con datos conocidos) |"
+        }
+      }
+    },
+    {
+      "id": "ollama-json",
+      "provider": "ollama",
+      "format": "json",
+      "requestedModel": "gemma4:e4b",
+      "returnedModel": "gemma4:e4b",
+      "status": "complete",
+      "error": null,
+      "httpStatus": null,
+      "finishReason": "stop",
+      "truncated": false,
+      "request": {
+        "stream": false,
+        "temperature": 0,
+        "outputLimit": 4096,
+        "outputLimitParameter": "num_predict"
+      },
+      "requestElapsedWallMs": 60195,
+      "inputTokens": 1798,
+      "outputTokens": 2199,
+      "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+      "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf",
+      "metrics": {
+        "status": "complete",
+        "error": null,
+        "provider": "ollama",
+        "format": "json",
+        "requestedModel": "gemma4:e4b",
+        "returnedModel": "gemma4:e4b",
+        "request": {
+          "stream": false,
+          "temperature": 0,
+          "outputLimit": 4096,
+          "outputLimitParameter": "num_predict"
+        },
+        "requestElapsedWallMs": 60195,
+        "inputTokens": 1798,
+        "outputTokens": 2199,
+        "usage": null,
+        "finishReason": "stop",
+        "truncated": false,
+        "ollama": {
+          "total_duration": 60055851422,
+          "load_duration": 18133193745,
+          "prompt_eval_count": 1798,
+          "prompt_eval_duration": 1972221000,
+          "eval_count": 2199,
+          "eval_duration": 39784282000
+        },
+        "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+        "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf"
+      },
+      "sources": {
+        "metrics": "output/model-comparison/resultados-api/2026-10-30T21-16-09-765Z-c66588d1-96af-4504-999f-651253ccc0f3-ollama-json-metricas.json",
+        "answer": "output/model-comparison/resultados-api/2026-10-30T21-16-09-765Z-c66588d1-96af-4504-999f-651253ccc0f3-ollama-json-respuesta.txt"
+      },
+      "answer": "**Resumen Numérico Fijo**\n\n*   **N de partidas:** 10\n*   **Victorias:** 5/10 (50.00%)\n*   **Medias Aritméticas:**\n    *   CS_min: 5.31\n    *   Vision_min: 0.51\n    *   KP_pct: 48.10\n    *   KDA por partida: 3.09\n*   **Muertes antes del minuto 10:** 1.50 (N conocido: 8)\n\n***\n\n**Prioridades de Práctica**\n\n**1. Maximizar el impacto en combate (KDA)**\nEl rendimiento en combate es altamente variable. Las partidas con KDA superior a 4.00 demuestran una alta eficiencia en la obtención de bajas y asistencias.\n*   **Resumen Numérico:** KDA promedio de 4.33 (N=2).\n*   **Partidas de Respaldo:** M03 (7.00), M05 (4.33), M09 (4.33).\n*   **Ejercicio Práctico:** Enfocarse en la toma de decisiones en peleas de equipo, buscando maximizar la participación en bajas (Kills + Assists) mientras se minimizan las muertes, especialmente en situaciones donde el equipo está en ventaja.\n\n**2. Mejorar la consistencia en el farmeo (CS/min)**\nExiste una diferencia notable entre las partidas con un farmeo superior al promedio (5.31) y aquellas con un farmeo bajo. Las partidas con CS_min de 6.0 o más indican una ejecución de farmeo superior.\n*   **Resumen Numérico:** CS_min promedio de 6.40 (N=1).\n*   **Partidas de Respaldo:** M03 (6.4), M05 (6.8), M08 (6.2).\n*   **Ejercicio Práctico:** Practicar la gestión de oleadas y la priorización de objetivos de farmeo en las primeras etapas del juego, asegurando que el CS_min se mantenga consistentemente por encima de 6.0.\n\n**3. Reducir la vulnerabilidad temprana**\nLas partidas con 0 o 1 muerte antes del minuto 10 muestran una mayor capacidad para sobrevivir y acumular ventaja temprana, lo cual se correlaciona con un mejor rendimiento general.\n*   **Resumen Numérico:** Muertes antes del minuto 10 promedio de 1.00 (N=3).\n*   **Partidas de Respaldo:** M05 (0), M01 (1), M04 (1).\n*   **Ejercicio Práctico:** Priorizar la seguridad en la fase de líneas, utilizando la visión y el posicionamiento para evitar enfrentamientos desfavorables en los primeros 10 minutos, incluso si esto significa sacrificar un poco de farmeo.\n\n***\n\n**Nota sobre Datos Faltantes y Límites**\n\nLos datos de `muertes_antes_10` están incompletos (2 partidas tienen valores nulos), lo que limita la capacidad de establecer una tendencia completa sobre la vulnerabilidad temprana. Además, el análisis se limita a métricas individuales (KDA, CS_min) y no permite inferir la calidad de la ejecución de objetivos o la sinergia del equipo.",
+      "audit": {
+        "csMin": 5.31,
+        "kpPct": 48.1,
+        "kda": 3.09,
+        "earlyDeathsMean": 1.5,
+        "earlyDeathsKnown": 8,
+        "excerpts": {
+          "csMin": "*   CS_min: 5.31",
+          "kpPct": "*   KP_pct: 48.10",
+          "kda": "*   KDA por partida: 3.09",
+          "earlyDeaths": "*   **Muertes antes del minuto 10:** 1.50 (N conocido: 8)"
+        }
+      }
+    },
+    {
+      "id": "ollama-csv",
+      "provider": "ollama",
+      "format": "csv",
+      "requestedModel": "gemma4:e4b",
+      "returnedModel": "gemma4:e4b",
+      "status": "complete",
+      "error": null,
+      "httpStatus": null,
+      "finishReason": "stop",
+      "truncated": false,
+      "request": {
+        "stream": false,
+        "temperature": 0,
+        "outputLimit": 4096,
+        "outputLimitParameter": "num_predict"
+      },
+      "requestElapsedWallMs": 46325,
+      "inputTokens": 848,
+      "outputTokens": 2587,
+      "inputSha256": "c7aadf5e46347498a6fd1be24b8c13e4e4b66417e41f06d7ef87f73a126cc56e",
+      "dataSha256": "399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb",
+      "metrics": {
+        "status": "complete",
+        "error": null,
+        "provider": "ollama",
+        "format": "csv",
+        "requestedModel": "gemma4:e4b",
+        "returnedModel": "gemma4:e4b",
+        "request": {
+          "stream": false,
+          "temperature": 0,
+          "outputLimit": 4096,
+          "outputLimitParameter": "num_predict"
+        },
+        "requestElapsedWallMs": 46325,
+        "inputTokens": 848,
+        "outputTokens": 2587,
+        "usage": null,
+        "finishReason": "stop",
+        "truncated": false,
+        "ollama": {
+          "total_duration": 46250422181,
+          "load_duration": 2919476,
+          "prompt_eval_count": 848,
+          "prompt_eval_duration": 939002000,
+          "eval_count": 2587,
+          "eval_duration": 44033615000
+        },
+        "inputSha256": "c7aadf5e46347498a6fd1be24b8c13e4e4b66417e41f06d7ef87f73a126cc56e",
+        "dataSha256": "399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb"
+      },
+      "sources": {
+        "metrics": "output/model-comparison/resultados-api/2026-10-30T21-17-35-101Z-04397ddb-ded0-4f54-80a7-8f68a8b3549d-ollama-csv-metricas.json",
+        "answer": "output/model-comparison/resultados-api/2026-10-30T21-17-35-101Z-04397ddb-ded0-4f54-80a7-8f68a8b3549d-ollama-csv-respuesta.txt"
+      },
+      "answer": "**Análisis de Partidas TOP**\n\n**Resumen Numérico Fijo**\n\n*   **N de partidas:** 10\n*   **Victorias:** 5/10 (50.00%)\n*   **Medias Aritméticas:**\n    *   CS por minuto: 4.92\n    *   Visión por minuto: 0.51\n    *   KP por minuto: 49.90\n    *   KDA por partida: 2.84\n*   **Muertes antes del minuto 10:** Media de 1.67 (N conocido: 9)\n\n***\n\n**Prioridades de Práctica**\n\n**1. Mejora de la Eficiencia de Farm (CS/min)**\nEl promedio de CS por minuto (4.92) está por debajo del punto de referencia interno de 6.00. Esto indica una oportunidad para mejorar la eficiencia en la fase de líneas.\n\n*   **Resumen Numérico:** Media de CS por minuto: 4.92 (Denominador: 10 partidas).\n*   **Partidas de Soporte:** M10 (3.8), M9 (3.0), M2 (4.7).\n*   **Ejercicio Práctico:** Enfocarse en la mecánica de *last hitting* en los primeros 10 minutos de la partida, priorizando la consistencia sobre la agresividad.\n\n**2. Aumento del Control de Visión**\nEl promedio de visión por minuto (0.51) está por debajo del punto de referencia interno de 0.60. Un mayor control de visión puede mejorar la seguridad y la toma de decisiones.\n\n*   **Resumen Numérico:** Media de Visión por minuto: 0.51 (Denominador: 10 partidas).\n*   **Partidas de Soporte:** M04 (0.39), M01 (0.42), M08 (0.44).\n*   **Ejercicio Práctico:** Practicar la colocación de *wards* proactivamente en zonas clave del mapa antes de que el enemigo se acerque, buscando aumentar la puntuación de visión en los primeros 15 minutos.\n\n**3. Maximización del Impacto (KDA)**\nAunque el promedio de KDA (2.84) es moderado, existen partidas con un impacto muy alto. El objetivo es replicar el rendimiento de estas partidas, manteniendo una alta participación en bajas y minimizando las muertes.\n\n*   **Resumen Numérico:** Media de KDA por partida: 2.84 (Denominador: 10 partidas).\n*   **Partidas de Soporte:** M03 (7.00), M01 (5.33), M09 (4.33).\n*   **Ejercicio Práctico:** Identificar y ejecutar jugadas que permitan asegurar asistencias y bajas en equipo, enfocándose en la coordinación con el equipo para maximizar la participación en kills (referencia interna: 35%).\n\n***\n\n**Nota sobre Datos Faltantes y Límites**\n\nLos datos de las partidas M06 y M10 carecen de información sobre \"muertes antes del minuto 10\" (NA), lo que limita el cálculo del promedio de muertes tempranas a 9 partidas. Además, el análisis se basa únicamente en métricas cuantitativas y no permite inferir la calidad de la toma de decisiones, la ejecución de objetivos o la estrategia de equipo.",
+      "audit": {
+        "csMin": 4.92,
+        "kpPct": 49.9,
+        "kda": 2.84,
+        "earlyDeathsMean": 1.67,
+        "earlyDeathsKnown": 9,
+        "excerpts": {
+          "csMin": "*   CS por minuto: 4.92",
+          "kpPct": "*   KP por minuto: 49.90",
+          "kda": "*   KDA por partida: 2.84",
+          "earlyDeaths": "*   **Muertes antes del minuto 10:** Media de 1.67 (N conocido: 9)"
+        }
+      }
+    }
+  ],
+  "attempts": [
+    {
+      "id": "gemini-json-2026-10-30T21-15-19",
+      "provider": "gemini",
+      "format": "json",
+      "requestedModel": "gemini-3.8-flash",
+      "returnedModel": null,
+      "status": "failed",
+      "error": "http_error",
+      "httpStatus": 503,
+      "finishReason": null,
+      "truncated": false,
+      "request": {
+        "stream": false,
+        "temperature": 0,
+        "outputLimit": 4096,
+        "outputLimitParameter": "max_tokens"
+      },
+      "requestElapsedWallMs": 986,
+      "inputTokens": null,
+      "outputTokens": null,
+      "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+      "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf",
+      "metrics": {
+        "status": "failed",
+        "error": "http_error",
+        "provider": "gemini",
+        "format": "json",
+        "requestedModel": "gemini-3.8-flash",
+        "returnedModel": null,
+        "httpStatus": 503,
+        "providerStatus": null,
+        "retryAfterSeconds": null,
+        "request": {
+          "stream": false,
+          "temperature": 0,
+          "outputLimit": 4096,
+          "outputLimitParameter": "max_tokens"
+        },
+        "requestElapsedWallMs": 986,
+        "inputTokens": null,
+        "outputTokens": null,
+        "usage": null,
+        "finishReason": null,
+        "truncated": false,
+        "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+        "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf"
+      },
+      "sources": {
+        "metrics": "output/model-comparison/resultados-api/2026-10-30T21-15-19-006Z-71f09f56-e797-48f2-b8f3-ebd187a9b868-gemini-json-metricas.json",
+        "answer": null
+      },
+      "answer": null,
+      "audit": null
+    },
+    {
+      "id": "gemini-json-2026-10-30T22-44-08",
+      "provider": "gemini",
+      "format": "json",
+      "requestedModel": "gemini-3.8-flash",
+      "returnedModel": "gemini-3.8-flash",
+      "status": "incomplete",
+      "error": "output_truncated",
+      "httpStatus": null,
+      "finishReason": "length",
+      "truncated": true,
+      "request": {
+        "stream": false,
+        "temperature": 0,
+        "outputLimit": 4096,
+        "outputLimitParameter": "max_tokens"
+      },
+      "requestElapsedWallMs": 178264,
+      "inputTokens": 1784,
+      "outputTokens": 519,
+      "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+      "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf",
+      "metrics": {
+        "status": "incomplete",
+        "error": "output_truncated",
+        "provider": "gemini",
+        "format": "json",
+        "requestedModel": "gemini-3.8-flash",
+        "returnedModel": "gemini-3.8-flash",
+        "request": {
+          "stream": false,
+          "temperature": 0,
+          "outputLimit": 4096,
+          "outputLimitParameter": "max_tokens"
+        },
+        "requestElapsedWallMs": 178264,
+        "inputTokens": 1784,
+        "outputTokens": 519,
+        "usage": {
+          "completion_tokens": 519,
+          "prompt_tokens": 1784,
+          "total_tokens": 5876
+        },
+        "finishReason": "length",
+        "truncated": true,
+        "ollama": null,
+        "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+        "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf"
+      },
+      "sources": {
+        "metrics": "output/model-comparison/resultados-api/2026-10-30T22-44-08-212Z-7ac806b5-4bf6-45d4-b2fa-354817dfa6dc-gemini-json-metricas.json",
+        "answer": "output/model-comparison/resultados-api/2026-10-30T22-44-08-212Z-7ac806b5-4bf6-45d4-b2fa-354817dfa6dc-gemini-json-respuesta.txt"
+      },
+      "answer": "### Resumen numérico\n\n* **Número de partidas (n):** 10\n* **Victorias:** 5/10 (50.00%)\n* **Media de cs_min:** 5.41\n* **Media de vision_min:** 0.51\n* **Media de kp_pct:** 49.10%\n* **Media de KDA por partida:** 3.13\n* **Media de muertes_antes_10:** 1.50 (n conocido = 8)\n\n---\n\n### Prioridades de práctica\n\n1. **Incrementar la puntuación de visión por minuto (referencia: 0.60/min)**\n   * **Resumen numérico:** 9/10 partidas se sitúan por debajo de la referencia interna de 0.60 vision_min (media global de 0.51).\n   * **Partidas que respaldan el patrón:** M04 (0.39), M01 (0.42) y M08 (0.44).\n   * **Ejercicio práctico:** Establecer una rutina para colocar un centinela de visión cada vez que la oleada cruce la mitad del carril y adquirir un centinela de control en cada regreso a base con oro sobrante.\n\n2. **Mejorar la obtención de súbditos por minuto (referencia: 6.0/min)**\n   * **Resumen numérico:** 7/10 partidas no alcanzan el umbral de referencia de 6.0 cs_min (media global de 5.41).\n   * **Partidas que respaldan el patrón:** M10 (3.8), M06 (4.3) y M02 (4.7).\n   * **Ejercicio práctico:** Realizar sesiones de 10 minutos en la herramienta de práctica enfocadas exclusivamente en el último golpe a súbditos sin comprar objetos ofensivos, buscando alcanzar un mínimo de 80 súbditos antes de jugar partidas regulares.\n\n3. **Reducir las muertes en fase temprana (referencia: máximo 1 muerte antes del minuto 10)**\n   * **Resumen numérico:** 4/8 partidas con registro conocido superan la referencia de 1 muerte antes del minuto 10 (media de 1.50 muertes tempranas).\n   *",
+      "audit": null
+    }
+  ],
+  "inputTokenReductionPct": {
+    "groq": 49.4,
+    "ollama": 52.8
+  }
+}

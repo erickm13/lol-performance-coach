@@ -1,0 +1,43 @@
+**Análisis de Partidas TOP**
+
+**Resumen Numérico Fijo**
+
+*   **N de partidas:** 10
+*   **Victorias:** 5/10 (50.00%)
+*   **Medias Aritméticas:**
+    *   CS por minuto: 4.92
+    *   Visión por minuto: 0.51
+    *   KP por minuto: 49.90
+    *   KDA por partida: 2.84
+*   **Muertes antes del minuto 10:** Media de 1.67 (N conocido: 9)
+
+***
+
+**Prioridades de Práctica**
+
+**1. Mejora de la Eficiencia de Farm (CS/min)**
+El promedio de CS por minuto (4.92) está por debajo del punto de referencia interno de 6.00. Esto indica una oportunidad para mejorar la eficiencia en la fase de líneas.
+
+*   **Resumen Numérico:** Media de CS por minuto: 4.92 (Denominador: 10 partidas).
+*   **Partidas de Soporte:** M10 (3.8), M9 (3.0), M2 (4.7).
+*   **Ejercicio Práctico:** Enfocarse en la mecánica de *last hitting* en los primeros 10 minutos de la partida, priorizando la consistencia sobre la agresividad.
+
+**2. Aumento del Control de Visión**
+El promedio de visión por minuto (0.51) está por debajo del punto de referencia interno de 0.60. Un mayor control de visión puede mejorar la seguridad y la toma de decisiones.
+
+*   **Resumen Numérico:** Media de Visión por minuto: 0.51 (Denominador: 10 partidas).
+*   **Partidas de Soporte:** M04 (0.39), M01 (0.42), M08 (0.44).
+*   **Ejercicio Práctico:** Practicar la colocación de *wards* proactivamente en zonas clave del mapa antes de que el enemigo se acerque, buscando aumentar la puntuación de visión en los primeros 15 minutos.
+
+**3. Maximización del Impacto (KDA)**
+Aunque el promedio de KDA (2.84) es moderado, existen partidas con un impacto muy alto. El objetivo es replicar el rendimiento de estas partidas, manteniendo una alta participación en bajas y minimizando las muertes.
+
+*   **Resumen Numérico:** Media de KDA por partida: 2.84 (Denominador: 10 partidas).
+*   **Partidas de Soporte:** M03 (7.00), M01 (5.33), M09 (4.33).
+*   **Ejercicio Práctico:** Identificar y ejecutar jugadas que permitan asegurar asistencias y bajas en equipo, enfocándose en la coordinación con el equipo para maximizar la participación en kills (referencia interna: 35%).
+
+***
+
+**Nota sobre Datos Faltantes y Límites**
+
+Los datos de las partidas M06 y M10 carecen de información sobre "muertes antes del minuto 10" (NA), lo que limita el cálculo del promedio de muertes tempranas a 9 partidas. Además, el análisis se basa únicamente en métricas cuantitativas y no permite inferir la calidad de la toma de decisiones, la ejecución de objetivos o la estrategia de equipo.

@@ -1,0 +1,48 @@
+**Resumen numérico (10 partidas)**  
+
+| Métrica | Valor | Comentario |
+|---------|-------|------------|
+| Partidas | 10 | |
+| Victorias | 5 / 10 (50 %) | |
+| CS /min | 5.41 | |
+| Visión /min | 0.51 | |
+| Participación en kills % | 49.10 % | |
+| KDA por partida | 3.13 | |
+| Muertes antes del minuto 10 | 12 / 8 = 1.50 (n = 8) | 2 partidas con dato desconocido |
+
+---
+
+## 1. Mejorar la **producción de CS**  
+**Patrón observado**: 7 de 10 partidas tienen CS /min < 6, la referencia de práctica.  
+**Partidas de referencia**: **M10 (3.8 CS/min)**, **M06 (4.3 CS/min)**, **M02 (4.7 CS/min)**.  
+**Ejercicio práctico**:  
+- **Drills de last‑hit**: 15 min de práctica diaria con un bot a 1 min de la partida, enfocándose en conseguir 90 % de last‑hits.  
+- **Control de línea**: Durante las primeras 5 min, intenta mantener la línea a 30 puntos de tu campamento para maximizar la oportunidad de farmear.  
+- **Revisión de repeticiones**: Analiza las 3 partidas con CS < 5 CS/min y marca los momentos en que podrías haber last‑hitado sin perder la línea.
+
+---
+
+## 2. Incrementar la **visión** en el mapa  
+**Patrón observado**: 9 de 10 partidas tienen visión /min < 0.60, solo **M07** supera la referencia.  
+**Partidas de referencia**: **M01 (0.42 vision/min)**, **M04 (0.39 vision/min)**, **M08 (0.44 vision/min)**.  
+**Ejercicio práctico**:  
+- **Compra de wards**: Al inicio de la partida, coloca un ward en la entrada de la jungla enemiga y otro en la zona de la torre de la línea.  
+- **Uso de visión**: Cada vez que ganes una pelea, coloca un ward en la zona de la torre para asegurar visión de la jungla.  
+- **Revisión de métricas**: Al final de cada partida, revisa el número de wards colocados y la visión total del mapa; apunta a aumentar el valor en al menos 0.10 vision/min.
+
+---
+
+## 3. Reducir **muertes tempranas** y mejorar el **KDA**  
+**Patrón observado**: 3 partidas con muertes antes del minuto 10 > 1 (M02 = 2, M09 = 3, M07 = 2) y 3 partidas con KDA < 1 (M02, M04, M08).  
+**Partidas de referencia**: **M02 (KDA 0.57, 2 muertes)**, **M04 (KDA 0.88, 1 muerte)**, **M08 (KDA 0.89, 1 muerte)**.  
+**Ejercicio práctico**:  
+- **Map awareness**: Antes de cada pelea, revisa la posición de los junglas y los objetivos. Evita entrar en zonas donde el jungla enemigo pueda aparecer.  
+- **Timing de ganks**: Coordina con el jungla para que el gank llegue justo cuando el enemigo está a punto de morir o cuando su visión es baja.  
+- **Revisión de repeticiones**: Analiza las 3 partidas con KDA < 1 y marca los momentos en que podrías haber evitado la muerte o haber obtenido la kill.
+
+---
+
+### Notas finales  
+- **Datos faltantes**: `muertes_antes_10` es desconocido en M06 y M10; no se puede incluir en el promedio.  
+- **Limitaciones**: Los datos son sintéticos y no reflejan la variabilidad de un rango real; las referencias de práctica son internas y no oficiales.  
+- Si alguna prioridad no se respalda con datos (por ejemplo, participación en objetivos), se indica explícitamente. En este caso, todas las prioridades están respaldadas por al menos 2 partidas.

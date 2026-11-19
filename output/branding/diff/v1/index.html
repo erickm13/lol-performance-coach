@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Conceptos de logo Diff · v1</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #0a0e12;
+        --panel: #131a21;
+        --line: #223038;
+        --mist: #7c8b93;
+        --parchment: #e7eef0;
+        --teal: #3ed6c4;
+        --gold: #d4a45c;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background-color: var(--ink);
+        background-image:
+          repeating-linear-gradient(60deg, rgba(62, 214, 196, .03) 0 1px, transparent 1px 38px),
+          repeating-linear-gradient(-60deg, rgba(62, 214, 196, .03) 0 1px, transparent 1px 38px);
+        color: var(--parchment);
+        font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main { width: min(1180px, calc(100% - 36px)); margin: 0 auto; padding: 48px 0 64px; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { max-width: 740px; margin-bottom: 12px; font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1; letter-spacing: -.055em; }
+      h1 span { color: var(--teal); }
+      h2 { margin: 42px 0 14px; font-size: 1rem; color: var(--teal); letter-spacing: .1em; text-transform: uppercase; }
+      h3 { margin-bottom: 5px; font-size: 1.05rem; }
+      a { color: var(--teal); text-underline-offset: 3px; }
+      .lede { max-width: 670px; color: #bac5c9; font-size: 1.05rem; }
+      .palette { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 30px; }
+      .swatch { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 7px; border: 1px solid var(--line); border-radius: 999px; color: #c9d2d5; font-size: .8rem; }
+      .swatch i { width: 15px; height: 15px; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; background: var(--swatch); }
+      .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+      .card { min-width: 0; overflow: hidden; border: 1px solid var(--line); background: rgba(19, 26, 33, .94); }
+      .card-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 16px 16px 12px; }
+      .number { color: var(--gold); font: 700 .75rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; }
+      .label { color: var(--mist); font-size: .78rem; }
+      .concept { display: block; width: calc(100% - 32px); height: 220px; margin: 0 16px; border: 1px solid var(--line); background: var(--ink); object-fit: contain; }
+      .card-body { padding: 12px 16px 16px; }
+      .card-body p { min-height: 42px; margin-bottom: 14px; color: #a9b5ba; font-size: .87rem; }
+      .preview-title { margin: 0 0 8px; color: var(--mist); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+      .sizes { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; min-height: 144px; padding: 12px; border: 1px dashed #33434c; background: rgba(10, 14, 18, .6); }
+      .size { display: grid; justify-items: center; gap: 5px; color: var(--mist); font: .68rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .size img { display: block; max-width: 128px; height: auto; }
+      .download { display: inline-block; margin-top: 12px; font-size: .8rem; }
+      .note { margin-top: 36px; padding: 16px 18px; border-left: 3px solid var(--gold); background: rgba(19, 26, 33, .85); color: #bbc6ca; font-size: .88rem; }
+      .note strong { color: var(--parchment); }
+      footer { margin-top: 22px; color: var(--mist); font-size: .8rem; }
+
+      @media (max-width: 880px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 580px) {
+        main { width: min(100% - 24px, 440px); padding-top: 32px; }
+        .grid { grid-template-columns: 1fr; }
+        .concept { height: 240px; }
+        .card-body p { min-height: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="number">DIFF · IDENTIDAD VISUAL · PROPUESTAS V1</p>
+        <h1>Una D, <span>seis direcciones.</span></h1>
+        <p class="lede">Comparación de símbolo, contraste y logotipo completo usando la paleta actual del sitio.</p>
+        <div class="palette" aria-label="Paleta de color">
+          <span class="swatch"><i style="--swatch:#3ed6c4"></i>Teal <code>#3ED6C4</code></span>
+          <span class="swatch"><i style="--swatch:#d4a45c"></i>Dorado <code>#D4A45C</code></span>
+          <span class="swatch"><i style="--swatch:#0a0e12"></i>Tinta <code>#0A0E12</code></span>
+          <span class="swatch"><i style="--swatch:#e7eef0"></i>Pergamino <code>#E7EEF0</code></span>
+        </div>
+      </header>
+
+      <section aria-labelledby="simbolos">
+        <h2 id="simbolos">Símbolos · uso compacto y amplio</h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-head"><div><h3>D bicolor</h3><span class="label">Turquesa + dorado · fondo oscuro</span></div><span class="number">01</span></div>
+            <img class="concept" src="01-symbol-color-dark.png" alt="D segmentada en turquesa y dorado sobre fondo oscuro" width="1254" height="1254">
+            <div class="card-body"><p>Símbolo de mayor contraste con el acento de la paleta.</p><div class="preview-title">Vista en píxeles · lienzo</div><div class="sizes" aria-label="Previsualizaciones CSS a 32, 64 y 128 píxeles">
+              <span class="size"><img src="01-symbol-color-dark.png" width="32" height="32" alt=""><span>32 px</span></span><span class="size"><img src="01-symbol-color-dark.png" width="64" height="64" alt=""><span>64 px</span></span><span class="size"><img src="01-symbol-color-dark.png" width="128" height="128" alt=""><span>128 px</span></span>
+            </div><a class="download" href="01-symbol-color-dark.png" download>Descargar PNG</a></div>
+          </article>
+
+          <article class="card">
+            <div class="card-head"><div><h3>D clara</h3><span class="label">Pergamino · fondo oscuro</span></div><span class="number">02</span></div>
+            <img class="concept" src="02-symbol-light-dark.png" alt="D segmentada color pergamino sobre fondo oscuro" width="1254" height="1254">
+            <div class="card-body"><p>Tratamiento uniforme para una marca más sobria.</p><div class="preview-title">Vista en píxeles · lienzo</div><div class="sizes" aria-label="Previsualizaciones CSS a 32, 64 y 128 píxeles">
+              <span class="size"><img src="02-symbol-light-dark.png" width="32" height="32" alt=""><span>32 px</span></span><span class="size"><img src="02-symbol-light-dark.png" width="64" height="64" alt=""><span>64 px</span></span><span class="size"><img src="02-symbol-light-dark.png" width="128" height="128" alt=""><span>128 px</span></span>
+            </div><a class="download" href="02-symbol-light-dark.png" download>Descargar PNG</a></div>
+          </article>
+
+          <article class="card">
+            <div class="card-head"><div><h3>D oscura</h3><span class="label">Tinta · fondo claro</span></div><span class="number">03</span></div>
+            <img class="concept" src="03-symbol-dark-light.png" alt="D segmentada color tinta sobre fondo claro" width="1254" height="1254">
+            <div class="card-body"><p>Versión de contraste para superficies claras.</p><div class="preview-title">Vista en píxeles · lienzo</div><div class="sizes" aria-label="Previsualizaciones CSS a 32, 64 y 128 píxeles">
+              <span class="size"><img src="03-symbol-dark-light.png" width="32" height="32" alt=""><span>32 px</span></span><span class="size"><img src="03-symbol-dark-light.png" width="64" height="64" alt=""><span>64 px</span></span><span class="size"><img src="03-symbol-dark-light.png" width="128" height="128" alt=""><span>128 px</span></span>
+            </div><a class="download" href="03-symbol-dark-light.png" download>Descargar PNG</a></div>
+          </article>
+
+          <article class="card">
+            <div class="card-head"><div><h3>D compacta</h3><span class="label">Turquesa · fondo oscuro</span></div><span class="number">06</span></div>
+            <img class="concept" src="06-symbol-compact.png" alt="D segmentada compacta turquesa sobre fondo oscuro" width="1254" height="1254">
+            <div class="card-body"><p>Opción simplificada para revisar legibilidad a tamaños pequeños.</p><div class="preview-title">Vista en píxeles · lienzo</div><div class="sizes" aria-label="Previsualizaciones CSS a 32, 64 y 128 píxeles">
+              <span class="size"><img src="06-symbol-compact.png" width="32" height="32" alt=""><span>32 px</span></span><span class="size"><img src="06-symbol-compact.png" width="64" height="64" alt=""><span>64 px</span></span><span class="size"><img src="06-symbol-compact.png" width="128" height="128" alt=""><span>128 px</span></span>
+            </div><a class="download" href="06-symbol-compact.png" download>Descargar PNG</a></div>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="logotipos">
+        <h2 id="logotipos">Símbolo + Diff · logotipo horizontal</h2>
+        <div class="grid">
+          <article class="card">
+            <div class="card-head"><div><h3>Wordmark oscuro</h3><span class="label">D bicolor + texto claro</span></div><span class="number">04</span></div>
+            <img class="concept" src="04-wordmark-dark-background.png" alt="Símbolo D turquesa y dorado junto al texto Diff claro sobre fondo oscuro" width="1774" height="887">
+            <div class="card-body"><p>Composición horizontal para fondos oscuros.</p><div class="preview-title">Ancho de previsualización CSS</div><div class="sizes" aria-label="Previsualizaciones CSS a 32, 64 y 128 píxeles de ancho">
+              <span class="size"><img src="04-wordmark-dark-background.png" width="32" height="16" alt=""><span>32 px</span></span><span class="size"><img src="04-wordmark-dark-background.png" width="64" height="32" alt=""><span>64 px</span></span><span class="size"><img src="04-wordmark-dark-background.png" width="128" height="64" alt=""><span>128 px</span></span>
+            </div><a class="download" href="04-wordmark-dark-background.png" download>Descargar PNG</a></div>
+          </article>
+
+          <article class="card">
+            <div class="card-head"><div><h3>Wordmark claro</h3><span class="label">D bicolor + texto oscuro</span></div><span class="number">05</span></div>
+            <img class="concept" src="05-wordmark-light-background.png" alt="Símbolo D turquesa y dorado junto al texto Diff oscuro sobre fondo claro" width="1774" height="887">
+            <div class="card-body"><p>Composición horizontal para fondos claros.</p><div class="preview-title">Ancho de previsualización CSS</div><div class="sizes" aria-label="Previsualizaciones CSS a 32, 64 y 128 píxeles de ancho">
+              <span class="size"><img src="05-wordmark-light-background.png" width="32" height="16" alt=""><span>32 px</span></span><span class="size"><img src="05-wordmark-light-background.png" width="64" height="32" alt=""><span>64 px</span></span><span class="size"><img src="05-wordmark-light-background.png" width="128" height="64" alt=""><span>128 px</span></span>
+            </div><a class="download" href="05-wordmark-light-background.png" download>Descargar PNG</a></div>
+          </article>
+        </div>
+      </section>
+
+      <aside class="note"><strong>Alcance:</strong> son propuestas de concepto generadas como PNG con fondo opaco. Conservan la D segmentada reconocible, aunque algunos detalles ópticos pueden variar. No son archivos vectoriales ni PNG transparentes. Las vistas de 32, 64 y 128 px son escalados CSS del mismo archivo; no se exportaron imágenes adicionales.</aside>
+      <footer>Prompts exactos: <a href="prompts.json" download>prompts.json</a> · Notas de uso y dimensiones: <a href="README.md">README.md</a></footer>
+    </main>
+  </body>
+</html>

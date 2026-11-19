@@ -1,10 +1,10 @@
 import Link from "next/link";
+import { BrandLogo } from "./components/BrandLogo";
 export default function NotFound() {
   return (
     <main className="not-found-page">
       <Link className="brand" href="/">
-        <span className="brand-mark" />
-        <span className="brand-name">LOL PERFORMANCE COACH</span>
+        <BrandLogo variant="wordmark" />
       </Link>
       <section className="rune-panel not-found-panel">
         <span className="not-found-code">404</span>

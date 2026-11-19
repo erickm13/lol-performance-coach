@@ -1,0 +1,31 @@
+**Resumen numérico (10 partidas)**  
+
+| Métrica | Valor | Denominador |
+|---------|-------|-------------|
+| Partidas | 10 | – |
+| Victorias | 5 | 10 (50 %) |
+| CS /min | 5.41 | 10 |
+| Vision /min | 0.51 | 10 |
+| Participación en kills (KP %) | 49.10 % | 10 |
+| KDA por partida | 3.13 | 10 |
+| Muertes antes del minuto 10 | 1.50 | 8 (con datos conocidos) |
+
+*(Todas las medias redondeadas a dos decimales. Los valores de “muertes antes del minuto 10” se promedian solo con los 8 registros conocidos; los NA de M06 y M10 se excluyen.)*
+
+---
+
+## 3 prioridades de práctica
+
+| Prioridad | Resumen numérico (denominador) | Partidas que respaldan el patrón | Ejercicio práctico concreto |
+|-----------|--------------------------------|----------------------------------|-----------------------------|
+| **1. Mejorar la visión** | Vision /min = 0.51 (10) < 0.60 (benchmark interno) | M01 (0.42 vision, KDA 5.33), M03 (0.48 vision, KDA 7.00) | Antes de los 10 minutos, colocar **2 wards** en la zona de la jungla (una en la entrada de la jungla y otra en la zona de la línea superior). Revisar el mapa cada 2 min para asegurarse de que la visión esté activa y no haya wards enemigos. |
+| **2. Mantener CS alto sin sacrificar kills** | CS /min = 5.41 (10) > 6 solo en 3 partidas; la partida con mejor combinación: M05 (CS 6.8, KDA 4.33, vision 0.55) | M05 (CS 6.8, KDA 4.33) | Practicar last‑hitting en la línea de la jungla con objetivo de **≥ 6.5 cs/min** mientras se mantiene la visión de la línea (colocar un ward en la zona de la jungla cada 3 min). Medir el CS cada 5 min y ajustar la velocidad de ataque si es necesario. |
+| **3. Reducir muertes tempranas** | Muertes antes del minuto 10 = 1.50 (8) > 1 (benchmark interno) | M02 (2), M03 (2), M07 (2), M09 (3) | Durante la fase de líneas, practicar **posicionamiento defensivo**: mantener la distancia de 3 celdas del enemigo, usar la visión de la jungla para detectar ganks y, si es posible, colocar un ward en la zona de la jungla antes de los 5 minutos. Registrar cada muerte temprana y analizar la causa (posición, falta de visión, etc.). |
+
+---
+
+### Nota sobre datos faltantes / límites
+
+- Los valores de **muertes antes del minuto 10** están incompletos (NA en M06 y M10), por lo que el promedio se calcula con 8 partidas.
+- No se infiere participación en objetivos ni calidad de wards a partir de `kp_pct` o `vision_min`; los análisis se basan únicamente en los datos numéricos proporcionados.
+- Los benchmarks internos (CS 6/min, visión 0.60/min, KP 35 %, 1 muerte antes del minuto 10) son de referencia de práctica y no oficiales.

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AccountMenu } from "./AccountMenu";
 import { navActive, PRODUCT_LINKS } from "../lib/navigation";
+import { BrandLogo } from "./BrandLogo";
 
 export function TopBar({
   onToggleMenu,
@@ -16,7 +17,7 @@ export function TopBar({
 
   return (
     <nav
-      className="app-navbar dashboard-topbar"
+      className={`app-navbar dashboard-topbar${menuOpen ? " menu-open" : ""}`}
       aria-label="Navegación del dashboard"
     >
       <div className="flex items-center gap-4">
@@ -32,8 +33,7 @@ export function TopBar({
           <span />
         </button>
         <div className="brand">
-          <span className="brand-mark" />
-          <span className="brand-name">LOL PERFORMANCE COACH</span>
+          <BrandLogo variant="symbol" />
         </div>
       </div>
 

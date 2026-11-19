@@ -1,4 +1,4 @@
-# Manual de uso — LoL Performance Coach
+# Manual de uso — Diff
 
 Guía para instalar, levantar y usar la plataforma de análisis de rendimiento y
 generación de planes de entrenamiento para League of Legends.

@@ -1,0 +1,2443 @@
+{
+  "outcome": "BRANDING PASS WITH MOBILE DASHBOARD FINDING",
+  "browser": "Chromium headless / Playwright 1.64.1",
+  "routes": 15,
+  "hashes": {
+    "source-wordmark": "65d896b74c07f6701492388910b46c45845bc68d67527a92b8a7153428f359f5",
+    "public-wordmark": "65d896b74c07f6701492388910b46c45845bc68d67527a92b8a7153428f359f5",
+    "source-symbol": "4ee5b6411d567c7500ffc75222b398295542fbf32738c984e451e03fee47b14e",
+    "public-symbol": "4ee5b6411d567c7500ffc75222b398295542fbf32738c984e451e03fee47b14e"
+  },
+  "results": [
+    {
+      "viewport": "1440",
+      "route": "home",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 2,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--responsive",
+          "box": {
+            "x": 60,
+            "y": -1305,
+            "width": 270,
+            "height": 84.375
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark brand-logo-image--desktop"
+            },
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+              "currentSrc": "",
+              "naturalWidth": 0,
+              "naturalHeight": 0,
+              "display": "none",
+              "className": "brand-logo-image brand-logo-image--symbol brand-logo-image--mobile"
+            }
+          ]
+        },
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 60,
+            "y": 911.359375,
+            "width": 180,
+            "height": 56.25
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 60,
+            "right": 330,
+            "top": -1305,
+            "bottom": -1220.625
+          },
+          {
+            "tag": "A",
+            "text": "Iniciar sesión",
+            "left": 1152.40625,
+            "right": 1234.40625,
+            "top": -1273.3125,
+            "bottom": -1252.3125
+          },
+          {
+            "tag": "A",
+            "text": "Registrarme",
+            "left": 1258.40625,
+            "right": 1380,
+            "top": -1281.609375,
+            "bottom": -1244.015625
+          },
+          {
+            "tag": "A",
+            "text": "Crear cuenta gratis →",
+            "left": 515.703125,
+            "right": 763.296875,
+            "top": -764.6875,
+            "bottom": -714.3125
+          },
+          {
+            "tag": "A",
+            "text": "Ya tengo cuenta",
+            "left": 791.296875,
+            "right": 924.296875,
+            "top": -753,
+            "bottom": -726
+          },
+          {
+            "tag": "A",
+            "text": "Empezar mi entrenamiento →",
+            "left": 574.203125,
+            "right": 865.796875,
+            "top": 785.984375,
+            "bottom": 836.359375
+          },
+          {
+            "tag": "A",
+            "text": "Iniciar sesión →",
+            "left": 1290,
+            "right": 1380,
+            "top": 930.484375,
+            "bottom": 948.484375
+          }
+        ]
+      },
+      "cta": [
+        {
+          "text": "Iniciar sesión",
+          "x": 1152.40625,
+          "y": -1273.3125,
+          "width": 82,
+          "height": 21
+        },
+        {
+          "text": "Registrarme",
+          "x": 1258.40625,
+          "y": -1281.609375,
+          "width": 121.59375,
+          "height": 37.59375
+        }
+      ],
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "1440",
+      "route": "login",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 610,
+            "y": 213.34375,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 610,
+            "right": 830,
+            "top": 213.34375,
+            "bottom": 282.09375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 541,
+            "right": 899,
+            "top": 442.84375,
+            "bottom": 493.4375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 541,
+            "right": 830,
+            "top": 545.1875,
+            "bottom": 595.78125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 830,
+            "right": 899,
+            "top": 545.1875,
+            "bottom": 595.78125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Ingresar",
+            "left": 541,
+            "right": 899,
+            "top": 618.28125,
+            "bottom": 668.65625
+          },
+          {
+            "tag": "A",
+            "text": "¿Olvidaste tu contraseña?",
+            "left": 541,
+            "right": 899,
+            "top": 695.65625,
+            "bottom": 718.15625
+          },
+          {
+            "tag": "A",
+            "text": "¿No tienes cuenta? Regístrate",
+            "left": 541,
+            "right": 899,
+            "top": 727.15625,
+            "bottom": 749.65625
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "1440",
+      "route": "register",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 610,
+            "y": 72,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 610,
+            "right": 830,
+            "top": 72,
+            "bottom": 140.75
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 379,
+            "right": 1061,
+            "top": 321.32122802734375,
+            "bottom": 371.91497802734375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 379,
+            "right": 992,
+            "top": 445.53125,
+            "bottom": 496.125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 992,
+            "right": 1061,
+            "top": 445.53125,
+            "bottom": 496.125
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 379,
+            "right": 992,
+            "top": 547.875,
+            "bottom": 598.46875
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 992,
+            "right": 1061,
+            "top": 547.875,
+            "bottom": 598.46875
+          },
+          {
+            "tag": "BUTTON",
+            "text": "1 Tu juego",
+            "left": 398,
+            "right": 604.65625,
+            "top": 694.96875,
+            "bottom": 744.96875
+          },
+          {
+            "tag": "BUTTON",
+            "text": "2 Tus objetivos",
+            "left": 616.65625,
+            "right": 823.328125,
+            "top": 694.96875,
+            "bottom": 744.96875
+          },
+          {
+            "tag": "BUTTON",
+            "text": "3 Tu comunidad",
+            "left": 835.328125,
+            "right": 1042,
+            "top": 694.96875,
+            "bottom": 744.96875
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Superior Jungla Central Tirador Soporte",
+            "left": 398,
+            "right": 708,
+            "top": 892.96875,
+            "bottom": 936.5625
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Superior Jungla Central Tirador Soporte",
+            "left": 732,
+            "right": 1042,
+            "top": 892.96875,
+            "bottom": 936.5625
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Estoy aprendiendo las bases Conozco el juego y quiero mejor",
+            "left": 398,
+            "right": 1042,
+            "top": 991.5625,
+            "bottom": 1035.15625
+          },
+          {
+            "tag": "SELECT",
+            "text": "Cargando campeones…",
+            "left": 398,
+            "right": 1042,
+            "top": 1090.15625,
+            "bottom": 1133.75
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Siguiente →",
+            "left": 909.21875,
+            "right": 1042,
+            "top": 1171.75,
+            "bottom": 1219.34375
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Crear cuenta",
+            "left": 379,
+            "right": 1061,
+            "top": 1264.84375,
+            "bottom": 1315.21875
+          },
+          {
+            "tag": "A",
+            "text": "¿Ya tienes cuenta? Inicia sesión",
+            "left": 379,
+            "right": 1061,
+            "top": 1337.71875,
+            "bottom": 1364.71875
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "1440",
+      "route": "404",
+      "status": 404,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 610,
+            "y": 222.6875,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 610,
+            "right": 830,
+            "top": 222.6875,
+            "bottom": 291.4375
+          },
+          {
+            "tag": "A",
+            "text": "Volver al dashboard",
+            "left": 616.703125,
+            "right": 823.296875,
+            "top": 633.9375,
+            "bottom": 684.3125
+          },
+          {
+            "tag": "A",
+            "text": "Ir al inicio →",
+            "left": 669,
+            "right": 771,
+            "top": 704.3125,
+            "bottom": 731.3125
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "1440",
+      "route": "dashboard",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 2,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 20,
+            "y": 28,
+            "width": 217,
+            "height": 67.8125
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        },
+        {
+          "wrapperClass": "brand-logo brand-logo--symbol",
+          "box": {
+            "x": 356,
+            "y": 44,
+            "width": 40,
+            "height": 40
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+              "naturalWidth": 82,
+              "naturalHeight": 82,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--symbol"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "left": 20,
+            "right": 237,
+            "top": 153.3125,
+            "bottom": 199.3125
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "left": 20,
+            "right": 237,
+            "top": 205.3125,
+            "bottom": 251.3125
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "left": 20,
+            "right": 237,
+            "top": 257.3125,
+            "bottom": 303.3125
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "left": 20,
+            "right": 237,
+            "top": 309.3125,
+            "bottom": 355.3125
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "left": 20,
+            "right": 237,
+            "top": 361.3125,
+            "bottom": 407.3125
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "left": 20,
+            "right": 237,
+            "top": 413.3125,
+            "bottom": 459.3125
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "left": 20,
+            "right": 237,
+            "top": 465.3125,
+            "bottom": 511.3125
+          },
+          {
+            "tag": "A",
+            "text": "Mi perfil de jugador",
+            "left": 20,
+            "right": 237,
+            "top": 834.3125,
+            "bottom": 881.90625
+          },
+          {
+            "tag": "A",
+            "text": "Configuración de cuenta",
+            "left": 20,
+            "right": 237,
+            "top": 891.90625,
+            "bottom": 939.5
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Cerrar sesión",
+            "left": 20,
+            "right": 237,
+            "top": 949.5,
+            "bottom": 972
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Ocultar menú",
+            "left": 298,
+            "right": 338,
+            "top": 46,
+            "bottom": 82
+          },
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "left": 578,
+            "right": 657,
+            "top": 46.75,
+            "bottom": 81.25
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "left": 679,
+            "right": 789,
+            "top": 46.75,
+            "bottom": 81.25
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "left": 811,
+            "right": 896,
+            "top": 46.75,
+            "bottom": 81.25
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "left": 918,
+            "right": 980,
+            "top": 46.75,
+            "bottom": 81.25
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "left": 1002,
+            "right": 1074,
+            "top": 46.75,
+            "bottom": 81.25
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "left": 1096,
+            "right": 1156,
+            "top": 46.75,
+            "bottom": 81.25
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "left": 1178,
+            "right": 1298,
+            "top": 46.75,
+            "bottom": 81.25
+          },
+          {
+            "tag": "A",
+            "text": "",
+            "left": 1181,
+            "right": 1379,
+            "top": 150.5,
+            "bottom": 171.5
+          },
+          {
+            "tag": "BUTTON",
+            "text": "",
+            "left": 1181,
+            "right": 1379,
+            "top": 187.5,
+            "bottom": 235.09375
+          },
+          {
+            "tag": "INPUT",
+            "text": "TP Salchipapa",
+            "left": 326,
+            "right": 758,
+            "top": 247.8679962158203,
+            "bottom": 298.46173095703125
+          },
+          {
+            "tag": "INPUT",
+            "text": "3192",
+            "left": 326,
+            "right": 758,
+            "top": 345.71173095703125,
+            "bottom": 396.3055114746094
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Vincular cuenta",
+            "left": 326,
+            "right": 497.59375,
+            "top": 414.3055114746094,
+            "bottom": 464.6805114746094
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Coach Escurridizo Tu próxima jugada",
+            "left": 1155,
+            "right": 1412,
+            "top": 907.5,
+            "bottom": 976
+          }
+        ]
+      },
+      "cta": null,
+      "api": [
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        }
+      ],
+      "ddragon": [
+        "https://ddragon.leagueoflegends.com/api/versions.json",
+        "https://ddragon.leagueoflegends.com/cdn/16.20.1/data/es_MX/item.json",
+        "https://ddragon.leagueoflegends.com/cdn/16.20.1/data/es_MX/summoner.json",
+        "https://ddragon.leagueoflegends.com/api/versions.json"
+      ],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "390",
+      "route": "home",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 2,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--responsive",
+          "box": {
+            "x": 16,
+            "y": -2329,
+            "width": 40,
+            "height": 40
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "none",
+              "className": "brand-logo-image brand-logo-image--wordmark brand-logo-image--desktop"
+            },
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+              "naturalWidth": 82,
+              "naturalHeight": 82,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--symbol brand-logo-image--mobile"
+            }
+          ]
+        },
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 16,
+            "y": 665.796875,
+            "width": 180,
+            "height": 56.25
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 16,
+            "right": 56,
+            "top": -2329,
+            "bottom": -2289
+          },
+          {
+            "tag": "A",
+            "text": "Iniciar sesión",
+            "left": 152.40625,
+            "right": 234.40625,
+            "top": -2319.5,
+            "bottom": -2298.5
+          },
+          {
+            "tag": "A",
+            "text": "Registrarme",
+            "left": 252.40625,
+            "right": 374,
+            "top": -2327.796875,
+            "bottom": -2290.203125
+          },
+          {
+            "tag": "A",
+            "text": "Crear cuenta gratis →",
+            "left": 71.203125,
+            "right": 318.796875,
+            "top": -1883.796875,
+            "bottom": -1833.421875
+          },
+          {
+            "tag": "A",
+            "text": "Ya tengo cuenta",
+            "left": 128.5,
+            "right": 261.5,
+            "top": -1815.421875,
+            "bottom": -1788.421875
+          },
+          {
+            "tag": "A",
+            "text": "Empezar mi entrenamiento →",
+            "left": 49.203125,
+            "right": 340.796875,
+            "top": 559.421875,
+            "bottom": 609.796875
+          },
+          {
+            "tag": "A",
+            "text": "Iniciar sesión →",
+            "left": 16,
+            "right": 106,
+            "top": 806.046875,
+            "bottom": 824.046875
+          }
+        ]
+      },
+      "cta": [
+        {
+          "text": "Iniciar sesión",
+          "x": 152.40625,
+          "y": -2319.5,
+          "width": 82,
+          "height": 21
+        },
+        {
+          "text": "Registrarme",
+          "x": 252.40625,
+          "y": -2327.796875,
+          "width": 121.59375,
+          "height": 37.59375
+        }
+      ],
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "390",
+      "route": "login",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 85,
+            "y": 135.34375,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 85,
+            "right": 305,
+            "top": 135.34375,
+            "bottom": 204.09375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 326,
+            "top": 364.84375,
+            "bottom": 415.4375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 257,
+            "top": 467.1875,
+            "bottom": 517.78125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 257,
+            "right": 326,
+            "top": 467.1875,
+            "bottom": 517.78125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Ingresar",
+            "left": 64,
+            "right": 326,
+            "top": 540.28125,
+            "bottom": 590.65625
+          },
+          {
+            "tag": "A",
+            "text": "¿Olvidaste tu contraseña?",
+            "left": 64,
+            "right": 326,
+            "top": 617.65625,
+            "bottom": 640.15625
+          },
+          {
+            "tag": "A",
+            "text": "¿No tienes cuenta? Regístrate",
+            "left": 64,
+            "right": 326,
+            "top": 649.15625,
+            "bottom": 671.65625
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "390",
+      "route": "register",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 85,
+            "y": 72,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 85,
+            "right": 305,
+            "top": 72,
+            "bottom": 140.75
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 326,
+            "top": 301.5,
+            "bottom": 352.09375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 257,
+            "top": 464.71875,
+            "bottom": 515.3125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 257,
+            "right": 326,
+            "top": 464.71875,
+            "bottom": 515.3125
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 257,
+            "top": 567.0625,
+            "bottom": 617.65625
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 257,
+            "right": 326,
+            "top": 567.0625,
+            "bottom": 617.65625
+          },
+          {
+            "tag": "BUTTON",
+            "text": "1 Tu juego",
+            "left": 75,
+            "right": 151.65625,
+            "top": 710.15625,
+            "bottom": 793.15625
+          },
+          {
+            "tag": "BUTTON",
+            "text": "2 Tus objetivos",
+            "left": 156.65625,
+            "right": 233.328125,
+            "top": 710.15625,
+            "bottom": 793.15625
+          },
+          {
+            "tag": "BUTTON",
+            "text": "3 Tu comunidad",
+            "left": 238.328125,
+            "right": 314.984375,
+            "top": 710.15625,
+            "bottom": 793.15625
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Superior Jungla Central Tirador Soporte",
+            "left": 75,
+            "right": 315,
+            "top": 965.15625,
+            "bottom": 1008.75
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Superior Jungla Central Tirador Soporte",
+            "left": 75,
+            "right": 315,
+            "top": 1063.75,
+            "bottom": 1107.34375
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Estoy aprendiendo las bases Conozco el juego y quiero mejor",
+            "left": 75,
+            "right": 315,
+            "top": 1162.34375,
+            "bottom": 1205.9375
+          },
+          {
+            "tag": "SELECT",
+            "text": "Cargando campeones…",
+            "left": 75,
+            "right": 315,
+            "top": 1260.9375,
+            "bottom": 1304.53125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Siguiente →",
+            "left": 182.21875,
+            "right": 315,
+            "top": 1342.53125,
+            "bottom": 1390.125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Crear cuenta",
+            "left": 64,
+            "right": 326,
+            "top": 1431.625,
+            "bottom": 1482
+          },
+          {
+            "tag": "A",
+            "text": "¿Ya tienes cuenta? Inicia sesión",
+            "left": 64,
+            "right": 326,
+            "top": 1504.5,
+            "bottom": 1531.5
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": [
+        {
+          "type": "warning",
+          "text": "Image with src \"/branding/diff-wordmark-dark-background.png\" was detected as the Largest Contentful Paint (LCP). Please add the \"priority\" property if this image is above the fold.\nRead more: https://nextjs.org/docs/api-reference/next/image#priority"
+        },
+        {
+          "type": "error-warning",
+          "text": "Warning: Extra attributes from the server: %s%s style \n    at input\n    at label\n    at form\n    at RegisterForm (webpack-internal:///(app-pages-browser)/./app/components/RegisterForm.tsx:21:90)\n    at main\n    at AuthShell (Server)\n    at RegisterPage (Server)\n    at InnerLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:243:11)\n    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)\n    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)\n    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)\n    at LoadingBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:349:11)\n    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)\n    at InnerScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:153:9)\n    at ScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:228:11)\n    at RenderFromTemplateContext (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js:16:44)\n    at OuterLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:370:11)\n    at InnerLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:243:11)\n    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)\n    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)\n    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)\n    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)\n    at LoadingBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:349:11)\n    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)\n    at InnerScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:153:9)\n    at ScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:228:11)\n    at RenderFromTemplateContext (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js:16:44)\n    at OuterLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:370:11)\n    at body\n    at html\n    at RootLayout (Server)\n    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)\n    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)\n    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)\n    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)\n    at DevRootNotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/dev-root-not-found-boundary.js:33:11)\n    at ReactDevOverlay (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/ReactDevOverlay.js:87:9)\n    at HotReload (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:321:11)\n    at Router (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:207:11)\n    at ErrorBoundaryHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:113:9)\n    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)\n    at AppRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:585:13)\n    at ServerRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:112:27)\n    at Root (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:117:11)"
+        }
+      ]
+    },
+    {
+      "viewport": "390",
+      "route": "404",
+      "status": 404,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 85,
+            "y": 128.1875,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 85,
+            "right": 305,
+            "top": 128.1875,
+            "bottom": 196.9375
+          },
+          {
+            "tag": "A",
+            "text": "Volver al dashboard",
+            "left": 91.703125,
+            "right": 298.296875,
+            "top": 585.4375,
+            "bottom": 635.8125
+          },
+          {
+            "tag": "A",
+            "text": "Ir al inicio →",
+            "left": 144,
+            "right": 246,
+            "top": 655.8125,
+            "bottom": 682.8125
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "390",
+      "route": "dashboard",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 2,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 16,
+            "y": 16,
+            "width": 217,
+            "height": 67.8125
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        },
+        {
+          "wrapperClass": "brand-logo brand-logo--symbol",
+          "box": {
+            "x": 76,
+            "y": 672.5,
+            "width": 40,
+            "height": 40
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+              "naturalWidth": 82,
+              "naturalHeight": 82,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--symbol"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "left": 16,
+            "right": 175,
+            "top": 95.8125,
+            "bottom": 141.8125
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "left": 16,
+            "right": 175,
+            "top": 147.8125,
+            "bottom": 193.8125
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "left": 16,
+            "right": 175,
+            "top": 199.8125,
+            "bottom": 245.8125
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "left": 16,
+            "right": 175,
+            "top": 251.8125,
+            "bottom": 297.8125
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "left": 16,
+            "right": 175,
+            "top": 303.8125,
+            "bottom": 349.8125
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "left": 16,
+            "right": 175,
+            "top": 355.8125,
+            "bottom": 401.8125
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "left": 16,
+            "right": 175,
+            "top": 407.8125,
+            "bottom": 453.8125
+          },
+          {
+            "tag": "A",
+            "text": "Mi perfil de jugador",
+            "left": 16,
+            "right": 213,
+            "top": 478.8125,
+            "bottom": 526.40625
+          },
+          {
+            "tag": "A",
+            "text": "Configuración de cuenta",
+            "left": 16,
+            "right": 213,
+            "top": 536.40625,
+            "bottom": 584
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Cerrar sesión",
+            "left": 16,
+            "right": 213,
+            "top": 594,
+            "bottom": 616.5
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Ocultar menú",
+            "left": 18,
+            "right": 58,
+            "top": 674.5,
+            "bottom": 710.5
+          },
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "left": 18,
+            "right": 78,
+            "top": 732.5,
+            "bottom": 767
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "left": 96,
+            "right": 182,
+            "top": 732.5,
+            "bottom": 767
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "left": 200,
+            "right": 265,
+            "top": 732.5,
+            "bottom": 767
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "left": 283,
+            "right": 330,
+            "top": 732.5,
+            "bottom": 767
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "left": 18,
+            "right": 74,
+            "top": 778.25,
+            "bottom": 812.75
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "left": 92,
+            "right": 138,
+            "top": 778.25,
+            "bottom": 812.75
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "left": 156,
+            "right": 248,
+            "top": 778.25,
+            "bottom": 812.75
+          },
+          {
+            "tag": "A",
+            "text": "",
+            "left": 153,
+            "right": 351,
+            "top": 882,
+            "bottom": 903
+          },
+          {
+            "tag": "BUTTON",
+            "text": "",
+            "left": 153,
+            "right": 351,
+            "top": 919,
+            "bottom": 966.59375
+          },
+          {
+            "tag": "INPUT",
+            "text": "TP Salchipapa",
+            "left": 46,
+            "right": 344,
+            "top": 979.6600341796875,
+            "bottom": 1030.2537841796875
+          },
+          {
+            "tag": "INPUT",
+            "text": "3192",
+            "left": 46,
+            "right": 344,
+            "top": 1077.5037841796875,
+            "bottom": 1128.0975341796875
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Vincular cuenta",
+            "left": 46,
+            "right": 217.59375,
+            "top": 1146.0975341796875,
+            "bottom": 1196.4725341796875
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Coach Lóbrego Tu próxima jugada",
+            "left": 174,
+            "right": 374,
+            "top": 770,
+            "bottom": 828
+          }
+        ]
+      },
+      "cta": null,
+      "api": [
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        }
+      ],
+      "ddragon": [
+        "https://ddragon.leagueoflegends.com/api/versions.json",
+        "https://ddragon.leagueoflegends.com/cdn/16.20.1/data/es_MX/item.json",
+        "https://ddragon.leagueoflegends.com/cdn/16.20.1/data/es_MX/summoner.json",
+        "https://ddragon.leagueoflegends.com/api/versions.json"
+      ],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "320",
+      "route": "home",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 2,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--responsive",
+          "box": {
+            "x": 16,
+            "y": -2593,
+            "width": 40,
+            "height": 40
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "none",
+              "className": "brand-logo-image brand-logo-image--wordmark brand-logo-image--desktop"
+            },
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+              "naturalWidth": 82,
+              "naturalHeight": 82,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--symbol brand-logo-image--mobile"
+            }
+          ]
+        },
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 16,
+            "y": 621.53125,
+            "width": 180,
+            "height": 56.25
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 16,
+            "right": 56,
+            "top": -2593,
+            "bottom": -2553
+          },
+          {
+            "tag": "A",
+            "text": "Iniciar sesión",
+            "left": 82.40625,
+            "right": 164.40625,
+            "top": -2583.5,
+            "bottom": -2562.5
+          },
+          {
+            "tag": "A",
+            "text": "Registrarme",
+            "left": 182.40625,
+            "right": 304,
+            "top": -2591.796875,
+            "bottom": -2554.203125
+          },
+          {
+            "tag": "A",
+            "text": "Crear cuenta gratis →",
+            "left": 36.203125,
+            "right": 283.796875,
+            "top": -2078.0625,
+            "bottom": -2027.6875
+          },
+          {
+            "tag": "A",
+            "text": "Ya tengo cuenta",
+            "left": 93.5,
+            "right": 226.5,
+            "top": -2009.6875,
+            "bottom": -1982.6875
+          },
+          {
+            "tag": "A",
+            "text": "Empezar mi entrenamiento →",
+            "left": 26,
+            "right": 294,
+            "top": 488.15625,
+            "bottom": 565.53125
+          },
+          {
+            "tag": "A",
+            "text": "Iniciar sesión →",
+            "left": 16,
+            "right": 106,
+            "top": 761.78125,
+            "bottom": 779.78125
+          }
+        ]
+      },
+      "cta": [
+        {
+          "text": "Iniciar sesión",
+          "x": 82.40625,
+          "y": -2583.5,
+          "width": 82,
+          "height": 21
+        },
+        {
+          "text": "Registrarme",
+          "x": 182.40625,
+          "y": -2591.796875,
+          "width": 121.59375,
+          "height": 37.59375
+        }
+      ],
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "320",
+      "route": "login",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 50,
+            "y": 102.09375,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 50,
+            "right": 270,
+            "top": 102.09375,
+            "bottom": 170.84375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 256,
+            "top": 331.59375,
+            "bottom": 382.1875
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 187,
+            "top": 433.9375,
+            "bottom": 484.53125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 187,
+            "right": 256,
+            "top": 433.9375,
+            "bottom": 484.53125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Ingresar",
+            "left": 64,
+            "right": 256,
+            "top": 507.03125,
+            "bottom": 557.40625
+          },
+          {
+            "tag": "A",
+            "text": "¿Olvidaste tu contraseña?",
+            "left": 64,
+            "right": 256,
+            "top": 584.40625,
+            "bottom": 606.90625
+          },
+          {
+            "tag": "A",
+            "text": "¿No tienes cuenta? Regístrate",
+            "left": 64,
+            "right": 256,
+            "top": 615.90625,
+            "bottom": 660.90625
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "320",
+      "route": "register",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 50,
+            "y": 72,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 50,
+            "right": 270,
+            "top": 72,
+            "bottom": 140.75
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 256,
+            "top": 301.5,
+            "bottom": 352.09375
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 187,
+            "top": 483.90625,
+            "bottom": 534.5
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 187,
+            "right": 256,
+            "top": 483.90625,
+            "bottom": 534.5
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "left": 64,
+            "right": 187,
+            "top": 586.25,
+            "bottom": 636.84375
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Mostrar",
+            "left": 187,
+            "right": 256,
+            "top": 586.25,
+            "bottom": 636.84375
+          },
+          {
+            "tag": "BUTTON",
+            "text": "1 Tu juego",
+            "left": 75,
+            "right": 128.328125,
+            "top": 753.34375,
+            "bottom": 836.34375
+          },
+          {
+            "tag": "BUTTON",
+            "text": "2 Tus objetivos",
+            "left": 133.328125,
+            "right": 186.65625,
+            "top": 753.34375,
+            "bottom": 836.34375
+          },
+          {
+            "tag": "BUTTON",
+            "text": "3 Tu comunidad",
+            "left": 191.65625,
+            "right": 244.984375,
+            "top": 753.34375,
+            "bottom": 836.34375
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Superior Jungla Central Tirador Soporte",
+            "left": 75,
+            "right": 245,
+            "top": 1056.34375,
+            "bottom": 1099.9375
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Superior Jungla Central Tirador Soporte",
+            "left": 75,
+            "right": 245,
+            "top": 1154.9375,
+            "bottom": 1198.53125
+          },
+          {
+            "tag": "SELECT",
+            "text": "Sin elegir Estoy aprendiendo las bases Conozco el juego y quiero mejor",
+            "left": 75,
+            "right": 245,
+            "top": 1274.53125,
+            "bottom": 1318.125
+          },
+          {
+            "tag": "SELECT",
+            "text": "Cargando campeones…",
+            "left": 75,
+            "right": 245,
+            "top": 1394.125,
+            "bottom": 1437.71875
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Siguiente →",
+            "left": 112.21875,
+            "right": 245,
+            "top": 1475.71875,
+            "bottom": 1523.3125
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Crear cuenta",
+            "left": 64,
+            "right": 256,
+            "top": 1564.8125,
+            "bottom": 1615.1875
+          },
+          {
+            "tag": "A",
+            "text": "¿Ya tienes cuenta? Inicia sesión",
+            "left": 64,
+            "right": 256,
+            "top": 1637.6875,
+            "bottom": 1687.1875
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "320",
+      "route": "404",
+      "status": 404,
+      "title": "Diff",
+      "logoCount": 1,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 50,
+            "y": 88.6875,
+            "width": 220,
+            "height": 68.75
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "",
+            "left": 50,
+            "right": 270,
+            "top": 88.6875,
+            "bottom": 157.4375
+          },
+          {
+            "tag": "A",
+            "text": "Volver al dashboard",
+            "left": 56.703125,
+            "right": 263.296875,
+            "top": 580.9375,
+            "bottom": 631.3125
+          },
+          {
+            "tag": "A",
+            "text": "Ir al inicio →",
+            "left": 109,
+            "right": 211,
+            "top": 651.3125,
+            "bottom": 678.3125
+          }
+        ]
+      },
+      "cta": null,
+      "api": [],
+      "ddragon": [],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "consoleWarnings": []
+    },
+    {
+      "viewport": "320",
+      "route": "dashboard",
+      "status": 200,
+      "title": "Diff",
+      "logoCount": 2,
+      "logos": [
+        {
+          "wrapperClass": "brand-logo brand-logo--wordmark",
+          "box": {
+            "x": 16,
+            "y": 16,
+            "width": 217,
+            "height": 67.8125
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+              "naturalWidth": 270,
+              "naturalHeight": 135,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--wordmark"
+            }
+          ]
+        },
+        {
+          "wrapperClass": "brand-logo brand-logo--symbol",
+          "box": {
+            "x": 76,
+            "y": 672.5,
+            "width": 40,
+            "height": 40
+          },
+          "images": [
+            {
+              "src": "/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=3840&q=75",
+              "currentSrc": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+              "naturalWidth": 82,
+              "naturalHeight": 82,
+              "display": "block",
+              "className": "brand-logo-image brand-logo-image--symbol"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "horizontalOverflow": false,
+        "outOfBounds": [],
+        "interactive": [
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "left": 16,
+            "right": 175,
+            "top": 95.8125,
+            "bottom": 141.8125
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "left": 16,
+            "right": 175,
+            "top": 147.8125,
+            "bottom": 193.8125
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "left": 16,
+            "right": 175,
+            "top": 199.8125,
+            "bottom": 245.8125
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "left": 16,
+            "right": 175,
+            "top": 251.8125,
+            "bottom": 297.8125
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "left": 16,
+            "right": 175,
+            "top": 303.8125,
+            "bottom": 349.8125
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "left": 16,
+            "right": 175,
+            "top": 355.8125,
+            "bottom": 401.8125
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "left": 16,
+            "right": 175,
+            "top": 407.8125,
+            "bottom": 453.8125
+          },
+          {
+            "tag": "A",
+            "text": "Mi perfil de jugador",
+            "left": 16,
+            "right": 213,
+            "top": 478.8125,
+            "bottom": 526.40625
+          },
+          {
+            "tag": "A",
+            "text": "Configuración de cuenta",
+            "left": 16,
+            "right": 213,
+            "top": 536.40625,
+            "bottom": 584
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Cerrar sesión",
+            "left": 16,
+            "right": 213,
+            "top": 594,
+            "bottom": 616.5
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Ocultar menú",
+            "left": 18,
+            "right": 58,
+            "top": 674.5,
+            "bottom": 710.5
+          },
+          {
+            "tag": "A",
+            "text": "Dashboard",
+            "left": 18,
+            "right": 78,
+            "top": 732.5,
+            "bottom": 767
+          },
+          {
+            "tag": "A",
+            "text": "Entrenamiento",
+            "left": 96,
+            "right": 182,
+            "top": 732.5,
+            "bottom": 767
+          },
+          {
+            "tag": "A",
+            "text": "Debilidades",
+            "left": 200,
+            "right": 265,
+            "top": 732.5,
+            "bottom": 767
+          },
+          {
+            "tag": "A",
+            "text": "Historial",
+            "left": 18,
+            "right": 65,
+            "top": 777,
+            "bottom": 811.5
+          },
+          {
+            "tag": "A",
+            "text": "Academia",
+            "left": 83,
+            "right": 139,
+            "top": 777,
+            "bottom": 811.5
+          },
+          {
+            "tag": "A",
+            "text": "Ranking",
+            "left": 157,
+            "right": 203,
+            "top": 777,
+            "bottom": 811.5
+          },
+          {
+            "tag": "A",
+            "text": "Preparar partida",
+            "left": 18,
+            "right": 110,
+            "top": 822.75,
+            "bottom": 857.25
+          },
+          {
+            "tag": "A",
+            "text": "",
+            "left": 83,
+            "right": 281,
+            "top": 926.5,
+            "bottom": 947.5
+          },
+          {
+            "tag": "BUTTON",
+            "text": "",
+            "left": 83,
+            "right": 281,
+            "top": 963.5,
+            "bottom": 1011.09375
+          },
+          {
+            "tag": "INPUT",
+            "text": "TP Salchipapa",
+            "left": 46,
+            "right": 274,
+            "top": 1055.654541015625,
+            "bottom": 1106.248291015625
+          },
+          {
+            "tag": "INPUT",
+            "text": "3192",
+            "left": 46,
+            "right": 274,
+            "top": 1153.498291015625,
+            "bottom": 1204.092041015625
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Vincular cuenta",
+            "left": 46,
+            "right": 217.59375,
+            "top": 1222.092041015625,
+            "bottom": 1272.467041015625
+          },
+          {
+            "tag": "BUTTON",
+            "text": "Coach Lóbrego Tu próxima jugada",
+            "left": 104,
+            "right": 304,
+            "top": 726,
+            "bottom": 784
+          }
+        ]
+      },
+      "cta": null,
+      "api": [
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/player/profile"
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/account"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/weaknesses"
+        },
+        {
+          "method": "GET",
+          "path": "/riot/training-plan"
+        }
+      ],
+      "ddragon": [
+        "https://ddragon.leagueoflegends.com/api/versions.json",
+        "https://ddragon.leagueoflegends.com/cdn/16.20.1/data/es_MX/item.json",
+        "https://ddragon.leagueoflegends.com/cdn/16.20.1/data/es_MX/summoner.json",
+        "https://ddragon.leagueoflegends.com/api/versions.json"
+      ],
+      "blocked": [],
+      "fiveHundreds": [],
+      "pageErrors": [],
+      "consoleErrors": [],
+      "consoleWarnings": []
+    }
+  ],
+  "additionalVerification": {
+    "dashboardMenuChatOverlap": [
+      {
+        "viewport": "390x844",
+        "pairedCoachName": "Coach Escurridizo",
+        "currentLogo": {
+          "obscuredLink": "Preparar partida",
+          "overlap": "92x34.5px"
+        },
+        "legacyBrandPrototype": {
+          "obscuredProductLinks": []
+        }
+      },
+      {
+        "viewport": "320x800",
+        "pairedCoachName": "Coach Krug",
+        "currentLogo": {
+          "obscuredLinks": [
+            "Entrenamiento overlap 62x34.5px",
+            "Debilidades overlap 65x34.5px",
+            "Academia overlap 19x7px",
+            "Ranking overlap 46x7px"
+          ]
+        },
+        "legacyBrandPrototype": {
+          "obscuredLinks": [
+            "Academia overlap 19x34.5px",
+            "Ranking overlap 46x34.5px"
+          ]
+        }
+      }
+    ],
+    "consoleRecheck": "At 390x844 /register, Next dev Image LCP warning for /branding/diff-wordmark-dark-background.png reproduced in 3/3 isolated runs; no other warning reproduced in those repeats. One React extra-server-style warning appeared once in the 15-route matrix on 390x844 /register and did not reproduce in 3 focused repeats.",
+    "expected404": "The three /__diff-logo-verification-missing-route__ document responses were 404 as intended; each emitted the corresponding browser resource 404 message.",
+    "uncovered": "Navbar.tsx has no import/use in frontend/app routes; no live browser route rendered this component.",
+    "supplementalScreenshots": [
+      "home-footer-1440.png",
+      "home-footer-390.png"
+    ],
+    "legacyCausalComparison": "Same page, same mocked session, viewport, coach label, and fixed launcher geometry. Current sidebar is 45.31px taller; at 390px the prototype has no product-link overlap while current branding covers Preparar partida. At 320px the prototype already covers Academia and Ranking; current branding shifts the links down and additionally covers Entrenamiento and Debilidades. This supports causation at 390 and worsening at 320, but is a browser-only prototype, not actual prior-commit runtime.",
+    "legacyComparisonFile": "overlap-comparison.json"
+  }
+}

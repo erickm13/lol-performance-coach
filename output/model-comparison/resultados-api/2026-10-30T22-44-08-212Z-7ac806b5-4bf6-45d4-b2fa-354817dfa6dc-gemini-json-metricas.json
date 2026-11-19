@@ -1,0 +1,27 @@
+{
+  "status": "incomplete",
+  "error": "output_truncated",
+  "provider": "gemini",
+  "format": "json",
+  "requestedModel": "gemini-3.8-flash",
+  "returnedModel": "gemini-3.8-flash",
+  "request": {
+    "stream": false,
+    "temperature": 0,
+    "outputLimit": 4096,
+    "outputLimitParameter": "max_tokens"
+  },
+  "requestElapsedWallMs": 178264,
+  "inputTokens": 1784,
+  "outputTokens": 519,
+  "usage": {
+    "completion_tokens": 519,
+    "prompt_tokens": 1784,
+    "total_tokens": 5876
+  },
+  "finishReason": "length",
+  "truncated": true,
+  "ollama": null,
+  "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+  "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf"
+}

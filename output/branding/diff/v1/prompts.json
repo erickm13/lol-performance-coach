@@ -1,0 +1,36 @@
+{
+  "tool": "Built-in image_gen",
+  "intent": "Logo concepts for Diff, adapted from user reference. Selected opaque-background outputs; failed transparent drafts excluded.",
+  "palette": {
+    "teal": "#3ED6C4",
+    "gold": "#D4A45C",
+    "ink": "#0A0E12",
+    "parchment": "#E7EEF0"
+  },
+  "variants": [
+    {
+      "key": "01-symbol-color-dark",
+      "prompt": "Edit the supplied Diff reference into ONE polished clean digital logo asset. Preserve the reference's four-part segmented D silhouette, squared left sections, curved right bowl, horizontal middle slit and narrow slanted split. Match the geometry of the top icon in the reference. Flat solid fills, smooth crisp edges. No texture, no gradients, no bevel, no glow, no shadows, no extra text, no labels, no comparison grid. Fully OPAQUE solid-color background, not a cutout. Center balanced artwork with modest even safety margin. Square canvas, icon only. D left segments turquoise #3ED6C4 and right segments warm gold #D4A45C. Background #0A0E12. No text."
+    },
+    {
+      "key": "02-symbol-light-dark",
+      "prompt": "Edit the supplied Diff reference into ONE polished clean digital logo asset. Preserve the reference's four-part segmented D silhouette, squared left sections, curved right bowl, horizontal middle slit and narrow slanted split. Match the geometry of the top icon in the reference. Flat solid fills, smooth crisp edges. No texture, no gradients, no bevel, no glow, no shadows, no extra text, no labels, no comparison grid. Fully OPAQUE solid-color background, not a cutout. Center balanced artwork with modest even safety margin. Square canvas, icon only. All four D segments uniform off-white #E7EEF0. Background #0A0E12. No text."
+    },
+    {
+      "key": "03-symbol-dark-light",
+      "prompt": "Edit the supplied Diff reference into ONE polished clean digital logo asset. Preserve the reference's four-part segmented D silhouette, squared left sections, curved right bowl, horizontal middle slit and narrow slanted split. Match the geometry of the top icon in the reference. Flat solid fills, smooth crisp edges. No texture, no gradients, no bevel, no glow, no shadows, no extra text, no labels, no comparison grid. Fully OPAQUE solid-color background, not a cutout. Center balanced artwork with modest even safety margin. Square canvas, icon only. All four D segments uniform near-black #0A0E12. Background light off-white #E7EEF0. No text."
+    },
+    {
+      "key": "05-wordmark-light-background",
+      "prompt": "Edit the supplied Diff reference into ONE polished clean digital logo asset. Preserve the reference's four-part segmented D silhouette, squared left sections, curved right bowl, horizontal middle slit and narrow slanted split. Match the geometry of the top icon in the reference. Flat solid fills, smooth crisp edges. No texture, no gradients, no bevel, no glow, no shadows, no extra text, no labels, no comparison grid. Fully OPAQUE solid-color background, not a cutout. Center balanced artwork with modest even safety margin. Wide horizontal canvas. D symbol on the left in turquoise #3ED6C4 for left parts and gold #D4A45C for right parts. At its right the exact text Diff in near-black #0A0E12, clean contemporary sans-serif medium/semibold, like original reference, capital D and lowercase i f f. Word height roughly 85% symbol height, generous optical gap. Background light off-white #E7EEF0. Only symbol and word Diff."
+    },
+    {
+      "key": "06-symbol-compact",
+      "prompt": "Edit the supplied Diff reference into ONE polished clean digital logo asset. Preserve the reference's four-part segmented D silhouette, squared left sections, curved right bowl, horizontal middle slit and narrow slanted split. Match the geometry of the top icon in the reference. Flat solid fills, smooth crisp edges. No texture, no gradients, no bevel, no glow, no shadows, no extra text, no labels, no comparison grid. Fully OPAQUE solid-color background, not a cutout. Center balanced artwork with modest even safety margin. Square canvas, icon only for compact use at 24-32px. All four D segments uniform turquoise #3ED6C4. Background #0A0E12. Simplify optical shape: wide clean horizontal slit, wider slanted split and open counter so gaps stay visible at small sizes, no delicate corners, bold and recognizable. No text."
+    },
+    {
+      "key": "04-wordmark-dark-background",
+      "prompt": "Edit the supplied Diff reference into a polished horizontal logo on a perfectly flat solid #0A0E12 background. Keep the distinctive segmented D icon from the reference, including its cuts. Recolor the left half turquoise #3ED6C4 and the right half warm gold #D4A45C. Place the exact word Diff at its right in off-white #E7EEF0, simple clean sans-serif type, generous separation, horizontally balanced. One logo only. Flat digital graphic, crisp smooth clean borders, no texture, no gradients, no shadows, no glow, no physical paper, no white background, no distressed edges, no extra writing. Landscape canvas, logo fills about 80% width, even modest dark padding. This is a final full-background logo, not a cutout; keep background fully opaque."
+    }
+  ]
+}

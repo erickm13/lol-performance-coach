@@ -1,0 +1,507 @@
+{
+  "generatedAt": "2026-10-30T23:02:13.273Z",
+  "checks": [
+    {
+      "name": "Raw API metrics, answers, prompt/data hashes, and independent numerical reference",
+      "status": "passed",
+      "detail": {
+        "sourceMatches": [
+          "groq-json",
+          "groq-csv",
+          "ollama-json",
+          "ollama-csv",
+          "gemini-json-2026-10-30T21-15-19",
+          "gemini-json-2026-10-30T22-44-08"
+        ],
+        "computed": {
+          "csMin": 5.41,
+          "kpPct": 49.1,
+          "kdaPerMatch": 3.1301984126984124,
+          "earlyDeathsMean": 1.5,
+          "earlyDeathsKnown": 8,
+          "earlyDeathsOverOne": 4,
+          "kdaPopulationCv": 0.6462060448369078
+        }
+      }
+    },
+    {
+      "name": "1440px page and network behavior: route, no horizontal page overflow, charts and controls visible",
+      "status": "passed"
+    },
+    {
+      "name": "Accessible source controls, answers, provenance, Gemini attempts, and keyboard activation",
+      "status": "passed",
+      "detail": "CSV/JSON switches, exact answers, keyboard details, hashes, Gemini attempt states, and timing caveat verified"
+    },
+    {
+      "name": "390px page and network behavior: route, no horizontal page overflow, charts and controls visible",
+      "status": "passed"
+    },
+    {
+      "name": "320px page and network behavior: route, no horizontal page overflow, charts and controls visible",
+      "status": "passed"
+    }
+  ],
+  "runtime": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "measurements": {
+        "url": "http://localhost:3000/comparacion-modelos",
+        "viewportWidth": 1440,
+        "documentWidth": 1440,
+        "bodyWidth": 1440,
+        "pageHeight": 4878,
+        "title": "Una misma tarea.\nDos formatos de entrada.",
+        "charts": [
+          {
+            "title": "Tiempo por solicitud",
+            "x": 115,
+            "right": 711.5,
+            "width": 596.5,
+            "height": 270,
+            "rows": 4
+          },
+          {
+            "title": "Tokens de entrada",
+            "x": 728.5,
+            "right": 1325,
+            "width": 596.5,
+            "height": 270,
+            "rows": 4
+          }
+        ],
+        "controls": [
+          {
+            "text": "JSON",
+            "x": 135,
+            "right": 192,
+            "width": 57,
+            "height": 32
+          },
+          {
+            "text": "CSV",
+            "x": 195,
+            "right": 244,
+            "width": 49,
+            "height": 32
+          },
+          {
+            "text": "Prompt común",
+            "x": 1108,
+            "right": 1212,
+            "width": 104,
+            "height": 32
+          },
+          {
+            "text": "Datos JSON",
+            "x": 1215,
+            "right": 1305,
+            "width": 90,
+            "height": 32
+          }
+        ],
+        "formatGroupCount": 2,
+        "runRows": 4,
+        "runRowText": [
+          "Groq · API\nopenai/gpt-oss-20b\n\tJSON\t1612\ntokens\n\t2359\ntokens\n\t4,004\ns\n\t\nCOMPLETO",
+          "Groq · API\nopenai/gpt-oss-20b\n\tCSV\t815\ntokens\n\t2786\ntokens\n\t3,998\ns\n\t\nCOMPLETO",
+          "Ollama · local\ngemma4:e4b\n\tJSON\t1798\ntokens\n\t2199\ntokens\n\t60,195\ns\n\t\nCOMPLETO",
+          "Ollama · local\ngemma4:e4b\n\tCSV\t848\ntokens\n\t2587\ntokens\n\t46,325\ns\n\t\nCOMPLETO"
+        ],
+        "auditRowText": [
+          "CS/min\t5,41\t5,41\nCoincide\n\t5,41\nCoincide\n\t5,31\nRevisar\n\t4,92\nRevisar",
+          "KP medio\t49,1%\t49,10%\nCoincide\n\t49,10%\nCoincide\n\t48,10%\nRevisar\n\t49,90%\nRevisar",
+          "KDA por partida\t3,13\t3,13\nCoincide\n\t3,13\nCoincide\n\t3,09\nRevisar\n\t2,84\nRevisar",
+          "Muertes antes del min 10\t1,50 · n=8\t1,50 · n=8\nCoincide\n\t1,50 · n=8\nCoincide\n\t1,50 · n=8\nCoincide\n\t1,67 · n=9\nRevisar"
+        ],
+        "auditColumns": 6,
+        "localTablesScrollable": [
+          {
+            "client": 1208,
+            "scroll": 1208
+          },
+          {
+            "client": 1208,
+            "scroll": 1208
+          }
+        ],
+        "chartImageLabels": [
+          "Tiempo por solicitud: groq JSON, 4,004 s; groq CSV, 3,998 s; ollama JSON, 60,195 s; ollama CSV, 46,325 s",
+          "Tokens de entrada: groq JSON, 1612 tokens; groq CSV, 815 tokens; ollama JSON, 1798 tokens; ollama CSV, 848 tokens"
+        ]
+      },
+      "errors": {
+        "page": [],
+        "console": [],
+        "failedRequests": [],
+        "badResponses": [],
+        "requests": [
+          {
+            "url": "http://localhost:3000/comparacion-modelos",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/4c7c43bdd7a35c63-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/6681946d7a6ccbb7-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/84f090e3b62fb9e3-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/css/app/layout.css?v=1793401327904",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/css/app/comparacion-modelos/page.css?v=1793401327904",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/webpack.js?v=1793401327904",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/main-app.js?v=1793401327904",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app/comparacion-modelos/page.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-wordmark-dark-background.png&w=384&q=75",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "measurements": {
+        "url": "http://localhost:3000/comparacion-modelos",
+        "viewportWidth": 390,
+        "documentWidth": 390,
+        "bodyWidth": 390,
+        "pageHeight": 6827,
+        "title": "Una misma tarea.\nDos formatos de entrada.",
+        "charts": [
+          {
+            "title": "Tiempo por solicitud",
+            "x": 18,
+            "right": 372,
+            "width": 354,
+            "height": 257.5,
+            "rows": 4
+          },
+          {
+            "title": "Tokens de entrada",
+            "x": 18,
+            "right": 372,
+            "width": 354,
+            "height": 257.5,
+            "rows": 4
+          }
+        ],
+        "controls": [
+          {
+            "text": "JSON",
+            "x": 38,
+            "right": 89,
+            "width": 51,
+            "height": 32
+          },
+          {
+            "text": "CSV",
+            "x": 92,
+            "right": 135,
+            "width": 43,
+            "height": 32
+          },
+          {
+            "text": "Prompt común",
+            "x": 38,
+            "right": 136,
+            "width": 98,
+            "height": 32
+          },
+          {
+            "text": "Datos JSON",
+            "x": 139,
+            "right": 223,
+            "width": 84,
+            "height": 32
+          }
+        ],
+        "formatGroupCount": 2,
+        "runRows": 4,
+        "runRowText": [
+          "Groq · API\nopenai/gpt-oss-20b\n\tJSON\t1612\ntokens\n\t2359\ntokens\n\t4,004\ns\n\t\nCOMPLETO",
+          "Groq · API\nopenai/gpt-oss-20b\n\tCSV\t815\ntokens\n\t2786\ntokens\n\t3,998\ns\n\t\nCOMPLETO",
+          "Ollama · local\ngemma4:e4b\n\tJSON\t1798\ntokens\n\t2199\ntokens\n\t60,195\ns\n\t\nCOMPLETO",
+          "Ollama · local\ngemma4:e4b\n\tCSV\t848\ntokens\n\t2587\ntokens\n\t46,325\ns\n\t\nCOMPLETO"
+        ],
+        "auditRowText": [
+          "CS/min\t5,41\t5,41\nCoincide\n\t5,41\nCoincide\n\t5,31\nRevisar\n\t4,92\nRevisar",
+          "KP medio\t49,1%\t49,10%\nCoincide\n\t49,10%\nCoincide\n\t48,10%\nRevisar\n\t49,90%\nRevisar",
+          "KDA por partida\t3,13\t3,13\nCoincide\n\t3,13\nCoincide\n\t3,09\nRevisar\n\t2,84\nRevisar",
+          "Muertes antes del min 10\t1,50 · n=8\t1,50 · n=8\nCoincide\n\t1,50 · n=8\nCoincide\n\t1,50 · n=8\nCoincide\n\t1,67 · n=9\nRevisar"
+        ],
+        "auditColumns": 6,
+        "localTablesScrollable": [
+          {
+            "client": 352,
+            "scroll": 690
+          },
+          {
+            "client": 352,
+            "scroll": 900
+          }
+        ],
+        "chartImageLabels": [
+          "Tiempo por solicitud: groq JSON, 4,004 s; groq CSV, 3,998 s; ollama JSON, 60,195 s; ollama CSV, 46,325 s",
+          "Tokens de entrada: groq JSON, 1612 tokens; groq CSV, 815 tokens; ollama JSON, 1798 tokens; ollama CSV, 848 tokens"
+        ]
+      },
+      "errors": {
+        "page": [],
+        "console": [],
+        "failedRequests": [],
+        "badResponses": [],
+        "requests": [
+          {
+            "url": "http://localhost:3000/comparacion-modelos",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/4c7c43bdd7a35c63-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/6681946d7a6ccbb7-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/84f090e3b62fb9e3-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/css/app/layout.css?v=1793401330633",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/css/app/comparacion-modelos/page.css?v=1793401330633",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/webpack.js?v=1793401330633",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/main-app.js?v=1793401330633",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app/comparacion-modelos/page.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 800
+      },
+      "status": 200,
+      "measurements": {
+        "url": "http://localhost:3000/comparacion-modelos",
+        "viewportWidth": 320,
+        "documentWidth": 320,
+        "bodyWidth": 320,
+        "pageHeight": 7204,
+        "title": "Una misma tarea.\nDos formatos de entrada.",
+        "charts": [
+          {
+            "title": "Tiempo por solicitud",
+            "x": 18,
+            "right": 302,
+            "width": 284,
+            "height": 269.5,
+            "rows": 4
+          },
+          {
+            "title": "Tokens de entrada",
+            "x": 18,
+            "right": 302,
+            "width": 284,
+            "height": 269.5,
+            "rows": 4
+          }
+        ],
+        "controls": [
+          {
+            "text": "JSON",
+            "x": 38,
+            "right": 89,
+            "width": 51,
+            "height": 32
+          },
+          {
+            "text": "CSV",
+            "x": 92,
+            "right": 135,
+            "width": 43,
+            "height": 32
+          },
+          {
+            "text": "Prompt común",
+            "x": 38,
+            "right": 136,
+            "width": 98,
+            "height": 32
+          },
+          {
+            "text": "Datos JSON",
+            "x": 139,
+            "right": 223,
+            "width": 84,
+            "height": 32
+          }
+        ],
+        "formatGroupCount": 2,
+        "runRows": 4,
+        "runRowText": [
+          "Groq · API\nopenai/gpt-oss-20b\n\tJSON\t1612\ntokens\n\t2359\ntokens\n\t4,004\ns\n\t\nCOMPLETO",
+          "Groq · API\nopenai/gpt-oss-20b\n\tCSV\t815\ntokens\n\t2786\ntokens\n\t3,998\ns\n\t\nCOMPLETO",
+          "Ollama · local\ngemma4:e4b\n\tJSON\t1798\ntokens\n\t2199\ntokens\n\t60,195\ns\n\t\nCOMPLETO",
+          "Ollama · local\ngemma4:e4b\n\tCSV\t848\ntokens\n\t2587\ntokens\n\t46,325\ns\n\t\nCOMPLETO"
+        ],
+        "auditRowText": [
+          "CS/min\t5,41\t5,41\nCoincide\n\t5,41\nCoincide\n\t5,31\nRevisar\n\t4,92\nRevisar",
+          "KP medio\t49,1%\t49,10%\nCoincide\n\t49,10%\nCoincide\n\t48,10%\nRevisar\n\t49,90%\nRevisar",
+          "KDA por partida\t3,13\t3,13\nCoincide\n\t3,13\nCoincide\n\t3,09\nRevisar\n\t2,84\nRevisar",
+          "Muertes antes del min 10\t1,50 · n=8\t1,50 · n=8\nCoincide\n\t1,50 · n=8\nCoincide\n\t1,50 · n=8\nCoincide\n\t1,67 · n=9\nRevisar"
+        ],
+        "auditColumns": 6,
+        "localTablesScrollable": [
+          {
+            "client": 282,
+            "scroll": 690
+          },
+          {
+            "client": 282,
+            "scroll": 900
+          }
+        ],
+        "chartImageLabels": [
+          "Tiempo por solicitud: groq JSON, 4,004 s; groq CSV, 3,998 s; ollama JSON, 60,195 s; ollama CSV, 46,325 s",
+          "Tokens de entrada: groq JSON, 1612 tokens; groq CSV, 815 tokens; ollama JSON, 1798 tokens; ollama CSV, 848 tokens"
+        ]
+      },
+      "errors": {
+        "page": [],
+        "console": [],
+        "failedRequests": [],
+        "badResponses": [],
+        "requests": [
+          {
+            "url": "http://localhost:3000/comparacion-modelos",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/26d4368bf94c0ec4-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/4c7c43bdd7a35c63-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/6681946d7a6ccbb7-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/media/84f090e3b62fb9e3-s.p.woff2",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/css/app/layout.css?v=1793401331916",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/css/app/comparacion-modelos/page.css?v=1793401331916",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/webpack.js?v=1793401331916",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/main-app.js?v=1793401331916",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app/comparacion-modelos/page.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+            "method": "GET"
+          },
+          {
+            "url": "http://localhost:3000/_next/image?url=%2Fbranding%2Fdiff-symbol-compact.png&w=96&q=75",
+            "method": "GET"
+          }
+        ]
+      }
+    }
+  ]
+}

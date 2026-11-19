@@ -1,0 +1,611 @@
+{
+  "comparison": "Paired in the same mocked dashboard page and viewport. Legacy is a browser-only brand prototype: prior git HEAD .brand-mark/.brand-name rules, with Diff text per main. This is not an actual prior-commit runtime.",
+  "results": [
+    {
+      "viewport": "390",
+      "status": 200,
+      "coachName": "Coach Escurridizo",
+      "current": {
+        "sidebarHeight": 632.5,
+        "sidebarBrand": {
+          "x": 16,
+          "y": 16,
+          "w": 357,
+          "h": 67.81,
+          "right": 373,
+          "bottom": 83.81
+        },
+        "topbar": {
+          "x": 18,
+          "y": 656.5,
+          "w": 354,
+          "h": 174.5,
+          "right": 372,
+          "bottom": 831
+        },
+        "topbarBrand": {
+          "x": 76,
+          "y": 672.5,
+          "w": 40,
+          "h": 40,
+          "right": 116,
+          "bottom": 712.5
+        },
+        "launcher": {
+          "box": {
+            "x": 154,
+            "y": 770,
+            "w": 220,
+            "h": 58,
+            "right": 374,
+            "bottom": 828
+          },
+          "text": "Coach Escurridizo Tu próxima jugada"
+        },
+        "links": [
+          {
+            "text": "Dashboard",
+            "box": {
+              "x": 18,
+              "y": 732.5,
+              "w": 60,
+              "h": 34.5,
+              "right": 78,
+              "bottom": 767
+            }
+          },
+          {
+            "text": "Entrenamiento",
+            "box": {
+              "x": 96,
+              "y": 732.5,
+              "w": 86,
+              "h": 34.5,
+              "right": 182,
+              "bottom": 767
+            }
+          },
+          {
+            "text": "Debilidades",
+            "box": {
+              "x": 200,
+              "y": 732.5,
+              "w": 65,
+              "h": 34.5,
+              "right": 265,
+              "bottom": 767
+            }
+          },
+          {
+            "text": "Historial",
+            "box": {
+              "x": 283,
+              "y": 732.5,
+              "w": 47,
+              "h": 34.5,
+              "right": 330,
+              "bottom": 767
+            }
+          },
+          {
+            "text": "Academia",
+            "box": {
+              "x": 18,
+              "y": 778.25,
+              "w": 56,
+              "h": 34.5,
+              "right": 74,
+              "bottom": 812.75
+            }
+          },
+          {
+            "text": "Ranking",
+            "box": {
+              "x": 92,
+              "y": 778.25,
+              "w": 46,
+              "h": 34.5,
+              "right": 138,
+              "bottom": 812.75
+            }
+          },
+          {
+            "text": "Preparar partida",
+            "box": {
+              "x": 156,
+              "y": 778.25,
+              "w": 92,
+              "h": 34.5,
+              "right": 248,
+              "bottom": 812.75
+            }
+          }
+        ],
+        "obscured": [
+          {
+            "text": "Preparar partida",
+            "box": {
+              "x": 156,
+              "y": 778.25,
+              "w": 92,
+              "h": 34.5,
+              "right": 248,
+              "bottom": 812.75
+            },
+            "overlap": {
+              "x": 156,
+              "y": 778.25,
+              "w": 92,
+              "h": 34.5
+            }
+          }
+        ]
+      },
+      "legacy": {
+        "sidebarHeight": 587.19,
+        "sidebarBrand": {
+          "x": 16,
+          "y": 16,
+          "w": 357,
+          "h": 22.5,
+          "right": 373,
+          "bottom": 38.5
+        },
+        "topbar": {
+          "x": 18,
+          "y": 611.19,
+          "w": 354,
+          "h": 170.5,
+          "right": 372,
+          "bottom": 781.69
+        },
+        "topbarBrand": {
+          "x": 76,
+          "y": 633.94,
+          "w": 54.61,
+          "h": 22.5,
+          "right": 130.61,
+          "bottom": 656.44
+        },
+        "launcher": {
+          "box": {
+            "x": 154,
+            "y": 770,
+            "w": 220,
+            "h": 58,
+            "right": 374,
+            "bottom": 828
+          },
+          "text": "Coach Escurridizo Tu próxima jugada"
+        },
+        "links": [
+          {
+            "text": "Dashboard",
+            "box": {
+              "x": 18,
+              "y": 683.19,
+              "w": 60,
+              "h": 34.5,
+              "right": 78,
+              "bottom": 717.69
+            }
+          },
+          {
+            "text": "Entrenamiento",
+            "box": {
+              "x": 96,
+              "y": 683.19,
+              "w": 86,
+              "h": 34.5,
+              "right": 182,
+              "bottom": 717.69
+            }
+          },
+          {
+            "text": "Debilidades",
+            "box": {
+              "x": 200,
+              "y": 683.19,
+              "w": 65,
+              "h": 34.5,
+              "right": 265,
+              "bottom": 717.69
+            }
+          },
+          {
+            "text": "Historial",
+            "box": {
+              "x": 283,
+              "y": 683.19,
+              "w": 47,
+              "h": 34.5,
+              "right": 330,
+              "bottom": 717.69
+            }
+          },
+          {
+            "text": "Academia",
+            "box": {
+              "x": 18,
+              "y": 728.94,
+              "w": 56,
+              "h": 34.5,
+              "right": 74,
+              "bottom": 763.44
+            }
+          },
+          {
+            "text": "Ranking",
+            "box": {
+              "x": 92,
+              "y": 728.94,
+              "w": 46,
+              "h": 34.5,
+              "right": 138,
+              "bottom": 763.44
+            }
+          },
+          {
+            "text": "Preparar partida",
+            "box": {
+              "x": 156,
+              "y": 728.94,
+              "w": 92,
+              "h": 34.5,
+              "right": 248,
+              "bottom": 763.44
+            }
+          }
+        ],
+        "obscured": []
+      },
+      "blocked": []
+    },
+    {
+      "viewport": "320",
+      "status": 200,
+      "coachName": "Coach Krug",
+      "current": {
+        "sidebarHeight": 632.5,
+        "sidebarBrand": {
+          "x": 16,
+          "y": 16,
+          "w": 287,
+          "h": 67.81,
+          "right": 303,
+          "bottom": 83.81
+        },
+        "topbar": {
+          "x": 18,
+          "y": 656.5,
+          "w": 284,
+          "h": 219,
+          "right": 302,
+          "bottom": 875.5
+        },
+        "topbarBrand": {
+          "x": 76,
+          "y": 672.5,
+          "w": 40,
+          "h": 40,
+          "right": 116,
+          "bottom": 712.5
+        },
+        "launcher": {
+          "box": {
+            "x": 120,
+            "y": 726,
+            "w": 184,
+            "h": 58,
+            "right": 304,
+            "bottom": 784
+          },
+          "text": "Coach Krug Tu próxima jugada"
+        },
+        "links": [
+          {
+            "text": "Dashboard",
+            "box": {
+              "x": 18,
+              "y": 732.5,
+              "w": 60,
+              "h": 34.5,
+              "right": 78,
+              "bottom": 767
+            }
+          },
+          {
+            "text": "Entrenamiento",
+            "box": {
+              "x": 96,
+              "y": 732.5,
+              "w": 86,
+              "h": 34.5,
+              "right": 182,
+              "bottom": 767
+            }
+          },
+          {
+            "text": "Debilidades",
+            "box": {
+              "x": 200,
+              "y": 732.5,
+              "w": 65,
+              "h": 34.5,
+              "right": 265,
+              "bottom": 767
+            }
+          },
+          {
+            "text": "Historial",
+            "box": {
+              "x": 18,
+              "y": 777,
+              "w": 47,
+              "h": 34.5,
+              "right": 65,
+              "bottom": 811.5
+            }
+          },
+          {
+            "text": "Academia",
+            "box": {
+              "x": 83,
+              "y": 777,
+              "w": 56,
+              "h": 34.5,
+              "right": 139,
+              "bottom": 811.5
+            }
+          },
+          {
+            "text": "Ranking",
+            "box": {
+              "x": 157,
+              "y": 777,
+              "w": 46,
+              "h": 34.5,
+              "right": 203,
+              "bottom": 811.5
+            }
+          },
+          {
+            "text": "Preparar partida",
+            "box": {
+              "x": 18,
+              "y": 822.75,
+              "w": 92,
+              "h": 34.5,
+              "right": 110,
+              "bottom": 857.25
+            }
+          }
+        ],
+        "obscured": [
+          {
+            "text": "Entrenamiento",
+            "box": {
+              "x": 96,
+              "y": 732.5,
+              "w": 86,
+              "h": 34.5,
+              "right": 182,
+              "bottom": 767
+            },
+            "overlap": {
+              "x": 120,
+              "y": 732.5,
+              "w": 62,
+              "h": 34.5
+            }
+          },
+          {
+            "text": "Debilidades",
+            "box": {
+              "x": 200,
+              "y": 732.5,
+              "w": 65,
+              "h": 34.5,
+              "right": 265,
+              "bottom": 767
+            },
+            "overlap": {
+              "x": 200,
+              "y": 732.5,
+              "w": 65,
+              "h": 34.5
+            }
+          },
+          {
+            "text": "Academia",
+            "box": {
+              "x": 83,
+              "y": 777,
+              "w": 56,
+              "h": 34.5,
+              "right": 139,
+              "bottom": 811.5
+            },
+            "overlap": {
+              "x": 120,
+              "y": 777,
+              "w": 19,
+              "h": 7
+            }
+          },
+          {
+            "text": "Ranking",
+            "box": {
+              "x": 157,
+              "y": 777,
+              "w": 46,
+              "h": 34.5,
+              "right": 203,
+              "bottom": 811.5
+            },
+            "overlap": {
+              "x": 157,
+              "y": 777,
+              "w": 46,
+              "h": 7
+            }
+          }
+        ]
+      },
+      "legacy": {
+        "sidebarHeight": 587.19,
+        "sidebarBrand": {
+          "x": 16,
+          "y": 16,
+          "w": 287,
+          "h": 22.5,
+          "right": 303,
+          "bottom": 38.5
+        },
+        "topbar": {
+          "x": 18,
+          "y": 611.19,
+          "w": 284,
+          "h": 215,
+          "right": 302,
+          "bottom": 826.19
+        },
+        "topbarBrand": {
+          "x": 76,
+          "y": 633.94,
+          "w": 54.61,
+          "h": 22.5,
+          "right": 130.61,
+          "bottom": 656.44
+        },
+        "launcher": {
+          "box": {
+            "x": 120,
+            "y": 726,
+            "w": 184,
+            "h": 58,
+            "right": 304,
+            "bottom": 784
+          },
+          "text": "Coach Krug Tu próxima jugada"
+        },
+        "links": [
+          {
+            "text": "Dashboard",
+            "box": {
+              "x": 18,
+              "y": 683.19,
+              "w": 60,
+              "h": 34.5,
+              "right": 78,
+              "bottom": 717.69
+            }
+          },
+          {
+            "text": "Entrenamiento",
+            "box": {
+              "x": 96,
+              "y": 683.19,
+              "w": 86,
+              "h": 34.5,
+              "right": 182,
+              "bottom": 717.69
+            }
+          },
+          {
+            "text": "Debilidades",
+            "box": {
+              "x": 200,
+              "y": 683.19,
+              "w": 65,
+              "h": 34.5,
+              "right": 265,
+              "bottom": 717.69
+            }
+          },
+          {
+            "text": "Historial",
+            "box": {
+              "x": 18,
+              "y": 727.69,
+              "w": 47,
+              "h": 34.5,
+              "right": 65,
+              "bottom": 762.19
+            }
+          },
+          {
+            "text": "Academia",
+            "box": {
+              "x": 83,
+              "y": 727.69,
+              "w": 56,
+              "h": 34.5,
+              "right": 139,
+              "bottom": 762.19
+            }
+          },
+          {
+            "text": "Ranking",
+            "box": {
+              "x": 157,
+              "y": 727.69,
+              "w": 46,
+              "h": 34.5,
+              "right": 203,
+              "bottom": 762.19
+            }
+          },
+          {
+            "text": "Preparar partida",
+            "box": {
+              "x": 18,
+              "y": 773.44,
+              "w": 92,
+              "h": 34.5,
+              "right": 110,
+              "bottom": 807.94
+            }
+          }
+        ],
+        "obscured": [
+          {
+            "text": "Academia",
+            "box": {
+              "x": 83,
+              "y": 727.69,
+              "w": 56,
+              "h": 34.5,
+              "right": 139,
+              "bottom": 762.19
+            },
+            "overlap": {
+              "x": 120,
+              "y": 727.69,
+              "w": 19,
+              "h": 34.5
+            }
+          },
+          {
+            "text": "Ranking",
+            "box": {
+              "x": 157,
+              "y": 727.69,
+              "w": 46,
+              "h": 34.5,
+              "right": 203,
+              "bottom": 762.19
+            },
+            "overlap": {
+              "x": 157,
+              "y": 727.69,
+              "w": 46,
+              "h": 34.5
+            }
+          }
+        ]
+      },
+      "blocked": []
+    }
+  ]
+}

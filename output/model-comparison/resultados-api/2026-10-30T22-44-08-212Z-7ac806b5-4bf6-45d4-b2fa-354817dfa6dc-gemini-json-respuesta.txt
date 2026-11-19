@@ -1,0 +1,27 @@
+### Resumen numérico
+
+* **Número de partidas (n):** 10
+* **Victorias:** 5/10 (50.00%)
+* **Media de cs_min:** 5.41
+* **Media de vision_min:** 0.51
+* **Media de kp_pct:** 49.10%
+* **Media de KDA por partida:** 3.13
+* **Media de muertes_antes_10:** 1.50 (n conocido = 8)
+
+---
+
+### Prioridades de práctica
+
+1. **Incrementar la puntuación de visión por minuto (referencia: 0.60/min)**
+   * **Resumen numérico:** 9/10 partidas se sitúan por debajo de la referencia interna de 0.60 vision_min (media global de 0.51).
+   * **Partidas que respaldan el patrón:** M04 (0.39), M01 (0.42) y M08 (0.44).
+   * **Ejercicio práctico:** Establecer una rutina para colocar un centinela de visión cada vez que la oleada cruce la mitad del carril y adquirir un centinela de control en cada regreso a base con oro sobrante.
+
+2. **Mejorar la obtención de súbditos por minuto (referencia: 6.0/min)**
+   * **Resumen numérico:** 7/10 partidas no alcanzan el umbral de referencia de 6.0 cs_min (media global de 5.41).
+   * **Partidas que respaldan el patrón:** M10 (3.8), M06 (4.3) y M02 (4.7).
+   * **Ejercicio práctico:** Realizar sesiones de 10 minutos en la herramienta de práctica enfocadas exclusivamente en el último golpe a súbditos sin comprar objetos ofensivos, buscando alcanzar un mínimo de 80 súbditos antes de jugar partidas regulares.
+
+3. **Reducir las muertes en fase temprana (referencia: máximo 1 muerte antes del minuto 10)**
+   * **Resumen numérico:** 4/8 partidas con registro conocido superan la referencia de 1 muerte antes del minuto 10 (media de 1.50 muertes tempranas).
+   *

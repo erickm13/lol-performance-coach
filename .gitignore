@@ -5,3 +5,14 @@ dist/
 .env
 .DS_Store
 .worktrees/
+
+# codex-workflow-managed-start
+.codex_workflow_hidden_resources/
+# codex-workflow-managed-end
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

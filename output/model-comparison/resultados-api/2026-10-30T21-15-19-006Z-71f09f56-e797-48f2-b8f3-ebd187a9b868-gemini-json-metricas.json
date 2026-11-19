@@ -1,0 +1,25 @@
+{
+  "status": "failed",
+  "error": "http_error",
+  "provider": "gemini",
+  "format": "json",
+  "requestedModel": "gemini-3.8-flash",
+  "returnedModel": null,
+  "httpStatus": 503,
+  "providerStatus": null,
+  "retryAfterSeconds": null,
+  "request": {
+    "stream": false,
+    "temperature": 0,
+    "outputLimit": 4096,
+    "outputLimitParameter": "max_tokens"
+  },
+  "requestElapsedWallMs": 986,
+  "inputTokens": null,
+  "outputTokens": null,
+  "usage": null,
+  "finishReason": null,
+  "truncated": false,
+  "inputSha256": "1d5ff5f46caa9a019f7bd0da200fed8a88fd595179d94bff633a66fc1180d567",
+  "dataSha256": "c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf"
+}

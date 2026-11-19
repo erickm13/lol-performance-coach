@@ -15,7 +15,7 @@ const ibmPlexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "LoL Performance Coach",
+  title: "Diff",
   description:
     "Plataforma de análisis y entrenamiento personalizado para League of Legends",
 };

@@ -1,0 +1,108 @@
+Thinking...
+Here's a thinking process to structure the analysis:
+
+1.  **Understand the Goal and Constraints:**
+    *   Analyze 10 provided synthetic game logs (TOP role).
+    *   Use *only* the provided data.
+    *   Respond in Spanish.
+    *   Do not invent context, facts, or causes.
+    *   Calculate KDA: (Kills + Assists) / max(Deaths, 1).
+    *   Use specific definitions (1=win, 0=loss, etc.).
+    *   Use internal reference data (CS 6/min, Vision 0.60/min, Kills 35%, 1 death before 10 min) for comparison, but do not invent context.
+    *   Structure the output: Fixed numerical summary -> Max 3 practice priorities (with supporting data/IDs/exercise) -> Note on limitations.
+
+2.  **Data Extraction and Calculation (Initial Pass):**
+
+    *   **Game Logs (M01-M10):** Need to calculate KDA, Win/Loss, and gather raw stats.
+
+    | ID | Win (1/0) | Kills | Deaths | Assists | KDA (K+A)/max(D, 1) | cs_min | vision_min | kp_pct | muertes_antes_10 |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | M01 | 1 | 12 | 3 | 4 | (16)/3 = 5.33 | 5.4 | 0.42 | 43 | 1 |
+    | M02 | 0 | 1 | 7 | 3 | (4)/7 = 0.57 | 4.7 | 0.51 | 50 | 2 |
+    | M03 | 1 | 9 | 2 | 5 | (14)/2 = 7.00 | 6.4 | 0.48 | 40 | 2 |
+    | M04 | 0 | 3 | 8 | 4 | (7)/8 = 0.88 | 5.1 | 0.39 | 39 | 1 |
+    | M05 | 1 | 11 | 3 | 2 | (13)/3 = 4.33 | 6.8 | 0.55 | 50 | 0 |
+    | M06 | 0 | 1 | 6 | 12 | (13)/6 = 2.17 | 4.3 | 0.58 | 59 | NA (Exclude) |
+    | M07 | 1 | 8 | 5 | 9 | (17)/5 = 3.40 | 5.9 | 0.63 | 65 | 2 |
+    | M08 | 0 | 4 | 9 | 4 | (8)/9 = 0.89 | 6.2 | 0.44 | 35 | 1 |
+    | M09 | 1 | 10 | 3 | 3 | (13)/3 = 4.33 | 5.5 | 0.57 | 50 | 3 |
+    | M10 | 0 | 2 | 5 | 10 | (12)/5 = 2.40 | 3.8 | 0.49 | 60 | NA (Exclude) |
+
+3.  **Summary Calculations (Averages and Counts):**
+
+    *   **N of games:** 10.
+    *   **Victories:** 5 wins / 10 games (50%).
+    *   **Average cs_min:** (5.4 + 4.7 + 6.4 + 5.1 + 6.8 + 4.3 + 5.9 + 6.2 + 5.5 + 3.8) / 10 = 53.1 / 10 = 5.31.
+    *   **Average vision_min:** (0.42 + 0.51 + 0.48 + 0.39 + 0.55 + 0.58 + 0.63 + 0.44 + 0.57 + 0.49) / 10 = 5.06 / 10 = 0.51.
+    *   **Average kp_pct:** (43 + 50 + 40 + 39 + 50 + 59 + 65 + 35 + 50 + 60) / 10 = 481 / 10 = 48.10.
+    *   **Average KDA:** (5.33 + 0.57 + 7.00 + 0.88 + 4.33 + 2.17 + 3.40 + 0.89 + 4.33 + 2.40) / 10 = 30.9 / 10 = 3.09.
+    *   **Average muertes_antes_10:** (Excluding M06 and M10, N=8). (1 + 2 + 2 + 1 + 0 + 2 + 1 + 3) / 8 = 12 / 8 = 1.50.
+
+4.  **Identify Trends/Priorities:**
+
+    *   **Priority 1: Impact/High KDA.** Look at the high KDA games (M03: 7.00, M01: 5.33, M05: 4.33, M09: 4.33, M07: 3.40). These are generally successful games.
+    *   **Priority 2: Clear Objective Control (KP_pct/CS_min).** Look at games with very high KP_pct (M07: 65, M06: 59, M10: 60) and high cs_min (M05: 6.8, M03: 6.4, M08: 6.2). The high KP_pct/CS_min seems related to performance, even if not strictly causal.
+    *   **Priority 3: Early Game Safety/Pressure (Muertes_antes_10).** Comparing games with low early deaths (M05: 0, M01: 1, M04: 1) vs high early deaths (M09: 3, M02: 2). Low early deaths seem correlated with better performance metrics.
+
+5.  **Refining Priorities and Structuring the Output:**
+
+    *   *Priority 1: Optimizar la eficiencia en KDA.* (Focus on high kills/assists relative to deaths).
+    *   *Priority 2: Mejorar la presencia en mapa/control de objetivos.* (Focus on high kp_pct and cs_min, leveraging the comparison to the reference data).
+    *   *Priority 3: Mantener la seguridad al inicio.* (Focus on low muertes_antes_10).
+
+6.  **Final Review against Constraints:**
+    *   Spanish response? Yes.
+    *   No invented context/causality? Yes (only describing correlations).
+    *   Fixed numerical summary? Yes.
+    *   Max 3 priorities? Yes.
+    *   IDs/Exercises included? Yes.
+    *   Limitations noted? Yes. (Self-Correction: Ensure the exercise is concrete and directly addresses the stat).
+
+7.  **Generating the response.** (This leads to the final Spanish output).
+...done thinking.
+
+**Resumen Numérico Fijo**
+
+*   **N de Partidas:** 10
+*   **Victorias:** 5/10 (50.00%)
+*   **Medias Aritméticas:**
+    *   cs\_min: 5.31
+    *   vision\_min: 0.51
+    *   kp\_pct: 48.10
+    *   KDA por partida: 3.09
+*   **Muertes antes del Minuto 10:** Media = 1.50 (N conocido: 8, excluyendo M06 y M10)
+
+---
+
+**Prioridades de Práctica**
+
+**1. Optimizar la Ratio KDA (Kill/Assist/Death)**
+*   **Observación:** Hay una clara correlación entre las partidas con KDA muy alto y las victorias. El KDA de 7.00 en M03, por ejemplo, fue asociado a una victoria.
+*   **Patrones de Apoyo:**
+    *   M03 (KDA 7.00, Victoria)
+    *   M01 (KDA 5.33, Victoria)
+    *   M05 (KDA 4.33, Victoria)
+*   **Ejercicio Práctico Concreto:** Enfocarse en maximizar la participación en asesinatos y asistencias (K+A) y gestionar las muertes (D). Busque activamente crear espacio para sus compañeros para aumentar las asistencias.
+
+**2. Incrementar la Presencia en Mapa y Eficiencia (KP% y CS/min)**
+*   **Observación:** Las partidas con porcentajes de participación (kp\_pct) por encima del 55% y altas medias de cs\_min (superior a 6.0) muestran un desempeño estadísticamente superior al promedio (KP 48.10%, CS 5.31).
+*   **Patrones de Apoyo:**
+    *   M07 (kp\_pct 65, cs\_min 5.9, Victoria)
+    *   M05 (kp\_pct 50, cs\_min 6.8, Victoria)
+    *   M03 (kp\_pct 40, cs\_min 6.4, Victoria)
+*   **Ejercicio Práctico Concreto:** Trabajar la fase de líneas (laning phase) para asegurar una acumulación de súbditos por minuto (cs\_min) superior a 6.0, lo que promueve una mayor presencia en la fase temprana del juego.
+
+**3. Mejorar la Seguridad en la Fase Temprana de Partida**
+*   **Observación:** Las partidas en las que el conteo de muertes antes del minuto 10 es más bajo (0 o 1) están asociadas a resultados con mayor KDA y a victorias.
+*   **Patrones de Apoyo:**
+    *   M05 (0 muertes antes del minuto 10, Victoria)
+    *   M01 (1 muerte antes del minuto 10, Victoria)
+    *   M04 (1 muerte antes del minuto 10, Derrota)
+*   **Ejercicio Práctico Concreto:** Identificar patrones de riesgo en la fase temprana del juego y practicar la gestión de la agresividad, priorizando la seguridad sobre el riesgo ofensivo en los primeros 10 minutos de partida.
+
+---
+
+**Nota sobre Datos Faltantes y Límites**
+
+Los datos proporcionados son sintéticos. La correlación observada entre estadísticas (como KDA alto y victoria) no implica causalidad. La ausencia de información sobre la calidad de los objetivos tomados y el rol específico del campeón (más allá del rol TOP) limita la identificación de patrones tácticos. Las partidas M06 y M10 tienen valores nulos para `muertes_antes_10`, lo que fue excluido del cálculo del promedio de muertes tempranas.
+

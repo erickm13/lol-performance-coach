@@ -1,4 +1,4 @@
-# Evidencias de pruebas — LoL Performance Coach
+# Evidencias de pruebas — Diff
 
 Este documento recoge la evidencia de que el sistema está cubierto por pruebas
 automatizadas y que todas pasan. La suite se ejecuta en cada *push* y *pull

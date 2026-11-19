@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ScrollRevealRoot } from "./components/ScrollRevealRoot";
 import { CoachIcon } from "./components/CoachIcon";
+import { BrandLogo } from "./components/BrandLogo";
 const features = [
   {
     number: "01",
@@ -30,8 +31,7 @@ export default function Home() {
     <main className="landing-page">
       <nav className="landing-nav" aria-label="Navegación principal">
         <Link className="brand" href="/">
-          <span className="brand-mark" />
-          <span className="brand-name">LOL PERFORMANCE COACH</span>
+          <BrandLogo variant="wordmark" mobileVariant="symbol" />
         </Link>
         <div>
           <Link className="rune-link" href="/login">Iniciar sesión</Link>
@@ -54,11 +54,6 @@ export default function Home() {
             Crear cuenta gratis <span aria-hidden="true">→</span>
           </Link>
           <Link className="rune-link" href="/login">Ya tengo cuenta</Link>
-        </div>
-        <div className="hero-meta">
-          <span>League of Legends</span>
-          <span>API oficial de Riot</span>
-          <span>Coach personalizado</span>
         </div>
         <div className="hero-rune hero-rune-one" aria-hidden="true" />
         <div className="hero-rune hero-rune-two" aria-hidden="true" />
@@ -159,7 +154,7 @@ export default function Home() {
         </section>
       </ScrollRevealRoot>
       <footer className="landing-footer">
-        <span>LoL Performance Coach</span>
+        <BrandLogo variant="wordmark" />
         <p>
           Proyecto independiente. No está afiliado ni respaldado por Riot Games.
         </p>

@@ -1,0 +1,15 @@
+c0fed68f2d138e63024deceece878be1bd1f3613a1d0673aaf35c6249ff1dfcf  output/model-comparison/10-partidas.json
+399e15eddb7d6ba3872bf26139667dbe215ce0e3159e650f977bd18bf02bbdeb  output/model-comparison/10-partidas.csv
+539f42468948ea60c5ed9dc341423e31c1d93ca5636214848ac0ce11a84bef73  output/model-comparison/prompt-comun.txt
+e16cd6e81eca4514966c0afd88133aedc692cff3efa98a2fc5b69afc91c10ae8  output/model-comparison/referencia-resultados.md
+2a9f2ec24ee914f88a8775f853b111561493e58a73df52380467a737b1f82cab  output/model-comparison/resultados-api/2026-10-30T20-59-13-836Z-931cf137-3d86-4d54-bba6-1f6129e9338d-groq-json-metricas.json
+f34ac45c0806dd6296cfd3b039ae774c527298194ba53b3fa8d0bbc93a4d1683  output/model-comparison/resultados-api/2026-10-30T20-59-13-836Z-931cf137-3d86-4d54-bba6-1f6129e9338d-groq-json-respuesta.txt
+7f5757939472e955bf94afde071b5b70c9d77fb2b77d46619d364675159d3b88  output/model-comparison/resultados-api/2026-10-30T21-00-41-485Z-5cee4872-a1a3-46a9-9bf4-be63f7327bb5-groq-csv-metricas.json
+96f446cd1085fbb174d7c6862ca59228d92f683fc1ececf1cf64cd4dcc229f7b  output/model-comparison/resultados-api/2026-10-30T21-00-41-485Z-5cee4872-a1a3-46a9-9bf4-be63f7327bb5-groq-csv-respuesta.txt
+b8a718369d17b31fe47bc7a71af5c939a4a0c02df09a936a8ee14062169efeb6  output/model-comparison/resultados-api/2026-10-30T21-15-19-006Z-71f09f56-e797-48f2-b8f3-ebd187a9b868-gemini-json-metricas.json
+33e78d27901e4623e311b62331fb6b9b8b2447caad4d28c1ebd6ed7917d38669  output/model-comparison/resultados-api/2026-10-30T21-16-09-765Z-c66588d1-96af-4504-999f-651253ccc0f3-ollama-json-metricas.json
+01ccabbe61972ef1655cddf586175d40c2ceb8dd117f7ea2f76a8dba149d176d  output/model-comparison/resultados-api/2026-10-30T21-16-09-765Z-c66588d1-96af-4504-999f-651253ccc0f3-ollama-json-respuesta.txt
+e4ed24f6907cc85e4286f12b7f406290f820faa731daa85e37b95914d28c5d13  output/model-comparison/resultados-api/2026-10-30T21-17-35-101Z-04397ddb-ded0-4f54-80a7-8f68a8b3549d-ollama-csv-metricas.json
+fecb08d20b824a81d37cfdaffdbb34eeb48731808851608911fcbaaad1140611  output/model-comparison/resultados-api/2026-10-30T21-17-35-101Z-04397ddb-ded0-4f54-80a7-8f68a8b3549d-ollama-csv-respuesta.txt
+b25c875e1c2676c9e24bcaf70c93be51f1ae9ee9389e9afd92af354987fc81e6  output/model-comparison/resultados-api/2026-10-30T22-44-08-212Z-7ac806b5-4bf6-45d4-b2fa-354817dfa6dc-gemini-json-metricas.json
+fce799eb7382a6118f391c8819f83a434205b569930cc64dd59c7f9360a82e65  output/model-comparison/resultados-api/2026-10-30T22-44-08-212Z-7ac806b5-4bf6-45d4-b2fa-354817dfa6dc-gemini-json-respuesta.txt

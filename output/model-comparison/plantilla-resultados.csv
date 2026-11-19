@@ -1,0 +1,5 @@
+escenario,modelo,version,formato,configuracion,input_tokens,output_tokens,tiempo_s,errores_numericos,observaciones
+local_json,,,,JSON,,,,,
+local_csv,,,,CSV,,,,,
+cloud_json,,,,JSON,,,,,
+cloud_csv,,,,CSV,,,,,

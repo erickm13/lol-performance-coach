@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogoutButton } from "./LogoutButton";
+import { BrandLogo } from "./BrandLogo";
 
 import { navActive, PRODUCT_LINKS } from "../lib/navigation";
 
@@ -12,8 +13,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <span className="brand-mark" />
-        <span className="brand-name">LOL PERFORMANCE COACH</span>
+        <BrandLogo variant="wordmark" mobileVariant="symbol" />
       </div>
 
       <nav className="nav-group" aria-label="Pantallas del producto">
