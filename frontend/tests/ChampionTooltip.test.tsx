@@ -40,7 +40,8 @@ describe("tooltips de campeones", () => {
     const icon = screen.getByRole("button", { name: "Gwen" });
     fireEvent.click(icon);
     await screen.findByText(/No se pudo cargar la información/);
-    expect(icon.querySelector("img")).toHaveAttribute("src", expect.stringContaining("/img/champion/Gwen.png"));
+    // next/image routes the portrait through the optimizer, so the Data Dragon URL is encoded.
+    expect(decodeURIComponent(icon.querySelector("img")?.getAttribute("src") ?? "")).toContain("/img/champion/Gwen.png");
     fireEvent.keyDown(document, { key: "Escape" });
     fireEvent.click(icon);
     await screen.findByText("Campeona de prueba");

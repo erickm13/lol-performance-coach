@@ -3,13 +3,13 @@ import Image from "next/image";
 const logos = {
   wordmark: {
     src: "/branding/diff-wordmark-dark-background.png",
-    width: 1774,
-    height: 887,
+    width: 810,
+    height: 405,
   },
   symbol: {
     src: "/branding/diff-symbol-compact.png",
-    width: 1254,
-    height: 1254,
+    width: 256,
+    height: 256,
   },
 } as const;
 

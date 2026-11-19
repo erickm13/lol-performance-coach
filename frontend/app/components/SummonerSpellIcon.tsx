@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { dataDragonDescriptionText, type SummonerSpellDetails } from "../lib/dataDragon";
 import { Tooltip } from "./Tooltip";
 
@@ -54,8 +55,7 @@ export function SummonerSpellIcon({
       }
     >
       {image ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${image}`} alt="" className="mini-spell" />
+        <Image src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${image}`} alt="" width={32} height={32} className="mini-spell" />
       ) : <span className="mini-spell" />}
     </Tooltip>
   );

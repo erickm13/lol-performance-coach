@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { dataDragonDescriptionText, type ItemDetails } from "../lib/dataDragon";
 import { Tooltip } from "./Tooltip";
 
@@ -41,10 +42,11 @@ export function ItemIcon({
         </>
       }
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${itemId}.png`}
         alt=""
+        width={48}
+        height={48}
         className="mini-item"
       />
     </Tooltip>

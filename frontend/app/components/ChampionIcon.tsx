@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { dataDragonDescriptionText, loadChampionDetails, type ChampionAbility, type ChampionDetails } from "../lib/dataDragon";
 import { Tooltip } from "./Tooltip";
 
@@ -96,8 +97,7 @@ export function ChampionIcon({ champion, version, className }: {
         </>
       }
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champion}.png`} alt="" className={className} />
+      <Image src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champion}.png`} alt="" width={96} height={96} className={className} />
     </Tooltip>
   );
 }

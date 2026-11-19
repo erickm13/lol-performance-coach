@@ -69,6 +69,7 @@ export default function Home() {
               src="/previews/match-analysis.png"
               width={1142}
               height={726}
+              sizes="(max-width: 960px) 100vw, 960px"
               alt="Captura real del mapa de análisis de una partida, con errores en rojo, aciertos en azul y alternativas en amarillo"
             />
             <figcaption>

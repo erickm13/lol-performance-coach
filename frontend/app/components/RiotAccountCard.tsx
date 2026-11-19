@@ -339,21 +339,23 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
           <div className="avatar-wrap rank-avatar" data-tier={account.soloTier?.toLowerCase()}>
             {account.profileIconId
               ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/profileicon/${account.profileIconId}.png`}
                   alt=""
+                  width={96}
+                  height={96}
+                  priority
                   className={`avatar ${account.soloTier ? "avatar-ranked" : ""}`}
                 />
               )
               : <div className="avatar" />}
             {account.soloTier && (
               <Image
-                src={`/rank-frames/${account.soloTier.toLowerCase()}.png?v=original`}
+                src={`/rank-frames/${account.soloTier.toLowerCase()}.png?v=2`}
                 alt=""
                 aria-hidden="true"
-                width={account.soloTier === "PLATINUM" ? 554 : 2296}
-                height={account.soloTier === "PLATINUM" ? 717 : 2976}
+                width={account.soloTier === "PLATINUM" ? 554 : 574}
+                height={account.soloTier === "PLATINUM" ? 717 : 744}
                 sizes="256px"
                 className="rank-frame-account"
               />
@@ -640,10 +642,11 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                           {t.profileIconId != null
                             ? (
                               <span className="summoner-avatar rank-avatar" data-tier={t.soloTier?.toLowerCase()}>
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
+                                <Image
                                   src={`https://ddragon.leagueoflegends.com/cdn/${ddragonVersion}/img/profileicon/${t.profileIconId}.png`}
                                   alt=""
+                                  width={48}
+                                  height={48}
                                   className="summoner-icon"
                                   onError={(e) => {
                                     e.currentTarget.style.visibility = "hidden";
@@ -651,11 +654,11 @@ export function RiotAccountCard({ emailVerified }: { emailVerified: boolean }) {
                                 />
                                 {t.soloTier && (
                                   <Image
-                                    src={`/rank-frames/${t.soloTier.toLowerCase()}.png?v=original`}
+                                    src={`/rank-frames/${t.soloTier.toLowerCase()}.png?v=2`}
                                     alt=""
                                     aria-hidden="true"
-                                    width={t.soloTier === "PLATINUM" ? 554 : 2296}
-                                    height={t.soloTier === "PLATINUM" ? 717 : 2976}
+                                    width={t.soloTier === "PLATINUM" ? 554 : 574}
+                                    height={t.soloTier === "PLATINUM" ? 717 : 744}
                                     sizes="96px"
                                     className="rank-frame-teammate"
                                   />
