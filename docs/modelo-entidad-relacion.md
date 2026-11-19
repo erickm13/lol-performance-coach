@@ -9,18 +9,20 @@ erDiagram
     users ||--o| player_profiles : "personaliza"
     users ||--o{ riot_accounts : "vincula"
     users ||--o{ auth_tokens : "genera"
+    users ||--o| live_draft_connections : "conecta el cliente"
     riot_accounts ||--o{ ingestion_jobs : "dispara"
     riot_accounts ||--o{ training_plans : "recibe"
     riot_accounts ||--o{ weaknesses : "acumula"
     matches ||--o{ match_participants : "participantes vinculados"
     match_participants ||--o| match_metrics : "tiene"
+    match_participants ||--o{ match_teammates : "jugó con"
     riot_accounts ||--o{ match_participants : "identifica cuál es el jugador seguido"
     training_plans ||--o{ training_plan_items : "contiene"
     training_plan_items ||--o{ plan_progress : "se marca"
 
     users {
         uuid id PK
-        text email
+        text email UK "normalizado: sin espacios y en minúsculas"
         text password_hash
         boolean email_verified
         timestamptz created_at
@@ -52,12 +54,19 @@ erDiagram
     riot_accounts {
         uuid id PK
         uuid user_id FK
-        text puuid "id único de Riot"
+        text puuid UK "id único de Riot"
         text summoner_name
         text tag_line
         text region
         text primary_role "opcional, acota alcance"
         text analysis_version
+        int profile_icon_id "nullable"
+        int summoner_level "nullable"
+        text solo_tier "nullable, null = sin rango Solo/Dúo"
+        text solo_rank "nullable, I-IV"
+        int solo_lp "nullable"
+        int solo_wins "nullable"
+        int solo_losses "nullable"
         timestamptz rank_updated_at "nullable"
         timestamptz linked_at
     }
@@ -99,9 +108,17 @@ erDiagram
         int damage_total
         jsonb raw_stats "resto de campos crudos de la API, por si se necesitan despues"
     }
-    match_metrics {
+    match_teammates {
         uuid id PK
         uuid match_participant_id FK
+        text puuid
+        text summoner_name
+        int profile_icon_id "nullable"
+        bool win
+    }
+    match_metrics {
+        uuid id PK
+        uuid match_participant_id FK,UK
         float cs_per_min
         float kda
         float vision_score_per_min
@@ -109,7 +126,7 @@ erDiagram
         float gold_per_min
         float damage_per_min
         float kill_participation
-        jsonb extra "metricas nuevas sin migrar el esquema"
+        jsonb extra "metricas nuevas y caché del análisis del mapa"
     }
     weaknesses {
         uuid id PK
@@ -117,7 +134,7 @@ erDiagram
         text category "early_game|vision|farming|objectives|consistency"
         text description
         text severity "low|medium|high"
-        jsonb evidence "ids de match_metrics que sustentan el hallazgo"
+        jsonb evidence "ids de match_participants que sustentan el hallazgo"
         timestamptz detected_at
     }
     training_plans {
@@ -131,6 +148,7 @@ erDiagram
     training_plan_items {
         uuid id PK
         uuid training_plan_id FK
+        int position "orden de presentación, 0-indexado"
         text type "focus_area|drill|champion_priority|champion_avoid"
         text title
         text description
@@ -144,6 +162,13 @@ erDiagram
         int self_rating "1-5, opcional"
         text note
     }
+    live_draft_connections {
+        uuid user_id PK,FK
+        text token_hash UK "hash del token del cliente, nunca el token"
+        timestamptz expires_at
+        timestamptz received_at "nullable, última instantánea recibida"
+        jsonb snapshot "nullable, selección de campeones en vivo"
+    }
 ```
 
 ## Diccionario de datos
@@ -154,10 +179,27 @@ Cuenta de la aplicación (no confundir con la cuenta de Riot).
 | Campo | Tipo | Descripción |
 |---|---|---|
 | id | uuid, PK | Identificador interno |
-| email | text, único | Login |
+| email | text, único | Login. Se guarda sin espacios y en minúsculas; al registrarse se valida el formato y que el dominio tenga servidor de correo (MX) |
 | password_hash | text | Hash de contraseña (nunca texto plano) |
 | email_verified | boolean | Si confirmó su email vía el link de verificación |
 | created_at | timestamptz | Alta del usuario |
+
+### `player_profiles`
+Preferencias del jugador para personalizar el coaching y su participación en el ranking. Relación 1 a 1 con `users` (`ON DELETE CASCADE`).
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| user_id | uuid, PK, FK → users.id | Dueño del perfil |
+| primary_role / secondary_role | text, nullable | Roles declarados |
+| champions | jsonb | Campeones habituales |
+| experience | text, nullable | Experiencia autodeclarada |
+| improvement_areas | jsonb | Objetivos de mejora elegidos |
+| target_roles | jsonb | Roles que quiere practicar |
+| weekly_minutes | int, nullable | Tiempo semanal disponible para practicar |
+| university_name / university_key | text, nullable | Universidad declarada y su clave normalizada (filtro del ranking) |
+| ranking_visible | boolean | Si acepta aparecer en el ranking; empieza en falso |
+| onboarding_completed | boolean | Si terminó el cuestionario inicial |
+| updated_at | timestamptz | Última modificación |
 
 ### `auth_tokens`
 Tokens de un solo uso para verificación de email y recuperación de contraseña. Al generar uno nuevo de un `type` para un usuario, se invalidan (`used_at = now()`) los anteriores del mismo `type` que sigan sin usar.
@@ -183,6 +225,11 @@ Cuenta de League of Legends vinculada a un usuario. Un usuario podría vincular 
 | summoner_name / tag_line | text | Nombre visible actual |
 | region | text | Servidor (LAN, NA, etc.) — necesario para las llamadas a la API |
 | primary_role | text, nullable | Rol principal declarado, usado para acotar el alcance de análisis |
+| analysis_version | text | Versión de las reglas con que se calcularon sus debilidades; si cambia, se recalculan |
+| profile_icon_id / summoner_level | int, nullable | Icono y nivel de invocador, para mostrarlos |
+| solo_tier / solo_rank / solo_lp | text/text/int, nullable | Rango Solo/Dúo (liga, división y LP); null si no tiene rango en esa cola |
+| solo_wins / solo_losses | int, nullable | Victorias y derrotas de la temporada en Solo/Dúo |
+| rank_updated_at | timestamptz, nullable | Cuándo se consultó el rango a Riot por última vez |
 | linked_at | timestamptz | Fecha de vinculación |
 
 ### `ingestion_jobs`
@@ -225,6 +272,18 @@ En esta implementación se guarda una fila por jugador vinculado que haya ingeri
 | kills/deaths/assists/cs_total/vision_score/gold_total/damage_total | int | Estadísticas crudas de la API |
 | raw_stats | jsonb | Resto de campos que la API devuelve y que hoy no se explotan, por si hacen falta después |
 
+### `match_teammates`
+Compañeros de equipo del jugador seguido en cada partida. Alimenta la sección de compañeros recientes del dashboard (con quién juega más y cuánto gana con cada uno) sin tener que leer `matches.raw_detail`.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| id | uuid, PK | Identificador interno |
+| match_participant_id | uuid, FK → match_participants.id | Participación del jugador seguido |
+| puuid | text | Identificador de Riot del compañero |
+| summoner_name | text | Nombre visible del compañero en esa partida |
+| profile_icon_id | int, nullable | Icono del compañero |
+| win | bool | Resultado de la partida |
+
 ### `match_metrics`
 KPIs derivados, calculados a partir de `match_participants` — separado de la tabla anterior para no mezclar "dato crudo de la API" con "dato calculado por nosotros" (son ciclos de vida distintos: si cambia una fórmula, se recalcula esta tabla sin re-ingerir nada).
 
@@ -233,7 +292,7 @@ KPIs derivados, calculados a partir de `match_participants` — separado de la t
 | id | uuid, PK | Identificador interno |
 | match_participant_id | uuid, FK, único | Participante al que pertenece (1 a 1) |
 | cs_per_min / kda / vision_score_per_min / deaths_before_10 / gold_per_min / damage_per_min / kill_participation | float/int | KPIs definidos en el objetivo específico 2 |
-| extra | jsonb | Métricas nuevas que se agreguen sin migrar el esquema |
+| extra | jsonb | Métricas nuevas que se agreguen sin migrar el esquema; también guarda la caché del análisis del mapa (`mapInsights`) |
 
 ### `weaknesses`
 Debilidad recurrente detectada por el motor de reglas, agregada a nivel de cuenta (no de una sola partida).
@@ -260,6 +319,7 @@ El plan semanal, sus ítems accionables, y el registro de cumplimiento que cierr
 | training_plans | generated_by | text | `rules`/`llm`, para trazabilidad de qué motor lo generó |
 | training_plan_items | id | uuid, PK | Identificador del ítem |
 | training_plan_items | training_plan_id | uuid, FK | Plan al que pertenece |
+| training_plan_items | position | int | Orden de presentación (0-indexado): cada `drill` queda junto a su `focus_area` y se respeta la prioridad por severidad |
 | training_plan_items | type | text | `focus_area`/`drill`/`champion_priority`/`champion_avoid` |
 | training_plan_items | title / description | text | Contenido del ítem |
 | training_plan_items | llm_explanation | text | Texto generado por el LLM (Groq + Gemini), anclado a `evidence_metric_refs` |
@@ -269,6 +329,17 @@ El plan semanal, sus ítems accionables, y el registro de cumplimiento que cierr
 | plan_progress | completed_at | timestamptz | Cuándo se marcó cumplido |
 | plan_progress | self_rating | int, nullable | Autoevaluación 1-5 |
 | plan_progress | note | text, nullable | Comentario libre del usuario |
+
+### `live_draft_connections`
+Conexión del cliente de escritorio que envía la selección de campeones en vivo (migración 0010). Una por usuario, revocable y con caducidad de 12 horas; al volver a emparejar se reemplaza. No guarda secretos del cliente de LoL.
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| user_id | uuid, PK, FK → users.id | Dueño de la conexión (`ON DELETE CASCADE`) |
+| token_hash | text, único | Hash del token que usa el cliente; el token en claro solo se muestra al emparejar |
+| expires_at | timestamptz | Caducidad del emparejamiento |
+| received_at | timestamptz, nullable | Última instantánea recibida; si tiene menos de 20 s se considera conectado |
+| snapshot | jsonb, nullable | Última selección recibida, verificada por el servidor |
 
 ## Decisiones de normalización
 
