@@ -14,7 +14,7 @@ type RankingData = {
     summonerName: string;
     tagLine: string;
     profileIconId: number | null;
-    tier: string;
+    tier: string | null;
     division: string | null;
     lp: number | null;
     wins: number | null;
@@ -72,8 +72,9 @@ export function LeaderboardView() {
               ? "Tu participación está activada."
               : "Tú eliges si participas."}
           </strong>{" "}
-          Para aparecer necesitas correo verificado, cuenta vinculada y rango
-          guardado. Actualiza tus partidas en el dashboard para renovar tu
+          Para aparecer necesitas correo verificado y cuenta vinculada. Si
+          todavía no tienes rango en Solo/Dúo, apareces al final como «Sin
+          clasificar». Actualiza tus partidas en el dashboard para renovar tu
           rango.
         </p>
         <p className="page-sub">
@@ -197,7 +198,9 @@ export function LeaderboardView() {
                           key={row.position}
                           className={row.self ? "ranking-self" : ""}
                         >
-                          <td className="ranking-position">{row.position}</td>
+                          <td className="ranking-position">
+                            {row.tier ? row.position : "—"}
+                          </td>
                           <td>
                             <div className="ranking-identity">
                               {row.profileIconId !== null && (
@@ -222,18 +225,33 @@ export function LeaderboardView() {
                             {row.university ?? "Sin universidad indicada"}
                           </td>
                           <td>
-                            <div className="ranking-tier">
-                              <Image
-                                width={52}
-                                height={52}
-                                src={`/ranks/${row.tier.toLowerCase()}.png`}
-                                alt=""
-                              />
-                              <span>
-                                {TIERS[row.tier] ?? row.tier} {row.division}
-                                <small>{row.lp ?? 0} LP</small>
-                              </span>
-                            </div>
+                            {row.tier
+                              ? (
+                                <div className="ranking-tier">
+                                  <Image
+                                    width={52}
+                                    height={52}
+                                    src={`/ranks/${row.tier.toLowerCase()}.png`}
+                                    alt=""
+                                  />
+                                  <span>
+                                    {TIERS[row.tier] ?? row.tier} {row.division}
+                                    <small>{row.lp ?? 0} LP</small>
+                                  </span>
+                                </div>
+                              )
+                              : (
+                                <div className="ranking-tier">
+                                  <span
+                                    className="ranking-tier-empty"
+                                    aria-hidden="true"
+                                  />
+                                  <span>
+                                    Sin clasificar
+                                    <small>Sin rango Solo/Dúo</small>
+                                  </span>
+                                </div>
+                              )}
                           </td>
                           <td className="tabular">
                             {row.wins ?? "—"} / {row.losses ?? "—"}
@@ -260,8 +278,8 @@ export function LeaderboardView() {
                 <div className="section-body">
                   <h3>Aún no hay participantes en esta selección</h3>
                   <p className="page-sub">
-                    Activa tu visibilidad en el perfil y sincroniza una cuenta
-                    con rango. Si tu universidad todavía no aparece, se añadirá
+                    Activa tu visibilidad en el perfil y sincroniza tu cuenta de
+                    Riot. Si tu universidad todavía no aparece, se añadirá
                     cuando haya un participante elegible.
                   </p>
                   <Link href="/dashboard/perfil" className="rune-link">
@@ -298,7 +316,8 @@ export function LeaderboardView() {
           </section>
         )}
       <p className="page-sub ranking-method">
-        Orden: liga, división y LP. Los empates se ordenan por Riot ID. Se
+        Orden: liga, división y LP; quienes no tienen rango Solo/Dúo van al
+        final. Los empates se ordenan por Riot ID. Se
         muestran las últimas cifras sincronizadas; no se calcula un ELO propio
         ni se compara el rendimiento entre servidores.
       </p>

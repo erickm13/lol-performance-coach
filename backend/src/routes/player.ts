@@ -93,11 +93,11 @@ playerRoutes.get("/ranking", async (c) => {
   const divisionOrder = sql<
     number
   >`case ${riotAccounts.soloRank} when 'I' then 4 when 'II' then 3 when 'III' then 2 when 'IV' then 1 else 0 end`;
+  // Players without a Solo/Duo rank stay listed; tierOrder 0 sorts them last.
   const conditions = [
     eq(playerProfiles.rankingVisible, true),
     eq(users.emailVerified, true),
     eq(riotAccounts.region, region),
-    sql`${tierOrder} > 0`,
   ];
   if (university !== "all") {
     conditions.push(eq(playerProfiles.universityKey, university));
@@ -141,7 +141,6 @@ playerRoutes.get("/ranking", async (c) => {
         eq(playerProfiles.rankingVisible, true),
         eq(users.emailVerified, true),
         eq(riotAccounts.region, region),
-        sql`${tierOrder} > 0`,
         sql`${playerProfiles.universityKey} is not null`,
       ),
     ).groupBy(playerProfiles.universityKey)
