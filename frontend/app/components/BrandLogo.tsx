@@ -7,7 +7,7 @@ const logos = {
     height: 405,
   },
   symbol: {
-    src: "/branding/diff-symbol-compact.png",
+    src: "/branding/diff-symbol-compact.png?v=2",
     width: 256,
     height: 256,
   },
