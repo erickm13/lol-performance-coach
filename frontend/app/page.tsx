@@ -156,9 +156,7 @@ export default function Home() {
       </ScrollRevealRoot>
       <footer className="landing-footer">
         <BrandLogo variant="wordmark" />
-        <p>
-          Proyecto independiente. No está afiliado ni respaldado por Riot Games.
-        </p>
+        <p>Proyecto independiente de la comunidad de League of Legends.</p>
         <Link href="/login" className="rune-link">Iniciar sesión →</Link>
       </footer>
     </main>

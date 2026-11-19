@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "legal_notice_accepted_at" timestamp with time zone;

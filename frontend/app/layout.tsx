@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Chakra_Petch, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
+import { LegalFooter } from "./components/LegalNotice";
 
 const chakraPetch = Chakra_Petch({
   subsets: ["latin"],
@@ -27,7 +28,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${chakraPetch.variable} ${ibmPlexSans.variable}`}>
-      <body className="font-body">{children}</body>
+      <body className="font-body">
+        {children}
+        <LegalFooter />
+      </body>
     </html>
   );
 }

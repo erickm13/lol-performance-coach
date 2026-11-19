@@ -7,9 +7,11 @@ import { useResource } from "../lib/useResource";
 import { ProfileReminder } from "./ProfileReminder";
 import { ScreenState } from "./ScreenState";
 import { SessionContext, type SessionUser } from "../lib/session";
+import { LegalNoticeModal } from "./LegalNotice";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [noticeAccepted, setNoticeAccepted] = useState(false);
   const session = useResource<SessionUser>("/auth/me");
   return (
     <div className="shell">
@@ -17,6 +19,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main className="stage">
         <div className="stage-inner">
           <TopBar onToggleMenu={() => setOpen((o) => !o)} menuOpen={open} />
+          {session.data && !session.data.legalNoticeAcceptedAt &&
+            !noticeAccepted && (
+            <LegalNoticeModal onAccepted={() => setNoticeAccepted(true)} />
+          )}
           {session.loading
             ? <ScreenState title="Cargando tu sesión…" />
             : session.error

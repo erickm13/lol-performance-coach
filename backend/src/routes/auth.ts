@@ -4,7 +4,7 @@ import {
   getCookie,
   setCookie,
 } from "jsr:@hono/hono@^4.6.0/cookie";
-import { eq } from "npm:drizzle-orm@^0.36.0";
+import { eq, sql } from "npm:drizzle-orm@^0.36.0";
 import { db } from "../db/client.ts";
 import { playerProfiles, users } from "../db/schema.ts";
 import { parsePreferences, ProfileValidationError } from "../player/profile.ts";
@@ -161,7 +161,29 @@ export function createAuthRoutes(deps: AuthEmailDeps): Hono {
       id: user.id,
       email: user.email,
       emailVerified: user.emailVerified,
+      legalNoticeAcceptedAt: user.legalNoticeAcceptedAt,
     });
+  });
+
+  // Riot's notice is shown once per account; the footer keeps it reachable.
+  auth.post("/legal-notice", async (c) => {
+    const token = getCookie(c, SESSION_COOKIE);
+    const userId = token ? await verifySessionToken(token) : null;
+    if (!userId) {
+      return c.json({ error: "No autenticado" }, 401);
+    }
+
+    const [user] = await db
+      .update(users)
+      .set({
+        legalNoticeAcceptedAt: sql`coalesce(${users.legalNoticeAcceptedAt}, now())`,
+      })
+      .where(eq(users.id, userId))
+      .returning({ legalNoticeAcceptedAt: users.legalNoticeAcceptedAt });
+    if (!user) {
+      return c.json({ error: "No autenticado" }, 401);
+    }
+    return c.json(user);
   });
 
   auth.post("/verify-email", async (c) => {

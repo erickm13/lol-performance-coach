@@ -320,3 +320,40 @@ Deno.test("el correo se normaliza: registro y login ignoran espacios y mayúscul
   });
   assertEquals(login.status, 200);
 });
+
+Deno.test("el aviso legal se registra una sola vez por cuenta", async () => {
+  const { app, sentEmails } = createTestApp();
+  const email = uniqueEmail();
+  await register(app, email);
+  await app.request("/verify-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: sentEmails[0].token }),
+  });
+  const login = await app.request("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password: "password123" }),
+  });
+  const cookie = extractSessionCookie(login);
+
+  const before = await (await app.request("/me", { headers: { Cookie: cookie } })).json();
+  assertEquals(before.legalNoticeAcceptedAt, null);
+
+  const first = await app.request("/legal-notice", { method: "POST", headers: { Cookie: cookie } });
+  assertEquals(first.status, 200);
+  const { legalNoticeAcceptedAt } = await first.json();
+  assertExists(legalNoticeAcceptedAt);
+
+  const again = await (await app.request("/legal-notice", { method: "POST", headers: { Cookie: cookie } })).json();
+  assertEquals(again.legalNoticeAcceptedAt, legalNoticeAcceptedAt);
+
+  const after = await (await app.request("/me", { headers: { Cookie: cookie } })).json();
+  assertEquals(after.legalNoticeAcceptedAt, legalNoticeAcceptedAt);
+});
+
+Deno.test("POST /legal-notice sin sesión responde 401", async () => {
+  const { app } = createTestApp();
+  const res = await app.request("/legal-notice", { method: "POST" });
+  assertEquals(res.status, 401);
+});

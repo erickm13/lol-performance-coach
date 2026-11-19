@@ -15,6 +15,8 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   emailVerified: boolean("email_verified").notNull().default(false),
+  // When the user acknowledged Riot's legal notice; null shows it once.
+  legalNoticeAcceptedAt: timestamp("legal_notice_accepted_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
